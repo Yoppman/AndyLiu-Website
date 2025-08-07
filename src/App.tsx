@@ -13,10 +13,10 @@ import Contact from './pages/Contact';
 function App() {
   return (
     <BrowserRouter>
-      <div className="font-cormorant text-[#151515] ">
+      <div className="font-cormorant text-[#151515] min-h-screen flex flex-col">
       <div id="hover-zone" className="fixed top-0 left-0 w-full h-4 z-40" />
         <Header />
-        <main>
+        <main className="flex-1">
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Home />} />

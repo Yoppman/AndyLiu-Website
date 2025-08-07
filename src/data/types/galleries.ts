@@ -10,4 +10,5 @@ export interface PhotoEntry {
     title:       string
     description: string
     photos:      PhotoEntry[]
+    hero?: PhotoEntry; // Optional custom hero image
   }
