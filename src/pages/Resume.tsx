@@ -6,7 +6,7 @@ const Resume: React.FC = () => {
   const [iframeError, setIframeError] = useState(false);
 
   useEffect(() => {
-    // Determine the correct PDF URL based on environment
+    // PDF is kept at root level in both dev and production
     setPdfUrl('/Resume_Chia-Da-Liu.pdf');
   }, []);
 

@@ -19,7 +19,7 @@ export default defineConfig({
           const info = name.split('.');
           const ext = info[info.length - 1];
           if (/pdf/i.test(ext)) {
-            return `assets/[name].[ext]`;
+            return `[name].[ext]`; // Keep PDFs at root level
           }
           return `assets/[name]-[hash].[ext]`;
         },
