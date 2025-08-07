@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const Resume: React.FC = () => {
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string>('');
+  const [iframeError, setIframeError] = useState(false);
+
+  useEffect(() => {
+    // Determine the correct PDF URL based on environment
+    const baseUrl = import.meta.env.PROD ? '/AndyLiu-Website' : '';
+    setPdfUrl(`${baseUrl}/Resume_Chia-Da-Liu.pdf`);
+  }, []);
 
   const handleDownload = () => {
     const link = document.createElement('a');
-    link.href = '/Resume_Chia-Da-Liu.pdf';
+    link.href = pdfUrl;
     link.download = 'Resume_Chia-Da-Liu.pdf';
+    link.target = '_blank';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     setShowDownloadModal(false);
+  };
+
+  const handleIframeError = () => {
+    setIframeError(true);
   };
 
   return (
@@ -22,14 +35,30 @@ const Resume: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         {/* PDF Preview */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <iframe
-            src="/Resume_Chia-Da-Liu.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH&disablelinks=1"
-            className="w-full h-[800px] md:h-[1000px]"
-            title="Resume Preview"
-            style={{
-              pointerEvents: 'none'
-            }}
-          />
+          {!iframeError ? (
+            <iframe
+              src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH&disablelinks=1`}
+              className="w-full h-[800px] md:h-[1000px]"
+              title="Resume Preview"
+              style={{
+                pointerEvents: 'none'
+              }}
+              onError={handleIframeError}
+            />
+          ) : (
+            <div className="w-full h-[800px] md:h-[1000px] bg-gray-100 flex items-center justify-center">
+              <div className="text-center">
+                <div className="text-6xl mb-4">📄</div>
+                <p className="text-gray-600 mb-4">PDF preview not available</p>
+                <button
+                  onClick={() => window.open(pdfUrl, '_blank')}
+                  className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition-colors duration-200"
+                >
+                  Open PDF in New Tab
+                </button>
+              </div>
+            </div>
+          )}
           <div className="p-4 text-center text-sm text-gray-600 bg-gray-50 border-t">
             <p>📄 Links are disabled in preview. Download PDF for full link access.</p>
           </div>
