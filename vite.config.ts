@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: process.env.NODE_ENV === 'production' ? '/AndyLiu-Website/' : '/',
+  base: process.env.NODE_ENV === 'production' ? '' : '',
   server: {
     port: 5173,
     host: true
@@ -16,9 +16,9 @@ export default defineConfig({
           const info = assetInfo.name.split('.');
           const ext = info[info.length - 1];
           if (/pdf/i.test(ext)) {
-            return `assets/[name].[ext]`;
+            return `public/[name].[ext]`;
           }
-          return `assets/[name]-[hash].[ext]`;
+          return `public/[name]-[hash].[ext]`;
         }
       }
     }
