@@ -23,10 +23,16 @@ const Resume: React.FC = () => {
         {/* PDF Preview */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <iframe
-            src="/Resume_Chia-Da-Liu.pdf#toolbar=0&navpanes=0&scrollbar=0"
+            src="/Resume_Chia-Da-Liu.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH&disablelinks=1"
             className="w-full h-[800px] md:h-[1000px]"
             title="Resume Preview"
+            style={{
+              pointerEvents: 'none'
+            }}
           />
+          <div className="p-4 text-center text-sm text-gray-600 bg-gray-50 border-t">
+            <p>📄 Links are disabled in preview. Download PDF for full link access.</p>
+          </div>
         </div>
         
         {/* Download Button */}
@@ -35,7 +41,7 @@ const Resume: React.FC = () => {
             onClick={() => setShowDownloadModal(true)}
             className="bg-black text-white px-8 py-3 rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
           >
-            Download Resume
+            Download Resume 
           </button>
         </div>
       </div>
