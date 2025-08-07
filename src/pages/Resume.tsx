@@ -7,7 +7,7 @@ const Resume: React.FC = () => {
 
   useEffect(() => {
     // Determine the correct PDF URL based on environment
-    const baseUrl = import.meta.env.PROD ? '' : '';
+    const baseUrl = import.meta.env.PROD ? '/AndyLiu-Website' : '';
     setPdfUrl(`${baseUrl}/Resume_Chia-Da-Liu.pdf`);
   }, []);
 
