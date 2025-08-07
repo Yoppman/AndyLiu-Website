@@ -2,7 +2,7 @@ import React from 'react';
 
 const Hero: React.FC = () => {
   return (
-    <section className="pt-10 min-h-[calc(100vh-5rem)] bg-[#f4f4f3]">
+    <section className="pt-10 min-h-[calc(100vh-5rem)] lg:min-h-[calc(80vh-5rem)] xl:min-h-[calc(70vh-5rem)] bg-[#f4f4f3]">
       <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
         <div className="flex flex-col md:flex-row md:items-center md:space-x-12">
           <div className="md:w-1/2 mb-10 md:mb-0 flex items-center justify-center">

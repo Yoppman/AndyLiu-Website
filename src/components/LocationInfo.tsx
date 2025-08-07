@@ -10,7 +10,7 @@ const containerStyle = {
   height: '100%',
 };
 
-const center = { lat: 33.6868, lng: -117.8413 };
+const center = { lat: 37.3541, lng: -121.9552 };
 
 const mapOptions = {
   disableDefaultUI: true,
@@ -35,7 +35,7 @@ function LocationInfo() {
             <em>Current Location</em>
           </p>
           <h2 className="font-cormorant text-4xl md:text-5xl lg:text-6xl leading-loose">
-            Irvine, California
+            Santa Clara, California
           </h2>
         </div>
 
