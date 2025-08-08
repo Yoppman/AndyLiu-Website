@@ -21,6 +21,13 @@ function useResponsiveColumns() {
   return columns;
 }
 
+// Helper for Cloudinary DPR-aware URLs
+const buildSrc = (src: string, width: number) => {
+  const dpr = Math.max(1, Math.min(2, Math.round(window.devicePixelRatio || 1)));
+  const dprPart = dpr > 1 ? `,dpr_${dpr}` : '';
+  return `${src}?f_auto,q_auto:good${dprPart},w_${width}`;
+};
+
 const Photography: React.FC = () => {
   const columns = useResponsiveColumns();
   const gridRef = useRef<HTMLDivElement>(null);
@@ -41,7 +48,7 @@ const Photography: React.FC = () => {
   const rowCount = Math.ceil(galleries.length / columns);
 
   /**
-   * Calculate the full height so we don\'t need an internal scrollbar.
+   * Calculate the full height so we don't need an internal scrollbar.
    * Each row takes ITEM_HEIGHT + GUTTER space, so the grid height should
    * cover ALL rows. The page itself will scroll instead of the grid.
    */
@@ -69,17 +76,23 @@ const Photography: React.FC = () => {
             style={{ overflowX: 'hidden' }}
           >
             {({ columnIndex, rowIndex, style, data }) => {
-              const { galleries, columns, itemWidth } = data;
+              const { galleries, columns, itemWidth } = data as any;
               const idx = rowIndex * columns + columnIndex;
               if (idx >= galleries.length) return null;
               const g = galleries[idx];
               const preview = g.hero || g.photos[0];
+              const isFirstRow = rowIndex === 0;
+              const preview300 = buildSrc(preview.src, 300);
+              const preview600 = buildSrc(preview.src, 600);
+              const preview900 = buildSrc(preview.src, 900);
+              const heroPrefetch1200 = buildSrc((g.hero || g.photos[0]).src, 1200);
+
               return (
                 <div
                   style={{
                     ...style,
-                    left: style.left,
-                    top: style.top,
+                    left: (style as any).left,
+                    top: (style as any).top,
                     width: itemWidth,
                     margin: '0 auto',
                     marginBottom: rowIndex !== rowCount - 1 ? GUTTER : 0,
@@ -89,18 +102,19 @@ const Photography: React.FC = () => {
                     to={`/photography/${g.slug}`}
                     className="group block relative overflow-hidden rounded-lg shadow-lg"
                     style={{ height: ITEM_HEIGHT }}
+                    onMouseEnter={() => {
+                      const img = new Image();
+                      img.src = heroPrefetch1200;
+                    }}
                   >
                     <img
-                      src={preview.src + '?q_auto,f_auto,w_600'}
-                      srcSet={
-                        preview.src + '?q_auto,f_auto,w_300 300w, ' +
-                        preview.src + '?q_auto,f_auto,w_600 600w, ' +
-                        preview.src + '?q_auto,f_auto,w_900 900w'
-                      }
+                      src={preview600}
+                      srcSet={`${preview300} 300w, ${preview600} 600w, ${preview900} 900w`}
                       sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 600px"
                       alt={g.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading="lazy"
+                      loading={isFirstRow ? 'eager' : 'lazy'}
+                      fetchPriority={isFirstRow ? 'high' : 'low'}
                       style={{ backgroundColor: preview.dominantColor, height: '100%' }}
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-6 text-white">

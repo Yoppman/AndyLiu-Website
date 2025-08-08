@@ -11,7 +11,7 @@ import React, {
   MutableRefObject,
 } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, X, ArrowUp } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { galleries } from '../data/galleries';
 
@@ -132,6 +132,30 @@ const GalleryDetail: React.FC = () => {
     return () => { document.head.removeChild(link); };
   }, [heroImage.src]);
 
+  // — Floating Top arrow visibility
+  const [showTopArrow, setShowTopArrow] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      setShowTopArrow(y > 300);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    const scrollDuration = 500; // 0.5 seconds
+    const scrollStep = -window.scrollY / (scrollDuration / 15);
+    const scrollInterval = setInterval(() => {
+      if (window.scrollY !== 0) {
+        window.scrollBy(0, scrollStep);
+      } else {
+        clearInterval(scrollInterval);
+      }
+    }, 15);
+  };
+
   return (
     <main
       className="min-h-screen w-full transition-colors duration-1000"
@@ -245,6 +269,19 @@ const GalleryDetail: React.FC = () => {
             style={{ backgroundColor: photos[lightboxIdx].dominantColor }}
           />
         </div>
+      )}
+
+      {/* Floating Top arrow */}
+      {showTopArrow && (
+        <button
+          onClick={scrollToTop}
+          aria-label="Scroll to top"
+          className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] animate-float-up select-none opacity-50 hover:opacity-100 transition-opacity"
+          style={{ left: 'calc(50% - 28px)' }}
+        >
+          <ArrowUp size={56} strokeWidth={1.25} className="opacity-70" />
+          <span className="text-sm mt-1 tracking-wide opacity-70">Top</span>
+        </button>
       )}
     </main>
   );
