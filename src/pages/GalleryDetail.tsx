@@ -9,6 +9,7 @@ import React, {
   useRef,
   forwardRef,
   MutableRefObject,
+  useLayoutEffect,
 } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, X, ArrowUp } from 'lucide-react';
@@ -32,9 +33,38 @@ interface Gallery {
 
 type ImgRef = MutableRefObject<HTMLImageElement | null>;
 
+// ----- Eager image for critical content ----------------------------------
+const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
+  ({ photo, alt }, externalRef) => {
+    const setRefs = (node: HTMLImageElement | null) => {
+      if (typeof externalRef === 'function') externalRef(node);
+      else if (externalRef) (externalRef as ImgRef).current = node;
+    };
+
+    return (
+      <img
+        ref={setRefs}
+        src={`${photo.src}?q_auto,f_auto,w_600`}
+        srcSet={`${photo.src}?q_auto,f_auto,w_300 300w, ${photo.src}?q_auto,f_auto,w_600 600w, ${photo.src}?q_auto,f_auto,w_900 900w`}
+        sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
+        alt={alt}
+        className={`max-h-[90vh] w-full ${
+          photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
+        }`}
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+        style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
+      />
+    );
+  }
+);
+EagerImage.displayName = 'EagerImage';
+
 // ----- Lazy‑loaded thumbnail --------------------------------------------
 const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
   ({ photo, alt }, externalRef) => {
+    const [loaded, setLoaded] = useState(false);
     const { ref: inViewRef, inView } = useInView({
       rootMargin: '200px',
       triggerOnce: true,
@@ -60,13 +90,16 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
         }
         sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
         alt={alt}
-        className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 ${
+        className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 transition-opacity duration-500 ${
+          loaded ? 'opacity-100' : 'opacity-0'
+        } ${
           photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
         }`}
         loading="lazy"
         decoding="async"
         fetchPriority="low"
-        style={{ backgroundColor: photo.dominantColor }}
+        style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
+        onLoad={() => setLoaded(true)}
       />
     );
   }
@@ -83,6 +116,11 @@ const GalleryDetail: React.FC = () => {
   const { title, description, photos, hero } = gallery;
 
   const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+  // Defer part of the grid to avoid heavy first render
+  const [renderDeferredGrid, setRenderDeferredGrid] = useState(false);
+  // Keep track of which URLs we've prefetched this session
+  const prefetchedUrlSetRef = useRef<Set<string>>(new Set());
+  const prefetchImageElementsRef = useRef<HTMLImageElement[]>([]);
 
   // dynamic background colour based on current viewport image
   const [bgColor, setBgColor] = useState<string>(photos[0].dominantColor);
@@ -100,37 +138,158 @@ const GalleryDetail: React.FC = () => {
 
   // — Track which photo is visible to drive bg colour
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
+    // Attach observers after the browser has a chance to paint
+    const setup = () => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
             const img = entry.target as HTMLImageElement;
+            // Skip while image is still loading/decoding to avoid jank
+            if (!img.complete) continue;
             const i = imgRefs.current.indexOf(img);
             if (i >= 0) setBgColor(photos[i].dominantColor);
             break;
           }
-        }
-      },
-      { threshold: 0.4 }
-    );
+        },
+        { threshold: 0.4 }
+      );
 
-    imgRefs.current.forEach((img) => img && observer.observe(img));
-    return () => observer.disconnect();
+      imgRefs.current.forEach((img) => img && observer.observe(img));
+      return () => observer.disconnect();
+    };
+
+    let cleanup: (() => void) | undefined;
+    const idleCb = (cb: () => void) =>
+      (window as any).requestIdleCallback
+        ? (window as any).requestIdleCallback(cb, { timeout: 800 })
+        : setTimeout(cb, 60);
+
+    idleCb(() => {
+      cleanup = setup();
+    });
+
+    return () => {
+      if (cleanup) cleanup();
+    };
+  }, [photos, renderDeferredGrid]);
+
+  // Defer rendering of non-critical grid items to reduce initial jank
+  useEffect(() => {
+    const idle = (cb: () => void) =>
+      (window as any).requestIdleCallback
+        ? (window as any).requestIdleCallback(cb, { timeout: 1200 })
+        : setTimeout(cb, 120);
+    idle(() => setRenderDeferredGrid(true));
+  }, []);
+
+  // Warm the HTTP cache for grid images after idle time
+  useEffect(() => {
+    if (!photos?.length) return;
+
+    const buildGridCandidates = (baseSrc: string) => [
+      `${baseSrc}?q_auto,f_auto,w_300`,
+      `${baseSrc}?q_auto,f_auto,w_600`,
+      `${baseSrc}?q_auto,f_auto,w_900`,
+    ];
+
+    const idle = (cb: () => void) =>
+      (window as any).requestIdleCallback
+        ? (window as any).requestIdleCallback(cb, { timeout: 2000 })
+        : setTimeout(cb, 150);
+
+    let cancelled = false;
+    idle(() => {
+      if (cancelled) return;
+      let delayMs = 0;
+      photos.forEach((p) => {
+        const urls = buildGridCandidates(p.src);
+        urls.forEach((url) => {
+          if (prefetchedUrlSetRef.current.has(url)) return;
+          prefetchedUrlSetRef.current.add(url);
+          // Stagger requests a bit to stay responsive
+          setTimeout(() => {
+            if (cancelled) return;
+            const img = new Image();
+            img.decoding = 'async';
+            img.loading = 'eager';
+            img.referrerPolicy = 'no-referrer';
+            img.src = url;
+            prefetchImageElementsRef.current.push(img);
+          }, delayMs);
+          delayMs += 40; // ~25 imgs/sec
+        });
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      // Clear references to allow GC; cache remains in the browser
+      prefetchImageElementsRef.current = [];
+    };
   }, [photos]);
+
+  // When lightbox opens, prefetch adjacent images at display size
+  useEffect(() => {
+    if (lightboxIdx === null) return;
+    const targets = [lightboxIdx - 1, lightboxIdx + 1].filter(
+      (i) => i >= 0 && i < photos.length
+    );
+    targets.forEach((i) => {
+      const url = `${photos[i].src}?q_auto,f_auto,w_1200`;
+      if (prefetchedUrlSetRef.current.has(url)) return;
+      prefetchedUrlSetRef.current.add(url);
+      const img = new Image();
+      img.decoding = 'async';
+      img.loading = 'eager';
+      img.src = url;
+      prefetchImageElementsRef.current.push(img);
+    });
+  }, [lightboxIdx, photos]);
 
   // Hero & siblings
   const heroImage = hero || photos[0];
   const prev = galleries[idx - 1] as Gallery | undefined;
   const next = galleries[idx + 1] as Gallery | undefined;
-  // Preload hero for better LCP
-  useEffect(() => {
+  // Preload hero for better LCP; use layout effect to schedule before paint
+  useLayoutEffect(() => {
     const link = document.createElement('link');
     link.rel = 'preload';
     link.as = 'image';
     link.href = `${heroImage.src}?q_auto,f_auto,w_1200`;
     document.head.appendChild(link);
-    return () => { document.head.removeChild(link); };
+    return () => {
+      document.head.removeChild(link);
+    };
   }, [heroImage.src]);
+
+  // Aggressively preload first four grid images so they are ready immediately
+  useLayoutEffect(() => {
+    const firstTwo = photos.slice(0, 2);
+    const links: HTMLLinkElement[] = [];
+    firstTwo.forEach((p) => {
+      const href600 = `${p.src}?q_auto,f_auto,w_600`;
+      const href900 = `${p.src}?q_auto,f_auto,w_900`;
+      const l1 = document.createElement('link');
+      l1.rel = 'preload';
+      l1.as = 'image';
+      l1.href = href600;
+      l1.fetchPriority = 'high' as any;
+      document.head.appendChild(l1);
+      links.push(l1);
+
+      const l2 = document.createElement('link');
+      l2.rel = 'preload';
+      l2.as = 'image';
+      l2.href = href900;
+      l2.fetchPriority = 'high' as any;
+      document.head.appendChild(l2);
+      links.push(l2);
+    });
+    return () => {
+      links.forEach((l) => l.remove());
+    };
+  }, [photos]);
 
   // — Floating Top arrow visibility
   const [showTopArrow, setShowTopArrow] = useState(false);
@@ -145,15 +304,20 @@ const GalleryDetail: React.FC = () => {
   }, []);
 
   const scrollToTop = () => {
-    const scrollDuration = 500; // 0.5 seconds
-    const scrollStep = -window.scrollY / (scrollDuration / 15);
-    const scrollInterval = setInterval(() => {
-      if (window.scrollY !== 0) {
-        window.scrollBy(0, scrollStep);
-      } else {
-        clearInterval(scrollInterval);
-      }
-    }, 15);
+    if ('scrollBehavior' in document.documentElement.style) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    const startY = window.scrollY;
+    const durationMs = 500;
+    const startTs = performance.now();
+    const step = (now: number) => {
+      const t = Math.min(1, (now - startTs) / durationMs);
+      const eased = 1 - Math.pow(1 - t, 3); // easeOutCubic
+      window.scrollTo(0, Math.round(startY * (1 - eased)));
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
   };
 
   return (
@@ -176,12 +340,12 @@ const GalleryDetail: React.FC = () => {
           alt={title}
           className="absolute inset-0 w-full h-full object-cover"
           loading="eager"
-          decoding="sync"
+          decoding="async"
           fetchPriority="high"
           style={{ backgroundColor: heroImage.dominantColor }}
         />
         <div className="absolute inset-0 bg-black/30" />
-        <h1 className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white font-cormorant text-4xl md:text-5xl lg:text-6xl">
+        <h1 className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white font-cormorant text-4xl md:text-5xl lg:text-6xl will-change-[transform,opacity]">
           {title}
         </h1>
       </div>
@@ -198,21 +362,63 @@ const GalleryDetail: React.FC = () => {
       {/* Photo grid */}
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
-          {photos.map((photo, i) => (
+          {/* Render first four eagerly for instant display */}
+          {photos.slice(0, 4).map((photo, i) => (
             <button
               key={photo.src}
               onClick={() => setLightboxIdx(i)}
               className={`block w-full overflow-hidden ${
                 photo.orientation === 'vertical' ? 'aspect-[2/3]' : 'aspect-[3/2]'
               }`}
+              style={{ contentVisibility: 'auto' as any }}
             >
-              <LazyImage
+              <EagerImage
                 ref={(el) => (imgRefs.current[i] = el)}
                 photo={photo}
                 alt={`${title} shot ${i + 1}`}
               />
             </button>
           ))}
+          {/* Render next two promptly, rest deferred */}
+          {photos.slice(4, 6).map((photo, i) => {
+            const realIndex = i + 4;
+            return (
+              <button
+                key={photo.src}
+                onClick={() => setLightboxIdx(realIndex)}
+                className={`block w-full overflow-hidden ${
+                  photo.orientation === 'vertical' ? 'aspect-[2/3]' : 'aspect-[3/2]'
+                }`}
+                style={{ contentVisibility: 'auto' as any }}
+              >
+                <LazyImage
+                  ref={(el) => (imgRefs.current[realIndex] = el)}
+                  photo={photo}
+                  alt={`${title} shot ${realIndex + 1}`}
+                />
+              </button>
+            );
+          })}
+          {renderDeferredGrid &&
+            photos.slice(6).map((photo, i) => {
+              const realIndex = i + 6;
+              return (
+                <button
+                  key={photo.src}
+                  onClick={() => setLightboxIdx(realIndex)}
+                  className={`block w-full overflow-hidden ${
+                    photo.orientation === 'vertical' ? 'aspect-[2/3]' : 'aspect-[3/2]'
+                  }`}
+                  style={{ contentVisibility: 'auto' as any }}
+                >
+                  <LazyImage
+                    ref={(el) => (imgRefs.current[realIndex] = el)}
+                    photo={photo}
+                    alt={`${title} shot ${realIndex + 1}`}
+                  />
+                </button>
+              );
+            })}
         </div>
       </div>
 

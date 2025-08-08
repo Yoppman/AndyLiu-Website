@@ -1,12 +1,11 @@
 // src/components/Header.tsx
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Github, Linkedin } from 'lucide-react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 
 export default function Header() {
   const { pathname } = useLocation();
 
-  const onPhotographySection = pathname.startsWith('/photography');
   const isDetail = /^\/photography\/[^/]+$/.test(pathname);
 
   const [visible, setVisible] = useState(true);
