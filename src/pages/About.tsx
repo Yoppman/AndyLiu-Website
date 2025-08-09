@@ -1,5 +1,6 @@
 import React from 'react';
 import Quote from '../components/Quote';
+import { Compare } from '../components/ui/compare';
 
 const About: React.FC = () => {
   return (
@@ -18,6 +19,28 @@ const About: React.FC = () => {
           <h2 className="font-playfair text-4xl mb-8">From Taiwan to Irvine, CA</h2>
           <p className="text-xl leading-relaxed">
             I'm Chia Da Liu, a master's student in Embedded & Cyber‑Physical Systems at UC Irvine (expected Dec 2025) and soon‑to‑be Software Test Development Engineer Intern at Pure Storage. I bridge low‑level firmware and high‑level software—crafting C++ drivers, Python automation scripts, and ROS‑based robotic demos. Beyond code, I'm an avid street and travel photographer, always hunting the perfect light and angle.
+          </p>
+        </div>
+      </section>
+
+      {/* Compare Component Section */}
+      <section className="py-20 bg-[#f4f4f3]">
+        <div className="max-w-6xl mx-auto px-6">
+          <h2 className="font-playfair text-4xl mb-12 text-center">Before & After: My Photography Journey</h2>
+          <div className="flex justify-center">
+            <div className="p-6 border rounded-3xl bg-white border-neutral-200 shadow-lg">
+              <Compare
+                firstImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780923/DSC03231_lh0bqs.jpg"
+                secondImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780922/DSC03229_rlenrb.jpg"
+                firstImageClassName="object-cover object-center"
+                secondImageClassname="object-cover object-center"
+                className="h-[300px] w-[300px] md:h-[500px] md:w-[500px]"
+                slideMode="hover"
+              />
+            </div>
+          </div>
+          <p className="text-center mt-8 text-lg font-cormorant text-gray-600 max-w-2xl mx-auto">
+            Hover over the image to see the transformation in my photography style and technique over time.
           </p>
         </div>
       </section>

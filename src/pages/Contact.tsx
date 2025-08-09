@@ -2,19 +2,37 @@ import React from 'react';
 import { Mail, Phone } from 'lucide-react';
 import ImageSlideshow from '../components/ImageSlideshow'; // adjust path as needed
 import { contactImages } from '../data/contact/contactImages';
+import { AnimatedTestimonials } from '../components/ui/animated-testimonials';
 
 const Contact: React.FC = () => {
+  const testimonials = contactImages.slice(0, 5).map((src, idx) => ({
+    quote:
+      [
+        "Exploring the world through light and shadow.",
+        "Photography lets me slow down and pay attention.",
+        "Every image is a conversation with the scene.",
+        "I’m always seeking the story behind the scene.",
+        "Details reveal themselves when you take your time.",
+      ][idx % 5],
+    name: ["Laguna Beach", "Berlin Street", "Architecture", "Nature", "Portraits"][idx % 5],
+    designation: "Personal series",
+    src,
+  }));
+
   return (
-    <div className="max-w-4xl mx-auto px-6 py-16 pt-24">
-      <div className="flex flex-col md:flex-row gap-12">
-        <div className="md:w-1/2">
-          <ImageSlideshow images={contactImages} />
-        </div>
-        
-        <div className="md:w-1/2">
-          <h1 className="font-cormorant text-4xl mb-8">Let's Connect!</h1>
-          
-          <div className="space-y-6">
+    <div className="max-w-5xl mx-auto px-6 py-16 pt-24">
+      <div className="flex flex-col gap-16">
+        <AnimatedTestimonials testimonials={testimonials} autoplay />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div>
+            <ImageSlideshow images={contactImages} />
+          </div>
+
+          <div>
+            <h1 className="font-cormorant text-4xl mb-8">Let's Connect!</h1>
+
+            <div className="space-y-6">
             <div>
               <h2 className="font-cormorant text-2xl mb-4">Contact Information</h2>
               <div className="space-y-4">
@@ -57,6 +75,7 @@ const Contact: React.FC = () => {
               <h2 className="font-cormorant text-2xl mb-4">Location</h2>
               <p className="text-gray-600">Based in Irvine, California</p>
               <p className="text-gray-600">Available for Coffee Chat!</p>
+            </div>
             </div>
           </div>
         </div>

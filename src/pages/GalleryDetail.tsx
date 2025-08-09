@@ -363,7 +363,7 @@ const GalleryDetail: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
           {/* Render first four eagerly for instant display */}
-          {photos.slice(0, 4).map((photo, i) => (
+          {photos.slice(0, 10).map((photo, i) => (
             <button
               key={photo.src}
               onClick={() => setLightboxIdx(i)}
@@ -380,8 +380,8 @@ const GalleryDetail: React.FC = () => {
             </button>
           ))}
           {/* Render next two promptly, rest deferred */}
-          {photos.slice(4, 6).map((photo, i) => {
-            const realIndex = i + 4;
+          {photos.slice(10, 12).map((photo, i) => {
+            const realIndex = i + 10;
             return (
               <button
                 key={photo.src}
@@ -400,8 +400,8 @@ const GalleryDetail: React.FC = () => {
             );
           })}
           {renderDeferredGrid &&
-            photos.slice(6).map((photo, i) => {
-              const realIndex = i + 6;
+            photos.slice(12).map((photo, i) => {
+              const realIndex = i + 12;
               return (
                 <button
                   key={photo.src}
