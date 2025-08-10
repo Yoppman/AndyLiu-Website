@@ -13,39 +13,49 @@ import {
 const Home: React.FC = () => {
   const photographyItems = [
     {
-      title: "Laguna Beach",
-      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747703401/LagunaBeach/dsc03805.jpg",
-      className: "absolute top-10 left-[20%] rotate-[-5deg]",
+      title: "Pacheco",
+      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191624/pachecopass/dsc06041.jpg",
+      className: "absolute top-12 left-[55%] rotate-[-5deg]",
     },
     {
-      title: "Berlin Street",
-      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780923/DSC03231_lh0bqs.jpg",
-      className: "absolute top-40 left-[25%] rotate-[-7deg]",
+      title: "Berlin",
+      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747730763/berlinstreet/dsc00725.jpg",
+      className: "absolute bottom-64 left-[35%] rotate-[-7deg]",
     },
     {
       title: "Architecture",
-      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780922/DSC03229_rlenrb.jpg",
-      className: "absolute top-5 left-[40%] rotate-[8deg]",
+      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747773495/architecture/dsc02269.jpg",
+      className: "absolute top-56 left-[55%] rotate-[8deg]",
     },
     {
       title: "Nature",
-      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780921/DSC03228_dye5rr.jpg",
-      className: "absolute top-32 left-[55%] rotate-[10deg]",
+      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512319/joshuatree/dsc04025.jpg",
+      className: "absolute top-64 left-[60%] rotate-[10deg]",
     },
     {
-      title: "Street Life",
-      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780920/DSC03227_alnevm.jpg",
-      className: "absolute top-20 right-[35%] rotate-[2deg]",
+      title: "Street",
+      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747730811/berlinstreet/dsc01321.jpg",
+      className: "absolute top-72 right-[25%] rotate-[2deg]",
     },
     {
       title: "Urban",
-      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780919/DSC03226_mekiqz.jpg",
-      className: "absolute top-24 left-[45%] rotate-[-7deg]",
+      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751189663/sanfrancisco/dsc06488.jpg",
+      className: "absolute bottom-32 right-[22%] rotate-[-7deg]",
     },
     {
       title: "Moments",
-      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780918/DSC03225_bubdih.jpg",
-      className: "absolute top-8 left-[30%] rotate-[4deg]",
+      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747703419/LagunaBeach/dsc03871.jpg",
+      className: "absolute bottom-20 right-[68%] rotate-[4deg]",
+    },
+    {
+      title: "Brewing",
+      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747808971/coffee/dsc01861.jpg",
+      className: "absolute bottom-20 right-[50%] rotate-[4deg]",
+    },
+    {
+      title: "Golden State Bridge",
+      image: "https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751189995/sanfrancisco/dsc06738.jpg",
+      className: "absolute -top-80 right-[60%] rotate-[4deg]",
     },
   ];
 
@@ -61,7 +71,7 @@ const Home: React.FC = () => {
             <img
               src={item.image}
               alt={item.title}
-              className="pointer-events-none relative z-10 h-80 w-80 object-cover rounded-lg"
+              className="pointer-events-none relative z-10 h-70 w-100 object-cover rounded-lg mx-auto"
             />
             <h3 className="mt-4 text-center text-2xl font-cormorant font-bold text-neutral-700">
               {item.title}
