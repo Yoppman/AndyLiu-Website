@@ -193,7 +193,7 @@ const Kaleidoscope: React.FC<KaleidoscopeProps> = ({
   }, [imageSrc, mode, segments, orientation]);
 
   return (
-    <div ref={containerRef} className="sticky top-0 w-full h-screen overflow-hidden -z-10">
+    <div ref={containerRef} className="sticky top-0 w-full h-screen overflow-hidden z-10">
       <canvas ref={canvasRef} className="absolute inset-0 block" />
     </div>
   );

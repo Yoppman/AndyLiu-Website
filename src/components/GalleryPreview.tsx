@@ -6,12 +6,12 @@ const GalleryPreview: React.FC = () => {
   const recentGalleries = [...galleries].slice(0, 4);
 
   return (
-    <section className="py-16 bg-[#f4f4f3]">
-      <div className="max-w-7xl mx-auto px-6">
-        <h2 className="text-center font-cormorant italic text-xl mb-12">
+    <section className="relative py-16 bg-[#f4f4f3] z-30">
+      <div className="max-w-7xl mx-auto px-6 relative z-30">
+        <h2 className="text-center font-cormorant italic text-xl mb-12 relative z-30">
           Recent Work
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 z-40">
           {recentGalleries.map((g) => (
             <Link
               key={g.slug}

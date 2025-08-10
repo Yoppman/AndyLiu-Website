@@ -1,132 +1,44 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { galleries } from '../data/galleries';
-import { FixedSizeGrid as Grid } from 'react-window';
+import { DirectionAwareHover } from '../components/ui/direction-aware-hover';
 
-const GUTTER = 48; // px, enlarged gap
-const ITEM_HEIGHT = 340; // px, reduced height
-
-function useResponsiveColumns() {
-  const [columns, setColumns] = useState(3);
-  useEffect(() => {
-    function onResize() {
-      if (window.innerWidth < 768) setColumns(1);
-      else if (window.innerWidth < 1024) setColumns(2);
-      else setColumns(3);
-    }
-    onResize();
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, []);
-  return columns;
-}
-
-// Helper for Cloudinary DPR-aware URLs
+// Optimized Cloudinary URL builder
 const buildSrc = (src: string, width: number) => {
-  const dpr = Math.max(1, Math.min(2, Math.round(window.devicePixelRatio || 1)));
-  const dprPart = dpr > 1 ? `,dpr_${dpr}` : '';
-  return `${src}?f_auto,q_auto:good${dprPart},w_${width}`;
+  return `${src}?f_auto,q_80,w_${width},c_fill,g_auto`;
 };
 
 const Photography: React.FC = () => {
-  const columns = useResponsiveColumns();
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(1200);
-
-  useEffect(() => {
-    function updateWidth() {
-      if (gridRef.current) {
-        setWidth(gridRef.current.offsetWidth);
-      }
-    }
-    updateWidth();
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
-  }, []);
-
-  const itemWidth = columns > 0 ? Math.floor((width - GUTTER * (columns - 1)) / columns) : 400;
-  const rowCount = Math.ceil(galleries.length / columns);
-
-  /**
-   * Calculate the full height so we don't need an internal scrollbar.
-   * Each row takes ITEM_HEIGHT + GUTTER space, so the grid height should
-   * cover ALL rows. The page itself will scroll instead of the grid.
-   */
-  const fullGridHeight = rowCount * (ITEM_HEIGHT + GUTTER);
-
   return (
     <div className="max-w-7xl mx-auto px-6 py-16 pt-24">
       <h1 className="font-cormorant font-bold text-4xl mb-12 text-center">
         Photography Collections
       </h1>
-      <div ref={gridRef} style={{ width: '100%', overflowX: 'hidden' }} className="overflow-x-hidden">
-        {width > 0 && (
-          <Grid
-            columnCount={columns}
-            columnWidth={itemWidth + GUTTER}
-            /**
-             * Use the full height so no vertical scrollbar appears inside the grid.
-             * The outer page will handle scrolling naturally.
-             */
-            height={fullGridHeight}
-            rowCount={rowCount}
-            rowHeight={ITEM_HEIGHT + GUTTER}
-            width={width}
-            itemData={{ galleries, columns, itemWidth }}
-            style={{ overflowX: 'hidden' }}
-          >
-            {({ columnIndex, rowIndex, style, data }) => {
-              const { galleries, columns, itemWidth } = data as any;
-              const idx = rowIndex * columns + columnIndex;
-              if (idx >= galleries.length) return null;
-              const g = galleries[idx];
-              const preview = g.hero || g.photos[0];
-              const isFirstRow = rowIndex === 0;
-              const preview300 = buildSrc(preview.src, 300);
-              const preview600 = buildSrc(preview.src, 600);
-              const preview900 = buildSrc(preview.src, 900);
-              const heroPrefetch1200 = buildSrc((g.hero || g.photos[0]).src, 1200);
 
-              return (
-                <div
-                  style={{
-                    ...style,
-                    left: (style as any).left,
-                    top: (style as any).top,
-                    width: itemWidth,
-                    margin: '0 auto',
-                    marginBottom: rowIndex !== rowCount - 1 ? GUTTER : 0,
-                  }}
-                >
-                  <Link
-                    to={`/photography/${g.slug}`}
-                    className="group block relative overflow-hidden rounded-lg shadow-lg"
-                    style={{ height: ITEM_HEIGHT }}
-                    onMouseEnter={() => {
-                      const img = new Image();
-                      img.src = heroPrefetch1200;
-                    }}
-                  >
-                    <img
-                      src={preview600}
-                      srcSet={`${preview300} 300w, ${preview600} 600w, ${preview900} 900w`}
-                      sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 600px"
-                      alt={g.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      loading={isFirstRow ? 'eager' : 'lazy'}
-                      fetchPriority={isFirstRow ? 'high' : 'low'}
-                      style={{ backgroundColor: preview.dominantColor, height: '100%' }}
-                    />
-                    <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col justify-end p-6 text-white">
-                      <h2 className="font-cormorant text-2xl mb-2">{g.title}</h2>
-                      <p className="text-sm opacity-80">{g.description}</p>
-                    </div>
-                  </Link>
-                </div>
-              );
-            }}
-          </Grid>
-        )}
+      {/* Optimized Grid with better performance */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+        {galleries.map((gallery, index) => {
+          const preview = gallery.hero || gallery.photos[0];
+          const imageUrl = buildSrc(preview.src, 500); // Reduced size for better performance
+
+          return (
+            <Link
+              key={gallery.slug}
+              to={`/photography/${gallery.slug}`}
+              className="block"
+            >
+              <DirectionAwareHover
+                imageUrl={imageUrl}
+                className="h-80 w-80 md:h-96 md:w-96"
+                childrenClassName="font-cormorant"
+                imageClassName={index < 6 ? "" : "will-change-transform"} // Optimize first 6 images
+              >
+                <p className="font-bold text-xl mb-2">{gallery.title}</p>
+                <p className="font-normal text-sm opacity-90 line-clamp-2">{gallery.description}</p>
+              </DirectionAwareHover>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

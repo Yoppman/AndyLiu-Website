@@ -43,7 +43,7 @@ const Hero: React.FC = () => {
       whileInView="visible"
       viewport={{ once: true, amount: 0.4 }}
       variants={containerVariants}
-      className="relative overflow-hidden pt-10 min-h-[calc(100vh-5rem)] lg:min-h-[calc(80vh-5rem)] xl:min-h-[calc(70vh-5rem)] bg-[#f4f4f3]"
+      className="relative overflow-hidden pt-10 min-h-[calc(100vh-5rem)] lg:min-h-[calc(80vh-5rem)] xl:min-h-[calc(70vh-5rem)] bg-[#f4f4f3] z-30"
     >
       {/* Ambient gradient glow */}
       <motion.div

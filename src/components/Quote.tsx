@@ -18,7 +18,7 @@ const Quote: React.FC<QuoteProps> = ({
   heightClassName = 'h-[600px]',
 }) => {
   return (
-    <section className={`relative ${heightClassName} bg-white`}>
+    <section className={`relative ${heightClassName} bg-white z-40`}>
       <div className="h-full">
         <img
           src={imageSrc}

@@ -61,10 +61,10 @@ const Home: React.FC = () => {
 
   return (
     <div>
-      {/* Draggable Photography Cards */}
-      <DraggableCardContainer className="relative flex min-h-screen w-full items-center justify-center overflow-clip bg-gradient-to-br from-neutral-50 to-neutral-100">
+      {/* Draggable Photography Cards with Sticky Effect */}
+      <DraggableCardContainer className="sticky top-0 flex min-h-screen w-full items-center justify-center overflow-clip bg-gradient-to-br from-neutral-50 to-neutral-100 z-0">
         <p className="absolute top-1/2 mx-auto max-w-2xl -translate-y-3/4 text-center text-2xl font-cormorant text-neutral-600 md:text-4xl px-6">
-          Drag and explore my photography journey through different moments and places.
+          Drag and explore!
         </p>
         {photographyItems.map((item, index) => (
           <DraggableCardBody key={index} className={item.className}>
