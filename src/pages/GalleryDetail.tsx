@@ -1,6 +1,5 @@
 // src/pages/GalleryDetail.tsx
-// Install dependency:
-//   npm i react-intersection-observer    # or yarn add react-intersection-observer
+// If you're on Vite, set VITE_PLACEHOLDER_ONLY=1 in .env
 
 import React, {
   useState,
@@ -15,6 +14,19 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, X, ArrowUp } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { galleries } from '../data/galleries';
+
+// ----- ENV FLAG (supports Vite or Next) ----------------------------------
+const PLACEHOLDER_ONLY =
+  // Vite-style
+  (typeof import.meta !== 'undefined' )&& (
+    // @ts-ignore
+     String(import.meta.env.VITE_PLACEHOLDER_ONLY) === '1')
+
+// ----- URL helpers -------------------------------------------------------
+const cldFull = (src: string, w: number) => `${src}?a_auto,q_auto,f_auto,w_${w}`;
+const cldSet = (src: string, widths: number[]) =>
+  widths.map((w) => `${src}?a_auto,q_auto,f_auto,w_${w} ${w}w`).join(', ');
+const cldPlaceholder = (src: string) => `${src}?a_auto,w_24,q_10,f_auto,e_blur:1000`;
 
 // ----- Types -------------------------------------------------------------
 interface Photo {
@@ -41,11 +53,30 @@ const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
       else if (externalRef) (externalRef as ImgRef).current = node;
     };
 
+    // In placeholder mode, serve only the tiny blurred preview
+    if (PLACEHOLDER_ONLY) {
+      return (
+        <img
+          ref={setRefs}
+          src={cldPlaceholder(photo.src)}
+          alt={alt}
+          className={`max-h-[90vh] w-full ${
+            photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
+          } blur-xl scale-105`}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+          style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
+        />
+      );
+    }
+
+    // Normal optimized path
     return (
       <img
         ref={setRefs}
-        src={`${photo.src}?q_auto,f_auto,w_600`}
-        srcSet={`${photo.src}?q_auto,f_auto,w_300 300w, ${photo.src}?q_auto,f_auto,w_600 600w, ${photo.src}?q_auto,f_auto,w_900 900w`}
+        src={cldFull(photo.src, 600)}
+        srcSet={cldSet(photo.src, [300, 600, 900])}
         sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
         alt={alt}
         className={`max-h-[90vh] w-full ${
@@ -53,7 +84,7 @@ const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
         }`}
         loading="eager"
         decoding="async"
-        fetchPriority="high"
+        fetchpriority="high"
         style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
       />
     );
@@ -61,7 +92,7 @@ const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
 );
 EagerImage.displayName = 'EagerImage';
 
-// ----- Lazy‑loaded thumbnail --------------------------------------------
+// ----- Lazy-loaded thumbnail --------------------------------------------
 const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
   ({ photo, alt }, externalRef) => {
     const [loaded, setLoaded] = useState(false);
@@ -77,17 +108,31 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
       else if (externalRef) (externalRef as ImgRef).current = node;
     };
 
+    // In placeholder mode, always show tiny blurred preview only
+    if (PLACEHOLDER_ONLY) {
+      return (
+        <img
+          ref={setRefs}
+          src={cldPlaceholder(photo.src)}
+          alt={alt}
+          className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 opacity-100 ${
+            photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
+          } blur-xl scale-105`}
+          loading="lazy"
+          decoding="async"
+          fetchpriority="low"
+          style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
+          onLoad={() => setLoaded(true)}
+        />
+      );
+    }
+
+    // Normal optimized path
     return (
       <img
         ref={setRefs}
-        src={inView ? `${photo.src}?q_auto,f_auto,w_300` : undefined}
-        srcSet={
-          inView
-            ? `${photo.src}?q_auto,f_auto,w_300 300w, ` +
-              `${photo.src}?q_auto,f_auto,w_600 600w, ` +
-              `${photo.src}?q_auto,f_auto,w_900 900w`
-            : undefined
-        }
+        src={inView ? cldFull(photo.src, 300) : undefined}
+        srcSet={inView ? cldSet(photo.src, [300, 600, 900]) : undefined}
         sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
         alt={alt}
         className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 transition-opacity duration-500 ${
@@ -97,7 +142,7 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
         }`}
         loading="lazy"
         decoding="async"
-        fetchPriority="low"
+        fetchpriority="low"
         style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
         onLoad={() => setLoaded(true)}
       />
@@ -186,11 +231,12 @@ const GalleryDetail: React.FC = () => {
   // Warm the HTTP cache for grid images after idle time
   useEffect(() => {
     if (!photos?.length) return;
+    if (PLACEHOLDER_ONLY) return; // do not prefetch full images in placeholder mode
 
     const buildGridCandidates = (baseSrc: string) => [
-      `${baseSrc}?q_auto,f_auto,w_300`,
-      `${baseSrc}?q_auto,f_auto,w_600`,
-      `${baseSrc}?q_auto,f_auto,w_900`,
+      cldFull(baseSrc, 300),
+      cldFull(baseSrc, 600),
+      cldFull(baseSrc, 900),
     ];
 
     const idle = (cb: () => void) =>
@@ -232,11 +278,13 @@ const GalleryDetail: React.FC = () => {
   // When lightbox opens, prefetch adjacent images at display size
   useEffect(() => {
     if (lightboxIdx === null) return;
+    if (PLACEHOLDER_ONLY) return; // don't fetch large images in placeholder mode
+
     const targets = [lightboxIdx - 1, lightboxIdx + 1].filter(
       (i) => i >= 0 && i < photos.length
     );
     targets.forEach((i) => {
-      const url = `${photos[i].src}?q_auto,f_auto,w_1200`;
+      const url = cldFull(photos[i].src, 1200);
       if (prefetchedUrlSetRef.current.has(url)) return;
       prefetchedUrlSetRef.current.add(url);
       const img = new Image();
@@ -251,30 +299,33 @@ const GalleryDetail: React.FC = () => {
   const heroImage = hero || photos[0];
   const prev = galleries[idx - 1] as Gallery | undefined;
   const next = galleries[idx + 1] as Gallery | undefined;
-  // Preload hero for better LCP; use layout effect to schedule before paint
+
+  // Preload hero for better LCP; skip in placeholder mode to avoid bandwidth
   useLayoutEffect(() => {
+    if (PLACEHOLDER_ONLY) return;
     const link = document.createElement('link');
     link.rel = 'preload';
     link.as = 'image';
-    link.href = `${heroImage.src}?q_auto,f_auto,w_1200`;
+    link.href = cldFull(heroImage.src, 1200);
     document.head.appendChild(link);
     return () => {
       document.head.removeChild(link);
     };
   }, [heroImage.src]);
 
-  // Aggressively preload first four grid images so they are ready immediately
+  // Aggressively preload first four grid images so they are ready immediately; skip in placeholder mode
   useLayoutEffect(() => {
+    if (PLACEHOLDER_ONLY) return;
     const firstTwo = photos.slice(0, 2);
     const links: HTMLLinkElement[] = [];
     firstTwo.forEach((p) => {
-      const href600 = `${p.src}?q_auto,f_auto,w_600`;
-      const href900 = `${p.src}?q_auto,f_auto,w_900`;
+      const href600 = cldFull(p.src, 600);
+      const href900 = cldFull(p.src, 900);
       const l1 = document.createElement('link');
       l1.rel = 'preload';
       l1.as = 'image';
       l1.href = href600;
-      l1.fetchPriority = 'high' as any;
+      (l1 as any).fetchpriority = 'high';
       document.head.appendChild(l1);
       links.push(l1);
 
@@ -282,7 +333,7 @@ const GalleryDetail: React.FC = () => {
       l2.rel = 'preload';
       l2.as = 'image';
       l2.href = href900;
-      l2.fetchPriority = 'high' as any;
+      (l2 as any).fetchpriority = 'high';
       document.head.appendChild(l2);
       links.push(l2);
     });
@@ -331,19 +382,28 @@ const GalleryDetail: React.FC = () => {
           heroImage.orientation === 'vertical' ? 'aspect-[2/3]' : 'aspect-[3/2]'
         }`}
       >
-        <img
-          src={`${heroImage.src}?q_auto,f_auto,w_1200`}
-          srcSet={`${heroImage.src}?q_auto,f_auto,w_600 600w, ${heroImage.src}?q_auto,f_auto,w_1200 1200w, ${
-            heroImage.src
-          }?q_auto,f_auto,w_1800 1800w`}
-          sizes="(max-width:600px) 100vw, (max-width:1200px) 100vw, 1200px"
-          alt={title}
-          className="absolute inset-0 w-full h-full object-cover"
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-          style={{ backgroundColor: heroImage.dominantColor }}
-        />
+        {PLACEHOLDER_ONLY ? (
+          <img
+            src={cldPlaceholder(heroImage.src)}
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover blur-xl scale-105"
+            loading="eager"
+            decoding="async"
+            style={{ backgroundColor: heroImage.dominantColor }}
+          />
+        ) : (
+          <img
+            src={cldFull(heroImage.src, 1200)}
+            srcSet={cldSet(heroImage.src, [600, 1200, 1800])}
+            sizes="(max-width:600px) 100vw, (max-width:1200px) 100vw, 1200px"
+            alt={title}
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            style={{ backgroundColor: heroImage.dominantColor }}
+          />
+        )}
         <div className="absolute inset-0 bg-black/30" />
         <h1 className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white font-cormorant text-4xl md:text-5xl lg:text-6xl will-change-[transform,opacity]">
           {title}
@@ -460,20 +520,35 @@ const GalleryDetail: React.FC = () => {
           >
             <X size={32} />
           </button>
-          <img
-            src={`${photos[lightboxIdx].src}?q_auto,f_auto,w_1200`}
-            srcSet={`${photos[lightboxIdx].src}?q_auto,f_auto,w_600 600w, ${photos[lightboxIdx].src}?q_auto,f_auto,w_1200 1200w, ${photos[lightboxIdx].src}?q_auto,f_auto,w_1800 1800w`}
-            sizes="(max-width:600px) 100vw, (max-width:1200px) 100vw, 1200px"
-            alt={`${title} shot ${lightboxIdx + 1}`}
-            onClick={(e) => e.stopPropagation()}
-            className={`transform origin-center transition-transform duration-200 ${
-              photos[lightboxIdx].orientation === 'vertical'
-                ? '-rotate-90 max-w-[90vh] max-h-[90vw]'
-                : 'rotate-0 max-w-[90vw] max-h-[90vh]'
-            } object-contain`}
-            loading="eager"
-            style={{ backgroundColor: photos[lightboxIdx].dominantColor }}
-          />
+          {PLACEHOLDER_ONLY ? (
+            <img
+              src={cldPlaceholder(photos[lightboxIdx].src)}
+              alt={`${title} shot ${lightboxIdx + 1}`}
+              onClick={(e) => e.stopPropagation()}
+              className={`transform origin-center transition-transform duration-200 ${
+                photos[lightboxIdx].orientation === 'vertical'
+                  ? '-rotate-90 max-w-[90vh] max-h-[90vw]'
+                  : 'rotate-0 max-w-[90vw] max-h-[90vh]'
+              } object-contain blur-xl scale-105`}
+              loading="eager"
+              style={{ backgroundColor: photos[lightboxIdx].dominantColor }}
+            />
+          ) : (
+            <img
+              src={cldFull(photos[lightboxIdx].src, 1200)}
+              srcSet={cldSet(photos[lightboxIdx].src, [600, 1200, 1800])}
+              sizes="(max-width:600px) 100vw, (max-width:1200px) 100vw, 1200px"
+              alt={`${title} shot ${lightboxIdx + 1}`}
+              onClick={(e) => e.stopPropagation()}
+              className={`transform origin-center transition-transform duration-200 ${
+                photos[lightboxIdx].orientation === 'vertical'
+                  ? '-rotate-90 max-w-[90vh] max-h-[90vw]'
+                  : 'rotate-0 max-w-[90vw] max-h-[90vh]'
+              } object-contain`}
+              loading="eager"
+              style={{ backgroundColor: photos[lightboxIdx].dominantColor }}
+            />
+          )}
         </div>
       )}
 
