@@ -26,22 +26,20 @@ const About: React.FC = () => {
       {/* Compare Component Section */}
       <section className="py-20 bg-[#f4f4f3]">
         <div className="max-w-6xl mx-auto px-6">
-          <h2 className="font-playfair text-4xl mb-12 text-center">Before & After: My Photography Journey</h2>
           <div className="flex justify-center">
             <div className="p-6 border rounded-3xl bg-white border-neutral-200 shadow-lg">
               <Compare
-                firstImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780923/DSC03231_lh0bqs.jpg"
-                secondImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747780922/DSC03229_rlenrb.jpg"
+                firstImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1754865868/IMG_6456_kppqjb.jpg"
+                secondImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1754866979/asset/dscf4602.jpg"
                 firstImageClassName="object-cover object-center"
-                secondImageClassname="object-cover object-center"
+                secondImageClassname="object-cover object-center -rotate-90"
                 className="h-[300px] w-[300px] md:h-[500px] md:w-[500px]"
                 slideMode="hover"
+                autoplay={true}
+
               />
             </div>
           </div>
-          <p className="text-center mt-8 text-lg font-cormorant text-gray-600 max-w-2xl mx-auto">
-            Hover over the image to see the transformation in my photography style and technique over time.
-          </p>
         </div>
       </section>
 
