@@ -49,7 +49,7 @@ const Photography: React.FC = () => {
             <Link key={gallery.slug} to={`/photography/${gallery.slug}`} className="block">
               <DirectionAwareHover
                 imageUrl={imageUrl}
-                className="h-80 w-80 md:h-96 md:w-96"
+                className="h-80 w-80 md:h-96 md:w-96 rounded-xl"
                 childrenClassName="font-cormorant"
                 imageClassName={`${perfClasses} ${placeholderClasses}`.trim()}
               >

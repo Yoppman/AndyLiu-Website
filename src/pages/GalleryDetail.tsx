@@ -33,6 +33,7 @@ interface Photo {
   src: string;
   orientation: 'vertical' | 'horizontal';
   dominantColor: string;
+  lightroom?: boolean | 0 | 1;
 }
 
 interface Gallery {
@@ -108,6 +109,16 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
       else if (externalRef) (externalRef as ImgRef).current = node;
     };
 
+    // above return:
+    const isLR = photo.lightroom === 1 || photo.lightroom === true;
+
+    const orientClass =
+      photo.orientation === 'vertical'
+        ? (isLR
+            ? 'h-full w-auto object-contain'   // vertical + lightroom
+            : 'object-contain -rotate-90')     // vertical (no LR)
+        : 'object-cover';                       // horizontal
+
     // In placeholder mode, always show tiny blurred preview only
     if (PLACEHOLDER_ONLY) {
       return (
@@ -116,7 +127,7 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
           src={cldPlaceholder(photo.src)}
           alt={alt}
           className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 opacity-100 ${
-            photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
+            orientClass
           } blur-xl scale-105`}
           loading="lazy"
           decoding="async"
@@ -138,7 +149,7 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
         className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 transition-opacity duration-500 ${
           loaded ? 'opacity-100' : 'opacity-0'
         } ${
-          photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
+          orientClass
         }`}
         loading="lazy"
         decoding="async"
@@ -423,7 +434,7 @@ const GalleryDetail: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
           {/* Render first four eagerly for instant display */}
-          {photos.slice(0, 10).map((photo, i) => (
+          {photos.slice(0, 4).map((photo, i) => (
             <button
               key={photo.src}
               onClick={() => setLightboxIdx(i)}
@@ -439,29 +450,9 @@ const GalleryDetail: React.FC = () => {
               />
             </button>
           ))}
-          {/* Render next two promptly, rest deferred */}
-          {photos.slice(10, 12).map((photo, i) => {
-            const realIndex = i + 10;
-            return (
-              <button
-                key={photo.src}
-                onClick={() => setLightboxIdx(realIndex)}
-                className={`block w-full overflow-hidden ${
-                  photo.orientation === 'vertical' ? 'aspect-[2/3]' : 'aspect-[3/2]'
-                }`}
-                style={{ contentVisibility: 'auto' as any }}
-              >
-                <LazyImage
-                  ref={(el) => (imgRefs.current[realIndex] = el)}
-                  photo={photo}
-                  alt={`${title} shot ${realIndex + 1}`}
-                />
-              </button>
-            );
-          })}
           {renderDeferredGrid &&
-            photos.slice(12).map((photo, i) => {
-              const realIndex = i + 12;
+            photos.slice(4).map((photo, i) => {
+              const realIndex = i + 4;
               return (
                 <button
                   key={photo.src}
@@ -527,7 +518,8 @@ const GalleryDetail: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
               className={`transform origin-center transition-transform duration-200 ${
                 photos[lightboxIdx].orientation === 'vertical'
-                  ? '-rotate-90 max-w-[90vh] max-h-[90vw]'
+                  ? (photos[lightboxIdx].lightroom === 1 ? 'max-w-[90vh] max-h-[90vw]'
+                    :'-rotate-90 max-w-[90vh] max-h-[90vw]')
                   : 'rotate-0 max-w-[90vw] max-h-[90vh]'
               } object-contain blur-xl scale-105`}
               loading="eager"
@@ -542,7 +534,8 @@ const GalleryDetail: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
               className={`transform origin-center transition-transform duration-200 ${
                 photos[lightboxIdx].orientation === 'vertical'
-                  ? '-rotate-90 max-w-[90vh] max-h-[90vw]'
+                  ? (photos[lightboxIdx].lightroom === 1 ? 'max-w-[90vh] max-h-[90vw]'
+                    :'-rotate-90 max-w-[90vh] max-h-[90vw]')
                   : 'rotate-0 max-w-[90vw] max-h-[90vh]'
               } object-contain`}
               loading="eager"
