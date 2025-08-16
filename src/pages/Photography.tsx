@@ -17,7 +17,7 @@ const withTx = (src: string, tx: string) =>
 // Optimized full image (grid)
 const buildSrc = (src: string, width: number) =>
   isCloudinary(src)
-    ? withTx(src, `c_fill,g_auto,w_${width},q_80,f_auto`)
+    ? withTx(src, `c_fill,g_auto,w_${width},dpr_auto,q_auto,f_auto`)
     : `${src}?f_auto,q_80,w_${width},c_fill,g_auto`; // non-Cloudinary fallback
 
 // Tiny blurred placeholder
@@ -39,7 +39,7 @@ const Photography: React.FC = () => {
 
           const imageUrl = PLACEHOLDER_ONLY
             ? buildPlaceholderSrc(preview.src)
-            : buildSrc(preview.src, 500);
+            : buildSrc(preview.src, 2000);
 
           // Make the placeholder *look* blurred even if a cached edge returns a sharp file.
           const placeholderClasses = PLACEHOLDER_ONLY ? 'blur-xl scale-105' : '';
