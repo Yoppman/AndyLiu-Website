@@ -1,5 +1,6 @@
 // src/components/ImageSlideshow.tsx
 import React, { useState, useEffect } from 'react';
+import { BackgroundGradient } from './ui/background-gradient';
 
 interface ImageSlideshowProps {
   images: string[];
@@ -24,20 +25,22 @@ const ImageSlideshow: React.FC<ImageSlideshowProps> = ({
   }, [images.length, interval]);
 
   return (
-    <div className={`relative w-full aspect-[${aspect}] overflow-hidden`}>
-      {images.map((src, i) => (
-        <img
-          key={i}
-          src={src}
-          alt={`Slide ${i}`}
-          className={`
-            absolute inset-0 w-full h-full object-${objectFit}
-            transition-opacity duration-1000 ease-in-out
-            ${i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}
-          `}
-        />
-      ))}
-    </div>
+    <BackgroundGradient className="rounded-2xl" containerClassName="p-[5px]">
+      <div className={`relative w-full aspect-[${aspect}] overflow-hidden rounded-2xl`}>
+        {images.map((src, i) => (
+          <img
+            key={i}
+            src={src}
+            alt={`Slide ${i}`}
+            className={`
+              absolute inset-0 w-full h-full object-${objectFit}
+              transition-opacity duration-1000 ease-in-out
+              ${i === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}
+            `}
+          />
+        ))}
+      </div>
+    </BackgroundGradient>
   );
 };
 

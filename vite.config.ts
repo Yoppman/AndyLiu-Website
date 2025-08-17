@@ -1,8 +1,14 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { fileURLToPath, URL } from 'node:url';
 
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
   base: '/',
   server: {
     port: 5173,
@@ -15,7 +21,7 @@ export default defineConfig({
         assetFileNames: (assetInfo) => {
           const name = assetInfo.name;
           if (!name) return 'assets/[name]-[hash].[ext]';
-          
+
           const info = name.split('.');
           const ext = info[info.length - 1];
           if (/pdf/i.test(ext)) {

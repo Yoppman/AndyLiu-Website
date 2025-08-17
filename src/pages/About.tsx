@@ -31,17 +31,6 @@ const JourneyTimeline = () => {
       ),
     },
     {
-      title: "2018-2023",
-      content: (
-        <div>
-          <h3 className="font-semibold text-xl mb-2">National Yang Ming Chiao Tung University</h3>
-          <p className="mb-2 text-sm font-medium text-neutral-800">B.S in Computer Science</p>
-          <p className="mb-2 text-sm font-medium text-neutral-800">B.S. in Industrial Engineering & Management</p>
-          <p className="text-xs text-neutral-600">GPA: 4.13/4.3</p>
-        </div>
-      ),
-    },
-    {
       title: "Nov 2022 - May 2023",
       content: (
         <div>
@@ -53,6 +42,25 @@ const JourneyTimeline = () => {
         </div>
       ),
     },
+    {
+      title: "2018-2023",
+      content: (
+        <div>
+          <h3 className="font-semibold text-xl mb-2">National Yang Ming Chiao Tung University</h3>
+          <p className="mb-2 text-sm font-medium text-neutral-800">B.S in Computer Science</p>
+          <p className="mb-2 text-sm font-medium text-neutral-800">B.S. in Industrial Engineering & Management</p>
+          <p className="text-xs text-neutral-600">GPA: 4.13/4.3</p>
+        </div>
+      ),
+    },
+    {
+      title: "2015 - 2018",
+      content: (
+        <div>
+          <h3 className="font-semibold text-xl mb-2">Taipei Municipal Chien Kuo High School, CKHS</h3>
+        </div>
+      )
+    }
   ];
 
   return (
@@ -68,28 +76,28 @@ const About: React.FC = () => {
       {/* Quote Block */}
       <Quote
         imageSrc="https://images.pexels.com/photos/1738434/pexels-photo-1738434.jpeg"
-        text="In every hidden corner of the earth, I honor the story woven behind the scene—not only the scene itself."
-        author="Andy Liu"
+        text="Success is where hard work meets luck."
+        author="Personal Motto"
         heightClassName="h-[300px]"
       />
 
       {/* About + Compare (side-by-side, Compare on right) */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
+        <div className="w-full px-[8vw] sm:px-[6vw] md:px-[4vw] lg:px-[4vw] xl:px-[6vw] 2xl:px-[10vw]">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-32 xl:gap-24 items-center">
+            <div className="px-4 lg:px-0">
               <h2 className="font-playfair text-4xl mb-8">From Taiwan to Irvine, CA</h2>
               <p className="text-xl leading-relaxed">
                 I'm Chia Da Liu, a master's student in Embedded & Cyber‑Physical Systems at UC Irvine (expected Dec 2025) and soon‑to‑be Software Test Development Engineer Intern at Pure Storage. I bridge low‑level firmware and high‑level software—crafting C++ drivers, Python automation scripts, and ROS‑based robotic demos. Beyond code, I'm an avid street and travel photographer, always hunting the perfect light and angle.
               </p>
             </div>
-            <div className="flex justify-center md:justify-end">
+            <div className="flex justify-center lg:justify-end px-4 lg:px-0">
               <div className="p-6 border rounded-3xl bg-white border-neutral-200 shadow-lg">
                 <Compare
-                  firstImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747458978/DSCF1810_scyqvo.jpg"
-                  secondImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1754866979/asset/dscf4602.jpg"
+                  firstImage="https://res.cloudinary.com/duo70zkqx/image/upload/v1755454381/others/dsc08410.jpg"
+                  secondImage="https://res.cloudinary.com/duo70zkqx/image/upload/v1755454151/others/dsc09302.jpg"
                   firstImageClassName="object-cover object-center"
-                  secondImageClassname="object-cover object-center -rotate-90"
+                  secondImageClassname="object-cover object-center"
                   className="h-[300px] w-[300px] md:h-[500px] md:w-[500px]"
                   slideMode="hover"
                   autoplay={true}
