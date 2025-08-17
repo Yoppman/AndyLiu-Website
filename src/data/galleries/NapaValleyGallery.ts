@@ -2,8 +2,8 @@ import { Gallery } from '../types/galleries';
 
 export const NapaValleyGallery: Gallery = {
   slug: 'napavalley',
-  title: 'Napavalley',
-  description: 'Napavalley',
+  title: 'Napa Valley',
+  description: 'Wineries, winetasting, and vineyards',
   hero: { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755389471/napavalley/dsc07549.jpg', orientation: 'horizontal', dominantColor: 'rgba(216, 216, 216, 0.6)' },
   photos: [
       { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755389471/napavalley/dsc07145.jpg', orientation: 'horizontal', dominantColor: 'rgba(216, 216, 216, 0.6)' },

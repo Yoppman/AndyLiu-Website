@@ -29,7 +29,7 @@ const About: React.FC = () => {
           <div className="flex justify-center">
             <div className="p-6 border rounded-3xl bg-white border-neutral-200 shadow-lg">
               <Compare
-                firstImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1754865868/IMG_6456_kppqjb.jpg"
+                firstImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747458978/DSCF1810_scyqvo.jpg"
                 secondImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1754866979/asset/dscf4602.jpg"
                 firstImageClassName="object-cover object-center"
                 secondImageClassname="object-cover object-center -rotate-90"

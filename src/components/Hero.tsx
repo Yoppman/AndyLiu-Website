@@ -68,7 +68,7 @@ const Hero: React.FC = () => {
               style={{ rotateX, rotateY, transformPerspective: 900 }}
               whileHover={{ scale: 1.02 }}
               transition={{ type: 'spring', stiffness: 180, damping: 18 }}
-              className="relative w-full max-w-md"
+              className="relative w-full max-w-xl md:max-w-2xl lg:max-w-5xl"
             >
               {/* Subtle inner glow */}
               <motion.div
@@ -80,9 +80,11 @@ const Hero: React.FC = () => {
               />
 
               <motion.img
-                src="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747458978/DSCF1810_scyqvo.jpg"
+                // src="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747458978/DSCF1810_scyqvo.jpg"
+                src="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1754866979/asset/dscf4602.jpg"
                 alt="Portrait of Andy Liu"
                 className="relative w-full h-auto object-cover rounded-sm shadow-md"
+                style={{ rotate: 270 }}
                 initial={{ y: 12, opacity: 0 }}
                 animate={{ y: [12, 0, 12], opacity: 1 }}
                 transition={{ y: { duration: 10, repeat: Infinity, ease: 'easeInOut' }, opacity: { duration: 0.6, delay: 0.2 } }}
