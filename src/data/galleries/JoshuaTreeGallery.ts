@@ -3,7 +3,7 @@ import { Gallery } from '../types/galleries';
 export const JoshuaTreeGallery: Gallery = {
   slug: 'joshuatree',
   title: 'Joshua Tree National Park',
-  description: 'Joshua Tree',
+  description: 'Dessert, rocks, and Joshua trees',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512319/joshuatree/dsc04025.jpg', orientation: 'horizontal', dominantColor: 'rgba(51, 36, 9, 0.6)' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512288/joshuatree/dsc03967.jpg', orientation: 'horizontal', dominantColor: 'rgba(164, 137, 107, 0.6)' },

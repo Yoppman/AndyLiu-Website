@@ -2,8 +2,8 @@ import { Gallery } from '../types/galleries';
 
 export const RanchoSantaMargaritaLakeGallery: Gallery = {
   slug: 'ranchosantamargaritalake',
-  title: 'Ranchosantamargaritalake',
-  description: 'Ranchosantamargaritalake',
+  title: 'Rancho Santa Margarita Lake',
+  description: 'Stunning views of the lake, reflections, and surrounding birds',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191844/ranchosantamargaritalake/dsc05905.jpg', orientation: 'horizontal', dominantColor: 'rgba(34, 46, 47, 0.6)' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191609/ranchosantamargaritalake/dsc05187.jpg', orientation: 'horizontal', dominantColor: 'rgba(29, 51, 39, 0.6)' },

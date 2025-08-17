@@ -3,7 +3,7 @@ import { Gallery } from '../types/galleries';
 export const PachecoPassGallery: Gallery = {
   slug: 'pachecopass',
   title: 'Pachecopass',
-  description: 'Pachecopass',
+  description: 'Serendipity',
   hero:  { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191521/pachecopass/dsc05989.jpg', orientation: 'horizontal', dominantColor: 'rgba(125, 143, 170, 0.6)' },
   photos: [
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191477/pachecopass/dsc05975.jpg', orientation: 'horizontal', dominantColor: 'rgba(72, 76, 68, 0.6)' },

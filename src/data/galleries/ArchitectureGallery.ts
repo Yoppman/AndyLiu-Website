@@ -3,7 +3,7 @@ import { Gallery } from '../types/galleries';
 export const ArchitectureGallery: Gallery = {
   slug: 'architecture',
   title: 'Architecture',
-  description: 'Architecture',
+  description: 'Spectacular of architecture from Germany',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747773515/architecture/dsc02448.jpg', orientation: 'horizontal', dominantColor: 'rgba(104, 101, 82, 0.6)' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747773487/architecture/dsc01629.jpg', orientation: 'horizontal', dominantColor: 'rgba(54, 47, 33, 0.6)' },

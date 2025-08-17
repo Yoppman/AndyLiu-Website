@@ -424,10 +424,6 @@ const GalleryDetail: React.FC = () => {
       {/* Description */}
       <div className="max-w-4xl mx-auto px-6 py-12 grid md:grid-cols-2 gap-8">
         <p className="font-cormorant text-lg leading-relaxed">{description}</p>
-        <p className="font-cormorant text-lg leading-relaxed">
-          Here’s a more in‑depth story behind this series: your inspirations, the
-          challenges you faced, any anecdotes you want to share.
-        </p>
       </div>
 
       {/* Photo grid */}

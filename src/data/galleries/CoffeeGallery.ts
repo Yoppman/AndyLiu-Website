@@ -3,7 +3,7 @@ import { Gallery } from '../types/galleries';
 export const CoffeeGallery: Gallery = {
   slug: 'coffee',
   title: 'Coffee',
-  description: 'Coffee',
+  description: 'Brewing, smelling, tasting',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747808974/coffee/dsc01875.jpg', orientation: 'horizontal', dominantColor: 'rgba(64, 48, 29, 0.6)'  },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747808971/coffee/dsc01861.jpg', orientation: 'horizontal', dominantColor: 'rgba(136, 81, 29, 0.6)'  },

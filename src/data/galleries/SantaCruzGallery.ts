@@ -2,8 +2,8 @@ import { Gallery } from '../types/galleries';
 
 export const SantaCruzGallery: Gallery = {
   slug: 'santacruz',
-  title: 'Santacruz',
-  description: 'Santacruz',
+  title: 'Santa Cruz',
+  description: 'Beaches, smiles, and sunsets',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1755241827/santacruz/dsc08280.jpg', orientation: 'vertical', dominantColor: 'rgba(216, 210, 181, 0.6)' },
   photos: [
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1755241893/santacruz/dsc08398.jpg', orientation: 'horizontal', dominantColor: 'rgba(80, 128, 140, 0.6)' },

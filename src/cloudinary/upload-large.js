@@ -137,9 +137,28 @@ function uploadBuffer(buffer, publicId) {
     );
   }
 
-  // ── 6) Merge and write TS file
-  const allLines   = existingLines.concat(newLines);
-  const photoLines = allLines.map(l => `      ${l}`).join(',\n');
+  // ── 6) Sort photos: horizontal first, then vertical
+  const allLines = existingLines.concat(newLines);
+
+  // Parse and sort by orientation
+  const photoObjects = allLines.map(line => {
+    const orientationMatch = line.match(/orientation:\s*['"]([^'"]+)['"]/);
+    const orientation = orientationMatch ? orientationMatch[1] : 'horizontal';
+    return {
+      line: line,
+      orientation: orientation
+    };
+  });
+
+  // Sort: horizontal first, then vertical
+  photoObjects.sort((a, b) => {
+    if (a.orientation === 'horizontal' && b.orientation === 'vertical') return -1;
+    if (a.orientation === 'vertical' && b.orientation === 'horizontal') return 1;
+    return 0; // maintain original order within same orientation
+  });
+
+  const sortedLines = photoObjects.map(obj => obj.line);
+  const photoLines = sortedLines.map(l => `      ${l}`).join(',\n');
 
   const tsOut = `import { Gallery } from '../types/galleries';
 

@@ -2,8 +2,8 @@ import { Gallery } from '../types/galleries';
 
 export const HalfMoonBayGallery: Gallery = {
   slug: 'halfmoonbay',
-  title: 'Halfmoonbay',
-  description: 'Halfmoonbay',
+  title: 'Half Moon Bay',
+  description: 'Beach, ocean, and sunsets',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751190522/halfmoonbay/dsc06220.jpg', orientation: 'horizontal', dominantColor: 'rgba(175, 174, 168, 0.6)' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751190436/halfmoonbay/dsc06166.jpg', orientation: 'horizontal', dominantColor: 'rgba(46, 49, 29, 0.6)' },

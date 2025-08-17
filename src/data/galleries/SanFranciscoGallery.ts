@@ -2,8 +2,8 @@ import { Gallery } from '../types/galleries';
 
 export const SanFranciscoGallery: Gallery = {
   slug: 'sanfrancisco',
-  title: 'Sanfrancisco',
-  description: 'Sanfrancisco',
+  title: 'San Francisco Classic',
+  description: 'Attractions, architecture, and history',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751189805/sanfrancisco/dsc06577.jpg', orientation: 'horizontal', dominantColor: 'rgba(224, 218, 197, 0.6)' },
   photos: [
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751189663/sanfrancisco/dsc06488.jpg', orientation: 'horizontal', dominantColor: 'rgba(58, 63, 56, 0.6)' },

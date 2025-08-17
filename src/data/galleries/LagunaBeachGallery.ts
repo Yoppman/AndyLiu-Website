@@ -5,7 +5,7 @@ export const LagunaBeachGallery: Gallery =
   {
     slug: 'laguna-beach',
     title: 'Laguna Beach',
-    description: 'Stunning seascapes and coastal moments from Laguna Beach, CA',
+    description: 'Stunning seascapes and coastal moments',
     hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747703401/LagunaBeach/dsc03805.jpg', orientation: 'horizontal', dominantColor: 'rgba(77, 78, 67, 0.6)' },
     photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747703358/LagunaBeach/dsc03617.jpg', orientation: 'horizontal', dominantColor: 'rgba(192, 182, 169, 0.6)' },

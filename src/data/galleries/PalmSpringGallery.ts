@@ -3,7 +3,7 @@ import { Gallery } from '../types/galleries';
 export const PalmSpringGallery: Gallery = {
   slug: 'palmspring',
   title: 'Palm Spring',
-  description: 'Palm Spring',
+  description: 'Cable car, breath-taking viewpoints, and mountains',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512413/palmspring/dsc04910.jpg', orientation: 'horizontal', dominantColor: 'rgba(121, 125, 116, 0.6)' },
   photos: [
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512313/palmspring/dsc04832.jpg', orientation: 'horizontal', dominantColor: 'rgba(115, 108, 90, 0.6)' },

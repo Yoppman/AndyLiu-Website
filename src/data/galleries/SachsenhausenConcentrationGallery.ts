@@ -3,7 +3,7 @@ import { Gallery } from '../types/galleries';
 export const SachsenhausenConcentrationGallery: Gallery = {
   slug: 'sachsenhausen-concentration',
   title: 'Sachsenhausen Concentration',
-  description: 'Sachsenhausen Concentration',
+  description: 'Anger, rage, and the power of the Nazis',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747812463/sachsenhausenconcentration/dsc01971.jpg', orientation: 'horizontal', dominantColor: 'rgba(220, 231, 230, 0.6)' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747812464/sachsenhausenconcentration/dsc01986.jpg', orientation: 'horizontal', dominantColor: 'rgba(60, 67, 46, 0.6)' },

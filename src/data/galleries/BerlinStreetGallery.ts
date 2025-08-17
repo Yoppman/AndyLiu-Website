@@ -2,8 +2,8 @@ import { Gallery } from '../types/galleries';
 
 export const BerlinStreetGallery: Gallery = {
   slug: 'berlinstreet',
-  title: 'Berlinstreet',
-  description: 'Berlinstreet',
+  title: 'Berlin Street',
+  description: 'The "silence" of Berlin',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747730807/berlinstreet/dsc01302.jpg', orientation: 'horizontal', dominantColor: 'rgba(42, 48, 43, 0.6)' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747730763/berlinstreet/dsc00725.jpg', orientation: 'horizontal', dominantColor: 'rgba(48, 48, 48, 0.6)' },
