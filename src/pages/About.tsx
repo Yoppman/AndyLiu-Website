@@ -6,20 +6,32 @@ import { Timeline } from '../components/ui/timeline';
 const JourneyTimeline = () => {
   const journeyData = [
     {
-      title: "2024-2025",
+      title: "June 2025",
+      content: (
+        <div>
+          <h3 className="font-semibold text-xl mb-2">PureStorage, Santa Clara</h3>
+          <p className="mb-2 text-sm font-medium text-neutral-800">Software Engineer Intern</p>
+          <p className="text-xs font-normal text-neutral-700">
+            Optimize write data path for enterprise distributed storage system using DSA (Data Streaming Accelerator)
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: "2024",
       content: (
         <div>
           <h3 className="font-semibold text-xl mb-2">University of California, Irvine</h3>
           <p className="mb-2 text-sm font-medium text-neutral-800">M.S. in Embedded & Cyber‑Physical Systems</p>
           <p className="mb-4 text-xs text-neutral-600">GPA: 4.0/4.0 | Expected Dec 2025</p>
           <p className="text-xs font-normal text-neutral-700">
-            Relevant coursework: IoT Sensor and Actuator, Embedded Software, Control System
+            Coursework: IoT Sensor and Actuator, Embedded Software, Control System
           </p>
         </div>
       ),
     },
     {
-      title: "Jun 2023 - Jan 2024",
+      title: "2023",
       content: (
         <div>
           <h3 className="font-semibold text-xl mb-2">AdvanTech, Inc</h3>
@@ -31,11 +43,11 @@ const JourneyTimeline = () => {
       ),
     },
     {
-      title: "Nov 2022 - May 2023",
+      title: "2022",
       content: (
         <div>
           <h3 className="font-semibold text-xl mb-2">Industrial Technology Research Institute</h3>
-          <p className="mb-2 text-sm font-medium text-neutral-800">Cloud Intern</p>
+          <p className="mb-2 text-sm font-medium text-neutral-800">Cloud Application Intern</p>
           <p className="text-xs font-normal text-neutral-700">
             Developed shell scripts to automate service deployment for Docker containers within GCP Kubernetes clusters
           </p>
@@ -43,7 +55,7 @@ const JourneyTimeline = () => {
       ),
     },
     {
-      title: "2018-2023",
+      title: "2018",
       content: (
         <div>
           <h3 className="font-semibold text-xl mb-2">National Yang Ming Chiao Tung University</h3>
@@ -54,7 +66,7 @@ const JourneyTimeline = () => {
       ),
     },
     {
-      title: "2015 - 2018",
+      title: "2015",
       content: (
         <div>
           <h3 className="font-semibold text-xl mb-2">Taipei Municipal Chien Kuo High School, CKHS</h3>
