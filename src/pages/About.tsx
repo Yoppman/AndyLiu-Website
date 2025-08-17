@@ -1,6 +1,66 @@
 import React from 'react';
 import Quote from '../components/Quote';
 import { Compare } from '../components/ui/compare';
+import { Timeline } from '../components/ui/timeline';
+
+const JourneyTimeline = () => {
+  const journeyData = [
+    {
+      title: "2024-2025",
+      content: (
+        <div>
+          <h3 className="font-semibold text-xl mb-2">University of California, Irvine</h3>
+          <p className="mb-2 text-sm font-medium text-neutral-800">M.S. in Embedded & Cyber‑Physical Systems</p>
+          <p className="mb-4 text-xs text-neutral-600">GPA: 4.0/4.0 | Expected Dec 2025</p>
+          <p className="text-xs font-normal text-neutral-700">
+            Relevant coursework: IoT Sensor and Actuator, Embedded Software, Control System
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: "Jun 2023 - Jan 2024",
+      content: (
+        <div>
+          <h3 className="font-semibold text-xl mb-2">AdvanTech, Inc</h3>
+          <p className="mb-2 text-sm font-medium text-neutral-800">Software R&D Intern</p>
+          <p className="text-xs font-normal text-neutral-700">
+            Led development of a data augmentation module using diffusion model and deep generative models on the company's ML platform
+          </p>
+        </div>
+      ),
+    },
+    {
+      title: "2018-2023",
+      content: (
+        <div>
+          <h3 className="font-semibold text-xl mb-2">National Yang Ming Chiao Tung University</h3>
+          <p className="mb-2 text-sm font-medium text-neutral-800">B.S in Computer Science</p>
+          <p className="mb-2 text-sm font-medium text-neutral-800">B.S. in Industrial Engineering & Management</p>
+          <p className="text-xs text-neutral-600">GPA: 4.13/4.3</p>
+        </div>
+      ),
+    },
+    {
+      title: "Nov 2022 - May 2023",
+      content: (
+        <div>
+          <h3 className="font-semibold text-xl mb-2">Industrial Technology Research Institute</h3>
+          <p className="mb-2 text-sm font-medium text-neutral-800">Cloud Intern</p>
+          <p className="text-xs font-normal text-neutral-700">
+            Developed shell scripts to automate service deployment for Docker containers within GCP Kubernetes clusters
+          </p>
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="relative w-full overflow-clip">
+      <Timeline data={journeyData} />
+    </div>
+  );
+};
 
 const About: React.FC = () => {
   return (
@@ -13,84 +73,38 @@ const About: React.FC = () => {
         heightClassName="h-[300px]"
       />
 
-      {/* Beautiful Text Block */}
+      {/* About + Compare (side-by-side, Compare on right) */}
       <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="font-playfair text-4xl mb-8">From Taiwan to Irvine, CA</h2>
-          <p className="text-xl leading-relaxed">
-            I'm Chia Da Liu, a master's student in Embedded & Cyber‑Physical Systems at UC Irvine (expected Dec 2025) and soon‑to‑be Software Test Development Engineer Intern at Pure Storage. I bridge low‑level firmware and high‑level software—crafting C++ drivers, Python automation scripts, and ROS‑based robotic demos. Beyond code, I'm an avid street and travel photographer, always hunting the perfect light and angle.
-          </p>
-        </div>
-      </section>
-
-      {/* Compare Component Section */}
-      <section className="py-20 bg-[#f4f4f3]">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="flex justify-center">
-            <div className="p-6 border rounded-3xl bg-white border-neutral-200 shadow-lg">
-              <Compare
-                firstImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747458978/DSCF1810_scyqvo.jpg"
-                secondImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1754866979/asset/dscf4602.jpg"
-                firstImageClassName="object-cover object-center"
-                secondImageClassname="object-cover object-center -rotate-90"
-                className="h-[300px] w-[300px] md:h-[500px] md:w-[500px]"
-                slideMode="hover"
-                autoplay={true}
-
-              />
+        <div className="max-w-7xl mx-auto px-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="font-playfair text-4xl mb-8">From Taiwan to Irvine, CA</h2>
+              <p className="text-xl leading-relaxed">
+                I'm Chia Da Liu, a master's student in Embedded & Cyber‑Physical Systems at UC Irvine (expected Dec 2025) and soon‑to‑be Software Test Development Engineer Intern at Pure Storage. I bridge low‑level firmware and high‑level software—crafting C++ drivers, Python automation scripts, and ROS‑based robotic demos. Beyond code, I'm an avid street and travel photographer, always hunting the perfect light and angle.
+              </p>
+            </div>
+            <div className="flex justify-center md:justify-end">
+              <div className="p-6 border rounded-3xl bg-white border-neutral-200 shadow-lg">
+                <Compare
+                  firstImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747458978/DSCF1810_scyqvo.jpg"
+                  secondImage="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1754866979/asset/dscf4602.jpg"
+                  firstImageClassName="object-cover object-center"
+                  secondImageClassname="object-cover object-center -rotate-90"
+                  className="h-[300px] w-[300px] md:h-[500px] md:w-[500px]"
+                  slideMode="hover"
+                  autoplay={true}
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Education Block */}
-      <section className="py-16 bg-[#f4f4f3]">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="font-playfair text-3xl mb-10">Education</h2>
-          
-          <div className="mb-12">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="font-semibold text-xl">University of California, Irvine</h3>
-              <span className="text-gray-600">Sept. 2024-Dec. 2025</span>
-            </div>
-            <p className="mb-2">M.S. in Embedded & Cyber‑Physical Systems (GPA: 4.0/4.0)</p>
-            <p className="text-gray-600">Relevant coursework: IoT Sensor and Actuator, Embedded Software, Control System</p>
-          </div>
 
-          <div>
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="font-semibold text-xl">National Yang Ming Chiao Tung University</h3>
-              <span className="text-gray-600">Sept. 2018-June 2023</span>
-            </div>
-            <p className="mb-2">B.S in Computer Science (GPA 4.13/4.3)</p>
-            <p>B.S. in Industrial Engineering & Management</p>
-          </div>
-        </div>
-      </section>
 
-      {/* Experience Block */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="font-playfair text-3xl mb-10">Experiences</h2>
-
-          <div className="mb-12">
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="font-semibold text-xl">AdvanTech, Inc</h3>
-              <span className="text-gray-600">Jun. 2023-Jan. 2024</span>
-            </div>
-            <p className="font-medium mb-2">Title: Software R&D Intern</p>
-            <p className="text-gray-800">Led development of a data augmentation module using diffusion model and deep generative models on the company's ML platform</p>
-          </div>
-
-          <div>
-            <div className="flex justify-between items-start mb-2">
-              <h3 className="font-semibold text-xl">Industrial Technology Research Institute</h3>
-              <span className="text-gray-600">Nov. 2022-May 2023</span>
-            </div>
-            <p className="font-medium mb-2">Title: Cloud Intern</p>
-            <p className="text-gray-800">Developed shell scripts to automate service deployment for Docker containers within GCP Kubernetes clusters</p>
-          </div>
-        </div>
+      {/* Education & Experience Timeline */}
+      <section className="bg-[#f4f4f3]">
+        <JourneyTimeline />
       </section>
 
       {/* Projects Block */}
