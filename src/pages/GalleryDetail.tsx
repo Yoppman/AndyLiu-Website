@@ -14,6 +14,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, X, ArrowUp } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { galleries } from '../data/galleries';
+import { LoaderOne } from '../components/ui/loader';
 
 // ----- ENV FLAG (supports Vite or Next) ----------------------------------
 const PLACEHOLDER_ONLY =
@@ -49,6 +50,9 @@ type ImgRef = MutableRefObject<HTMLImageElement | null>;
 // ----- Eager image for critical content ----------------------------------
 const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
   ({ photo, alt }, externalRef) => {
+    const [loaded, setLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
     const setRefs = (node: HTMLImageElement | null) => {
       if (typeof externalRef === 'function') externalRef(node);
       else if (externalRef) (externalRef as ImgRef).current = node;
@@ -57,37 +61,61 @@ const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
     // In placeholder mode, serve only the tiny blurred preview
     if (PLACEHOLDER_ONLY) {
       return (
-        <img
-          ref={setRefs}
-          src={cldPlaceholder(photo.src)}
-          alt={alt}
-          className={`max-h-[90vh] w-full ${
-            photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
-          } blur-xl scale-105`}
-          loading="eager"
-          decoding="async"
-          fetchpriority="high"
-          style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
-        />
+        <div className="relative w-full h-full">
+          {/* Loader overlay */}
+          {isLoading && !loaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-10">
+              <LoaderOne />
+            </div>
+          )}
+          <img
+            ref={setRefs}
+            src={cldPlaceholder(photo.src)}
+            alt={alt}
+            className={`max-h-[90vh] w-full ${
+              photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
+            } blur-xl scale-105`}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
+            onLoad={() => {
+              setLoaded(true);
+              setIsLoading(false);
+            }}
+          />
+        </div>
       );
     }
 
     // Normal optimized path
     return (
-      <img
-        ref={setRefs}
-        src={cldFull(photo.src, 600)}
-        srcSet={cldSet(photo.src, [300, 600, 900])}
-        sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
-        alt={alt}
-        className={`max-h-[90vh] w-full ${
-          photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
-        }`}
-        loading="eager"
-        decoding="async"
-        fetchpriority="high"
-        style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
-      />
+      <div className="relative w-full h-full">
+        {/* Loader overlay */}
+        {isLoading && !loaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-10">
+            <LoaderOne />
+          </div>
+        )}
+        <img
+          ref={setRefs}
+          src={cldFull(photo.src, 600)}
+          srcSet={cldSet(photo.src, [300, 600, 900])}
+          sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
+          alt={alt}
+          className={`max-h-[90vh] w-full ${
+            photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
+          }`}
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+          style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
+          onLoad={() => {
+            setLoaded(true);
+            setIsLoading(false);
+          }}
+        />
+      </div>
     );
   }
 );
@@ -97,6 +125,7 @@ EagerImage.displayName = 'EagerImage';
 const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
   ({ photo, alt }, externalRef) => {
     const [loaded, setLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const { ref: inViewRef, inView } = useInView({
       rootMargin: '200px',
       triggerOnce: true,
@@ -108,6 +137,13 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
       if (typeof externalRef === 'function') externalRef(node);
       else if (externalRef) (externalRef as ImgRef).current = node;
     };
+
+    // Start loading when in view
+    useEffect(() => {
+      if (inView && !loaded && !PLACEHOLDER_ONLY) {
+        setIsLoading(true);
+      }
+    }, [inView, loaded]);
 
     // above return:
     const isLR = photo.lightroom === 1 || photo.lightroom === true;
@@ -122,41 +158,63 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
     // In placeholder mode, always show tiny blurred preview only
     if (PLACEHOLDER_ONLY) {
       return (
-        <img
-          ref={setRefs}
-          src={cldPlaceholder(photo.src)}
-          alt={alt}
-          className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 opacity-100 ${
-            orientClass
-          } blur-xl scale-105`}
-          loading="lazy"
-          decoding="async"
-          fetchpriority="low"
-          style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
-          onLoad={() => setLoaded(true)}
-        />
+        <div className="relative w-full h-full">
+          {/* Loader overlay */}
+          {isLoading && !loaded && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-10">
+              <LoaderOne />
+            </div>
+          )}
+          <img
+            ref={setRefs}
+            src={cldPlaceholder(photo.src)}
+            alt={alt}
+            className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 opacity-100 ${
+              orientClass
+            } blur-xl scale-105`}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
+            onLoad={() => {
+              setLoaded(true);
+              setIsLoading(false);
+            }}
+          />
+        </div>
       );
     }
 
     // Normal optimized path
     return (
-      <img
-        ref={setRefs}
-        src={inView ? cldFull(photo.src, 300) : undefined}
-        srcSet={inView ? cldSet(photo.src, [300, 600, 900]) : undefined}
-        sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
-        alt={alt}
-        className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 transition-opacity duration-500 ${
-          loaded ? 'opacity-100' : 'opacity-0'
-        } ${
-          orientClass
-        }`}
-        loading="lazy"
-        decoding="async"
-        fetchpriority="low"
-        style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
-        onLoad={() => setLoaded(true)}
-      />
+      <div className="relative w-full h-full">
+        {/* Loader overlay */}
+        {isLoading && !loaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-10">
+            <LoaderOne />
+          </div>
+        )}
+        <img
+          ref={setRefs}
+          src={inView ? cldFull(photo.src, 300) : undefined}
+          srcSet={inView ? cldSet(photo.src, [300, 600, 900]) : undefined}
+          sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
+          alt={alt}
+          className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 transition-opacity duration-500 ${
+            loaded ? 'opacity-100' : 'opacity-0'
+          } ${
+            orientClass
+          }`}
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
+          style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
+          onLoad={() => {
+            setLoaded(true);
+            setIsLoading(false);
+          }}
+        />
+      </div>
     );
   }
 );
@@ -411,7 +469,7 @@ const GalleryDetail: React.FC = () => {
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
             decoding="async"
-            fetchpriority="high"
+            fetchPriority="high"
             style={{ backgroundColor: heroImage.dominantColor }}
           />
         )}
