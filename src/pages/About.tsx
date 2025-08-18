@@ -87,10 +87,10 @@ const About: React.FC = () => {
     <div className="pt-20">
       {/* Quote Block */}
       <Quote
-        imageSrc="https://images.pexels.com/photos/1738434/pexels-photo-1738434.jpeg"
+        imageSrc="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747608825/za8pbhwgrg2g2wsplb56.jpg"
         text="Success is where hard work meets luck."
         author="Personal Motto"
-        heightClassName="h-[300px]"
+        heightClassName="h-[400px]"
       />
 
       {/* About + Compare (side-by-side, Compare on right) */}
