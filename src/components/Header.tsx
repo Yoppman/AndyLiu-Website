@@ -6,7 +6,13 @@ import { NavLink, Link, useLocation } from 'react-router-dom';
 export default function Header() {
   const { pathname } = useLocation();
 
-  const isDetail = /^\/photography\/[^/]+$/.test(pathname);
+  const rawIsDetail = /^\/photography\/[^/]+$/.test(pathname);
+  const [isDetail, setIsDetail] = useState(rawIsDetail);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsDetail(rawIsDetail), 350);
+    return () => clearTimeout(timer);
+  }, [rawIsDetail]);
 
   const [visible, setVisible] = useState(true);
   const [blackBg, setBlackBg] = useState(false);

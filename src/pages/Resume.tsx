@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PageTransition from '../components/PageTransition';
 
 const Resume: React.FC = () => {
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -26,6 +27,7 @@ const Resume: React.FC = () => {
   };
 
   return (
+    <PageTransition>
     <div className="max-w-7xl mx-auto px-6 py-16 pt-24">
       <h1 className="font-cormorant font-bold text-4xl mb-12 text-center">
         Resume
@@ -100,6 +102,7 @@ const Resume: React.FC = () => {
         </div>
       )}
     </div>
+    </PageTransition>
   );
 };
 

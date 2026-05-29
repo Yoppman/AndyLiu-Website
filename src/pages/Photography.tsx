@@ -1,7 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { galleries } from '../data/galleries';
 import { DirectionAwareHover } from '../components/ui/direction-aware-hover';
+import PageTransition from '../components/PageTransition';
+import { useTransition } from '../context/TransitionContext';
 
 // Vite env flag
 const PLACEHOLDER_ONLY = String(import.meta.env.VITE_PLACEHOLDER_ONLY) === '1';
@@ -26,14 +29,45 @@ const buildPlaceholderSrc = (src: string) =>
     ? withTx(src, 'w_24,q_10,f_auto,e_blur:1000')
     : `${src}?w_24,q_10,f_auto,e_blur:1000`; // fallback for non-Cloudinary
 
+const containerVariants = {
+  animate: {
+    transition: { staggerChildren: 0.06 },
+  },
+};
+
+const itemVariants = {
+  initial: { opacity: 0, y: 30 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] } },
+};
+
 const Photography: React.FC = () => {
+  const { setMorphSource } = useTransition();
+  const navigate = useNavigate();
+
+  const handleCardClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>, gallery: typeof galleries[0], imageUrl: string) => {
+      e.preventDefault();
+      const el = e.currentTarget;
+      const rect = el.getBoundingClientRect();
+      setMorphSource({ rect, imageUrl, slug: gallery.slug });
+      navigate(`/photography/${gallery.slug}`);
+    },
+    [setMorphSource, navigate]
+  );
+
   return (
+    <PageTransition>
     <div className="max-w-7xl mx-auto px-6 py-16 pt-24">
       <h1 className="font-cormorant font-bold text-4xl mb-12 text-center">
         Photography Collections
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
+        variants={containerVariants}
+        initial="initial"
+        animate="animate"
+      >
         {galleries.map((gallery, index) => {
           const preview = gallery.hero || gallery.photos[0];
 
@@ -41,28 +75,34 @@ const Photography: React.FC = () => {
             ? buildPlaceholderSrc(preview.src)
             : buildSrc(preview.src, 2000);
 
-          // Make the placeholder *look* blurred even if a cached edge returns a sharp file.
           const placeholderClasses = PLACEHOLDER_ONLY ? 'blur-xl scale-105' : '';
           const perfClasses = index < 6 ? '' : 'will-change-transform';
 
           return (
-            <Link key={gallery.slug} to={`/photography/${gallery.slug}`} className="block">
-              <DirectionAwareHover
-                imageUrl={imageUrl}
-                className="h-80 w-80 md:h-96 md:w-96 rounded-xl"
-                childrenClassName="font-cormorant"
-                imageClassName={`${perfClasses} ${placeholderClasses}`.trim()}
+            <motion.div key={gallery.slug} variants={itemVariants}>
+              <Link
+                to={`/photography/${gallery.slug}`}
+                className="block"
+                onClick={(e) => handleCardClick(e, gallery, imageUrl)}
               >
-                <p className="font-bold text-xl mb-2">{gallery.title}</p>
-                <p className="font-normal text-sm opacity-90 line-clamp-2">
-                  {gallery.description}
-                </p>
-              </DirectionAwareHover>
-            </Link>
+                <DirectionAwareHover
+                  imageUrl={imageUrl}
+                  className="h-80 w-80 md:h-96 md:w-96 rounded-xl"
+                  childrenClassName="font-cormorant"
+                  imageClassName={`${perfClasses} ${placeholderClasses}`.trim()}
+                >
+                  <p className="font-bold text-xl mb-2">{gallery.title}</p>
+                  <p className="font-normal text-sm opacity-90 line-clamp-2">
+                    {gallery.description}
+                  </p>
+                </DirectionAwareHover>
+              </Link>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     </div>
+    </PageTransition>
   );
 };
 
