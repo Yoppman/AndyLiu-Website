@@ -1,7 +1,9 @@
 import React from 'react';
+import PageTransition from '../components/PageTransition';
 
 const Blog: React.FC = () => {
   return (
+    <PageTransition>
     <div className="max-w-4xl mx-auto px-6 py-16 pt-20">
       <header className="text-center mb-16">
         <h1 className="font-playfair text-4xl mb-4">Stories & Insights</h1>
@@ -38,6 +40,7 @@ const Blog: React.FC = () => {
         </article>
       </div>
     </div>
+    </PageTransition>
   );
 };
 

@@ -1,74 +1,131 @@
 import React from 'react';
-import { Mail, Phone } from 'lucide-react';
-import ImageSlideshow from '../components/ImageSlideshow';
-import { contactImages, contactData, ContactInfo } from '../data/contact/contactImages';
-import { AnimatedTestimonials } from '../components/ui/animated-testimonials';
+import { Mail, Phone, MapPin, Camera } from 'lucide-react';
+import { contactImages, contactData } from '../data/contact/contactImages';
 import { BackgroundLines } from '../components/ui/background-lines';
-import { TypewriterEffectSmooth } from '../components/ui/typewriter-effect';
+import PageTransition from '../components/PageTransition';
+import { PolaroidStack } from '../components/PolaroidStack';
+import type { PolaroidCard } from '../components/PolaroidStack';
 
 const Contact: React.FC = () => {
-  // Business logic: Get testimonials from data
-  const testimonials = contactData.testimonials;
-
-  // Business logic: Render contact info based on type
-  const renderContactInfo = (info: ContactInfo) => {
-    const Icon = info.type === 'email' ? Mail : Phone;
-
-    return (
-      <div key={info.value} className="flex items-center gap-3">
-        <Icon size={20} />
-        <div>
-          <p className="font-medium">{info.label}</p>
-          <a
-            href={info.href}
-            className="font-playfair text-lg tracking-wide text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            {info.value}
-          </a>
-        </div>
-      </div>
-    );
-  };
+  const polaroidCards: PolaroidCard[] = [
+    {
+      id: 'portrait',
+      image: contactImages[0],
+      label: 'photographer & engineer',
+      value: 'Andy Liu',
+      caption: 'nice to meet you',
+      icon: <Camera size={48} className="text-neutral-400" />,
+    },
+    {
+      id: 'email-personal',
+      image: contactImages[2],
+      label: 'Personal Email',
+      value: contactData.contactInfo[0].value,
+      href: contactData.contactInfo[0].href,
+      caption: 'drop me a line anytime',
+    },
+    {
+      id: 'email-school',
+      image: contactImages[4],
+      label: 'School Email',
+      value: contactData.contactInfo[1].value,
+      href: contactData.contactInfo[1].href,
+      caption: 'for academic inquiries',
+    },
+    {
+      id: 'phone',
+      image: contactImages[1],
+      icon: <Phone size={48} className="text-neutral-400" />,
+      label: 'Phone',
+      value: contactData.contactInfo[2].value,
+      href: contactData.contactInfo[2].href,
+      caption: 'prefer text over calls',
+    },
+    {
+      id: 'location',
+      image: contactImages[3],
+      icon: <MapPin size={48} className="text-neutral-400" />,
+      label: 'Based in',
+      value: `${contactData.location.city}, ${contactData.location.state}`,
+      caption: contactData.location.availability.toLowerCase(),
+    },
+    {
+      id: 'vibes',
+      image: contactImages[5],
+      label: 'current mood',
+      value: 'Always Exploring',
+      caption: 'the world is my studio',
+    },
+  ];
 
   return (
-    <BackgroundLines className="relative h-auto md:h-auto w-full">
-      <div className="max-w-5xl mx-auto px-6 py-16 pt-32 relative z-10">
-      <div className="flex flex-col gap-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div>
-            <ImageSlideshow images={contactImages} />
-          </div>
-
-          <div>
-            <div className="mb-8">
-              <TypewriterEffectSmooth
-                words={contactData.title.split(' ').map((t) => ({ text: t }))}
-                className="font-cormorant"
-                cursorClassName="bg-black dark:bg-white"
-              />
+    <PageTransition>
+      <BackgroundLines className="relative min-h-screen w-full">
+        <div className="max-w-5xl mx-auto px-6 py-16 pt-32 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Polaroid Stack */}
+            <div className="flex justify-center">
+              <PolaroidStack cards={polaroidCards} />
             </div>
 
-            <div className="space-y-6">
-              <div>
-                <h2 className="font-cormorant text-2xl mb-4">Contact Information</h2>
-                <div className="space-y-4">
-                  {contactData.contactInfo.map(renderContactInfo)}
-                </div>
-              </div>
+            {/* Right side — title + quick info */}
+            <div>
+              <h1 className="font-playfair text-5xl md:text-6xl mb-4 leading-tight">
+                Let's<br />Connect.
+              </h1>
+              <p className="font-cormorant text-xl text-neutral-500 mb-10 leading-relaxed">
+                Whether it's a collaboration, a photo walk, or just a coffee chat —
+                I'd love to hear from you.
+              </p>
 
-              <div>
-                <h2 className="font-cormorant text-2xl mb-4">Location</h2>
-                <p className="text-gray-600">Based in {contactData.location.city}, {contactData.location.state}</p>
-                <p className="text-gray-600">{contactData.location.availability}</p>
+              <div className="space-y-5">
+                <a
+                  href={contactData.contactInfo[0].href}
+                  className="flex items-center gap-3 group"
+                >
+                  <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-neutral-200 transition-colors">
+                    <Mail size={18} className="text-neutral-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-neutral-400 uppercase tracking-wider">Email</p>
+                    <p className="font-playfair text-neutral-800 group-hover:text-neutral-600 transition-colors">
+                      {contactData.contactInfo[0].value}
+                    </p>
+                  </div>
+                </a>
+
+                <a
+                  href={contactData.contactInfo[2].href}
+                  className="flex items-center gap-3 group"
+                >
+                  <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-neutral-200 transition-colors">
+                    <Phone size={18} className="text-neutral-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-neutral-400 uppercase tracking-wider">Phone</p>
+                    <p className="font-playfair text-neutral-800 group-hover:text-neutral-600 transition-colors">
+                      {contactData.contactInfo[2].value}
+                    </p>
+                  </div>
+                </a>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-neutral-100 flex items-center justify-center">
+                    <MapPin size={18} className="text-neutral-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-neutral-400 uppercase tracking-wider">Location</p>
+                    <p className="font-playfair text-neutral-800">
+                      {contactData.location.city}, {contactData.location.state}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-
-        {/* <AnimatedTestimonials testimonials={testimonials} autoplay /> */}
-      </div>
-    </div>
-  </BackgroundLines>
+      </BackgroundLines>
+    </PageTransition>
   );
 };
 

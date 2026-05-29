@@ -15,6 +15,8 @@ import { ArrowLeft, ArrowRight, X, ArrowUp } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { galleries } from '../data/galleries';
 import { LoaderOne } from '../components/ui/loader';
+import PageTransition from '../components/PageTransition';
+import { useTransition } from '../context/TransitionContext';
 
 // ----- ENV FLAG (supports Vite or Next) ----------------------------------
 const PLACEHOLDER_ONLY =
@@ -223,6 +225,8 @@ LazyImage.displayName = 'LazyImage';
 // ----- Main page ---------------------------------------------------------
 const GalleryDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
+  const { morphSource } = useTransition();
+  const isMorphing = morphSource?.slug === slug;
   const idx = galleries.findIndex((g: Gallery) => g.slug === slug);
   if (idx < 0) return <p className="p-16 text-center">Gallery not found</p>;
 
@@ -441,15 +445,17 @@ const GalleryDetail: React.FC = () => {
   };
 
   return (
+    <PageTransition>
     <main
       className="min-h-screen w-full transition-colors duration-1000"
       style={{ backgroundColor: bgColor }}
     >
       {/* Hero */}
       <div
-        className={`relative w-full h-[50vh] overflow-hidden ${
+        className={`relative w-full h-[50vh] overflow-hidden transition-opacity duration-300 ${
           heroImage.orientation === 'vertical' ? 'aspect-[2/3]' : 'aspect-[3/2]'
         }`}
+        style={{ opacity: isMorphing ? 0 : 1 }}
       >
         {PLACEHOLDER_ONLY ? (
           <img
@@ -612,6 +618,7 @@ const GalleryDetail: React.FC = () => {
         </button>
       )}
     </main>
+    </PageTransition>
   );
 };
 

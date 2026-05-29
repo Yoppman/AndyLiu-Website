@@ -5,6 +5,9 @@ import LocationInfo from '../components/LocationInfo';
 import GalleryPreview from '../components/GalleryPreview';
 import Kaleidoscope from '../components/Kaleidoscope';
 import HelloSection from '../components/HelloSection';
+import PageTransition from '../components/PageTransition';
+import CursorTrailCanvas from '../components/CursorTrailCanvas';
+import FilmGrainOverlay from '../components/FilmGrainOverlay';
 import {
   DraggableCardBody,
   DraggableCardContainer,
@@ -60,7 +63,10 @@ const Home: React.FC = () => {
   ];
 
   return (
-    <div>
+    <PageTransition>
+    <div className="relative">
+      <CursorTrailCanvas />
+      <FilmGrainOverlay />
       {/* Draggable Photography Cards with Sticky Effect */}
       <DraggableCardContainer className="sticky top-0 flex min-h-screen w-full items-center justify-center overflow-clip bg-gradient-to-br from-neutral-50 to-neutral-100 z-0">
         <p className="absolute top-1/2 mx-auto max-w-2xl -translate-y-3/4 text-center text-2xl font-cormorant text-neutral-600 md:text-4xl px-6">
@@ -92,6 +98,7 @@ const Home: React.FC = () => {
       <GalleryPreview />
       <LocationInfo />
     </div>
+    </PageTransition>
   );
 };
 
