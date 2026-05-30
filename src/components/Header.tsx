@@ -75,13 +75,18 @@ export default function Header() {
   const base = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out';
   const translate = visible ? 'translate-y-0' : '-translate-y-full';
 
+  // The home page opens over a dark cinematic hero, so the transparent header
+  // needs light text there (until it drops to a light background on hover).
+  const isHome = pathname === '/';
+
   // Determine background color:
   const bgClass =
     isDetail
       ? blackBg ? 'bg-black' : 'bg-transparent'
       : blackBg ? 'bg-black' : fromHover.current ? 'bg-[#f4f4f3]' : 'bg-transparent';
 
-  const textClass = isDetail || blackBg ? 'text-white' : 'text-black';
+  const textClass =
+    isDetail || blackBg || (isHome && !fromHover.current) ? 'text-white' : 'text-black';
 
   return (
     <header className={`${base} ${translate} ${bgClass}`}>
