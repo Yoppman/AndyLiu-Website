@@ -133,7 +133,7 @@ const EditorialStory: React.FC<GalleryTemplateProps & { captions?: Record<number
       className="relative overflow-hidden bg-neutral-200 group cursor-pointer"
       onClick={() => onPhotoClick(idx)}
     >
-      <div className="w-full h-full transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]">
+      <div className="w-full h-full transition-transform duration-1000 ease-out group-hover:scale-[1.03]">
         {idx < EAGER_COUNT ? (
           <EagerImage ref={(el) => (imgRefs.current[idx] = el)} photo={photos[idx]} alt={`${title} ${idx + 1}`} />
         ) : (
