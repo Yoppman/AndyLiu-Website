@@ -26,9 +26,7 @@ const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
             ref={setRefs}
             src={cldPlaceholder(photo.src)}
             alt={alt}
-            className={`max-h-[90vh] w-full ${
-              photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
-            } blur-xl scale-105`}
+            className="w-full h-full object-cover blur-xl scale-105"
             loading="eager"
             decoding="async"
             /* @ts-ignore */ fetchpriority="high"
@@ -49,12 +47,10 @@ const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
         <img
           ref={setRefs}
           src={cldFull(photo.src, 600)}
-          srcSet={cldSet(photo.src, [300, 600, 900])}
+          srcSet={cldSet(photo.src, [400, 600, 900, 1200])}
           sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
           alt={alt}
-          className={`max-h-[90vh] w-full ${
-            photo.orientation === 'vertical' ? ' object-contain -rotate-90' : 'object-cover'
-          }`}
+          className="w-full h-full object-cover"
           loading="eager"
           decoding="async"
           /* @ts-ignore */ fetchpriority="high"

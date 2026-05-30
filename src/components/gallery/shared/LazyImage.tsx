@@ -26,13 +26,6 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
       }
     }, [inView, loaded]);
 
-    const isLR = photo.lightroom === 1 || photo.lightroom === true;
-
-    const orientClass =
-      photo.orientation === 'vertical'
-        ? (isLR ? 'h-full w-auto object-contain' : 'object-contain -rotate-90')
-        : 'object-cover';
-
     if (PLACEHOLDER_ONLY) {
       return (
         <div className="relative w-full h-full">
@@ -45,7 +38,7 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
             ref={setRefs}
             src={cldPlaceholder(photo.src)}
             alt={alt}
-            className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 opacity-100 ${orientClass} blur-xl scale-105`}
+            className="w-full h-full object-cover blur-xl scale-105"
             loading="lazy"
             decoding="async"
             /* @ts-ignore */ fetchpriority="low"
@@ -65,13 +58,13 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
         )}
         <img
           ref={setRefs}
-          src={inView ? cldFull(photo.src, 300) : undefined}
-          srcSet={inView ? cldSet(photo.src, [300, 600, 900]) : undefined}
+          src={inView ? cldFull(photo.src, 600) : undefined}
+          srcSet={inView ? cldSet(photo.src, [400, 600, 900, 1200]) : undefined}
           sizes="(max-width:600px) 100vw, (max-width:1200px) 50vw, 600px"
           alt={alt}
-          className={`max-h-[90vh] w-full transition-transform duration-300 hover:scale-105 transition-opacity duration-500 ${
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
             loaded ? 'opacity-100' : 'opacity-0'
-          } ${orientClass}`}
+          }`}
           loading="lazy"
           decoding="async"
           /* @ts-ignore */ fetchpriority="low"

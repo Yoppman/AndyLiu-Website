@@ -10,42 +10,33 @@ export interface GalleryTemplateProps {
   renderDeferredGrid: boolean;
 }
 
-export type TemplateName =
-  | 'editorial'
-  | 'cinematic'
-  | 'intimate'
-  | 'mosaic'
-  | 'diptych'
-  | 'scattered';
-
 export type HeroVariant = 'standard' | 'cinematic' | 'minimal' | 'split';
 
 interface TemplateAssignment {
-  template: TemplateName;
   hero: HeroVariant;
 }
 
-const assignments: Record<string, TemplateAssignment> = {
-  'berlinstreet':                  { template: 'editorial',  hero: 'standard' },
-  'sanfrancisco':                  { template: 'editorial',  hero: 'cinematic' },
-  'alcatrazisland':                { template: 'editorial',  hero: 'split' },
-  'joshuatree':                    { template: 'cinematic',  hero: 'cinematic' },
-  'pachecopass':                   { template: 'cinematic',  hero: 'cinematic' },
-  'sachsenhausen-concentration':   { template: 'cinematic',  hero: 'minimal' },
-  'coffee':                        { template: 'intimate',   hero: 'minimal' },
-  'nelson-ghost-town':             { template: 'intimate',   hero: 'split' },
-  'palmspring':                    { template: 'intimate',   hero: 'minimal' },
-  'napavalley':                    { template: 'mosaic',     hero: 'standard' },
-  'halfmoonbay':                   { template: 'mosaic',     hero: 'cinematic' },
-  'sanfranciscostreet':            { template: 'mosaic',     hero: 'standard' },
-  'architecture':                  { template: 'diptych',    hero: 'split' },
-  'laguna-beach':                  { template: 'diptych',    hero: 'cinematic' },
-  'santacruz':                     { template: 'scattered',  hero: 'standard' },
-  'ranchosantamargaritalake':      { template: 'scattered',  hero: 'minimal' },
+// Every gallery uses the same crop-free justified-rows grid; only the hero
+// banner style varies per gallery for a touch of editorial variety.
+const assignments: Record<string, HeroVariant> = {
+  berlinstreet: 'standard',
+  sanfrancisco: 'cinematic',
+  alcatrazisland: 'split',
+  joshuatree: 'cinematic',
+  pachecopass: 'cinematic',
+  'sachsenhausen-concentration': 'minimal',
+  coffee: 'minimal',
+  'nelson-ghost-town': 'split',
+  palmspring: 'minimal',
+  napavalley: 'standard',
+  halfmoonbay: 'cinematic',
+  sanfranciscostreet: 'standard',
+  architecture: 'split',
+  'laguna-beach': 'cinematic',
+  santacruz: 'standard',
+  ranchosantamargaritalake: 'minimal',
 };
 
-const defaultAssignment: TemplateAssignment = { template: 'editorial', hero: 'standard' };
-
 export function getTemplateAssignment(slug: string): TemplateAssignment {
-  return assignments[slug] ?? defaultAssignment;
+  return { hero: assignments[slug] ?? 'standard' };
 }

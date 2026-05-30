@@ -14,11 +14,8 @@ const GalleryLightbox: React.FC<Props> = ({ photos, title, lightboxIdx, setLight
   if (lightboxIdx === null) return null;
   const photo = photos[lightboxIdx];
 
-  const orientClass = photo.orientation === 'vertical'
-    ? (photo.lightroom === 1 || photo.lightroom === true
-      ? 'max-w-[90vh] max-h-[90vw]'
-      : '-rotate-90 max-w-[90vh] max-h-[90vw]')
-    : 'rotate-0 max-w-[90vw] max-h-[90vh]';
+  // Images are delivered upright from Cloudinary, so the lightbox just fits to viewport.
+  const orientClass = 'max-w-[92vw] max-h-[90vh]';
 
   return (
     <AnimatePresence>

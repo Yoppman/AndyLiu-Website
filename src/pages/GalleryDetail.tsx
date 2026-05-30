@@ -13,21 +13,7 @@ import GalleryLightbox from '../components/gallery/shared/GalleryLightbox';
 import GalleryNav from '../components/gallery/shared/GalleryNav';
 import ScrollTopButton from '../components/gallery/shared/ScrollTopButton';
 import { getTemplateAssignment } from '../components/gallery/templateConfig';
-import EditorialSpread from '../components/gallery/templates/EditorialSpread';
-import CinematicScroll from '../components/gallery/templates/CinematicScroll';
-import IntimateCollection from '../components/gallery/templates/IntimateCollection';
-import MosaicWall from '../components/gallery/templates/MosaicWall';
-import DiptychGallery from '../components/gallery/templates/DiptychGallery';
-import ScatteredExhibition from '../components/gallery/templates/ScatteredExhibition';
-
-const templateComponents = {
-  editorial: EditorialSpread,
-  cinematic: CinematicScroll,
-  intimate: IntimateCollection,
-  mosaic: MosaicWall,
-  diptych: DiptychGallery,
-  scattered: ScatteredExhibition,
-} as const;
+import JustifiedGallery from '../components/gallery/templates/JustifiedGallery';
 
 const GalleryDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -59,8 +45,7 @@ const GalleryDetail: React.FC = () => {
     idle(() => setRenderDeferredGrid(true));
   }, []);
 
-  const { template, hero: heroVariant } = getTemplateAssignment(slug || '');
-  const TemplateComponent = templateComponents[template];
+  const { hero: heroVariant } = getTemplateAssignment(slug || '');
 
   return (
     <PageTransition>
@@ -76,7 +61,7 @@ const GalleryDetail: React.FC = () => {
           description={description}
         />
 
-        <TemplateComponent
+        <JustifiedGallery
           photos={photos}
           title={title}
           description={description}
