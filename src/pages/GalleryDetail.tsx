@@ -13,7 +13,17 @@ import GalleryLightbox from '../components/gallery/shared/GalleryLightbox';
 import GalleryNav from '../components/gallery/shared/GalleryNav';
 import ScrollTopButton from '../components/gallery/shared/ScrollTopButton';
 import { getTemplateAssignment } from '../components/gallery/templateConfig';
-import JustifiedGallery from '../components/gallery/templates/JustifiedGallery';
+import EditorialStory from '../components/gallery/templates/EditorialStory';
+import GalleryIntro from '../components/gallery/shared/GalleryIntro';
+import { galleryStories } from '../data/galleryStories';
+
+/** Rough perceived-luminance check so story text stays legible on the photo-derived bg. */
+function isDarkColor(rgba: string): boolean {
+  const m = rgba.match(/rgba?\(([^)]+)\)/);
+  if (!m) return true;
+  const [r, g, b] = m[1].split(',').map((n) => parseFloat(n));
+  return 0.299 * r + 0.587 * g + 0.114 * b < 140;
+}
 
 const GalleryDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -46,6 +56,8 @@ const GalleryDetail: React.FC = () => {
   }, []);
 
   const { hero: heroVariant } = getTemplateAssignment(slug || '');
+  const story = galleryStories[slug || ''];
+  const storyColor = isDarkColor(bgColor) ? '#f1efe9' : '#1b1b1b';
 
   return (
     <PageTransition>
@@ -61,14 +73,27 @@ const GalleryDetail: React.FC = () => {
           description={description}
         />
 
-        <JustifiedGallery
+        <GalleryIntro meta={story?.meta} intro={story?.intro} color={storyColor} />
+
+        <EditorialStory
           photos={photos}
           title={title}
           description={description}
           onPhotoClick={setLightboxIdx}
           imgRefs={imgRefs}
           renderDeferredGrid={renderDeferredGrid}
+          captions={story?.captions}
+          storyColor={storyColor}
         />
+
+        {story?.signoff && (
+          <section className="max-w-3xl mx-auto px-6 pb-20 pt-4 md:pb-28 text-center" style={{ color: storyColor }}>
+            <div className="mx-auto mb-10 h-px w-16 bg-current opacity-20" />
+            <p className="font-cormorant italic text-xl md:text-2xl leading-relaxed opacity-80 [text-wrap:balance]">
+              {story.signoff}
+            </p>
+          </section>
+        )}
 
         <GalleryNav prev={prev} next={next} />
         <GalleryLightbox

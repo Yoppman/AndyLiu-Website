@@ -8,6 +8,7 @@ export interface GalleryTemplateProps {
   onPhotoClick: (index: number) => void;
   imgRefs: MutableRefObject<(HTMLImageElement | null)[]>;
   renderDeferredGrid: boolean;
+  captions?: Record<number, string>;
 }
 
 export type HeroVariant = 'standard' | 'cinematic' | 'minimal' | 'split';
