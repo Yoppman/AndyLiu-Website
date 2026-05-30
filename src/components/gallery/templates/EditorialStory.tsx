@@ -70,8 +70,12 @@ const EditorialStory: React.FC<GalleryTemplateProps & { captions?: Record<number
       return out;
     }
 
+    const isVert = (k: number) => aspects[k] < 0.85;
+    const hasCap = (k: number) => !!captions?.[k];
+
     while (i < photos.length) {
-      // Storytelling beat: photo beside its caption.
+      // Storytelling beat: photo beside its caption (this is our intentional
+      // asymmetry — the empty margin is filled with words, never left stranded).
       if (captions?.[i]) {
         out.push({ kind: 'caption', idx: i, side: captionSide, text: captions[i] });
         captionSide = captionSide === 'left' ? 'right' : 'left';
@@ -81,23 +85,36 @@ const EditorialStory: React.FC<GalleryTemplateProps & { captions?: Record<number
 
       const remaining = photos.length - i;
       const r = rng();
-      const isVertical = aspects[i] < 0.85;
 
-      if (remaining >= 3 && r < 0.28) {
+      // A row may never swallow a captioned photo (its caption would be lost).
+      const canPair = remaining >= 2 && !hasCap(i + 1);
+      const canTrio = remaining >= 3 && !hasCap(i + 1) && !hasCap(i + 2);
+
+      if (isVert(i)) {
+        // A lone tall photo leaves an ugly one-sided gap, so verticals are
+        // paired (or tripled) with their neighbours instead of stranded.
+        if (canTrio && isVert(i + 1) && isVert(i + 2) && rng() < 0.5) {
+          out.push({ kind: 'row', idxs: [i, i + 1, i + 2] });
+          i += 3;
+        } else if (canPair) {
+          out.push({ kind: 'row', idxs: [i, i + 1] });
+          i += 2;
+        } else {
+          // trailing lone vertical: centered with symmetric matting
+          out.push({ kind: 'single', idx: i, widthFrac: 0.44, align: 'center' });
+          i++;
+        }
+      } else if (canTrio && r < 0.26) {
         out.push({ kind: 'row', idxs: [i, i + 1, i + 2] });
         i += 3;
-      } else if (remaining >= 2 && r < 0.62) {
+      } else if (canPair && r < 0.52) {
         out.push({ kind: 'row', idxs: [i, i + 1] });
         i += 2;
       } else {
-        // Single, with improvised width + alignment. Verticals stay narrower.
-        const widthFrac = isVertical
-          ? 0.4 + rng() * 0.12 // 0.40–0.52
-          : 0.6 + rng() * 0.26; // 0.60–0.86
-        const align = isVertical
-          ? (rng() < 0.5 ? 'left' : 'right')
-          : (rng() < 0.45 ? 'center' : rng() < 0.5 ? 'left' : 'right');
-        out.push({ kind: 'single', idx: i, widthFrac, align });
+        // Horizontal single: centered, varied width (intentional matting,
+        // occasionally full-bleed) — no jarring one-sided void.
+        const widthFrac = r < 0.62 ? 1 : 0.66 + rng() * 0.28; // full-width or 0.66–0.94
+        out.push({ kind: 'single', idx: i, widthFrac, align: 'center' });
         i++;
       }
     }

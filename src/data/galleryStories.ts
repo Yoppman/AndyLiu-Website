@@ -23,9 +23,10 @@ export const galleryStories: Record<string, GalleryStory> = {
     signoff:
       'By noon the wind returns, the mirror breaks into a thousand bright pieces, and the birds lift off as if they had only been waiting for the spell to end.',
     captions: {
-      0: 'The first frame is always a held breath — the water still deciding whether to be sky or stone.',
-      2: 'Red tile, palm frond, borrowed mountain. California rehearsing its own postcard.',
-      13: 'A reflection patient as a monk: the peak and its echo, folded along the seam of the shore.',
+      0: 'The first frame is always a held breath. The water has not yet decided whether to be sky or stone, and for one long second neither have I.',
+      13: 'A reflection patient as a monk — the peak and its echo folded along the seam of the shore. Stand still long enough and you stop being able to tell which one is the original.',
+      22: 'The geese keep their own hours, indifferent to mine. They have learned what the lake already knows: that the morning will keep, that there is no need to hurry through anything this gentle.',
+      31: 'Light comes down the hillside in slow degrees, the way warmth returns to your hands. By the time it reaches the water it has forgotten it was ever in a rush.',
     },
   },
 };
