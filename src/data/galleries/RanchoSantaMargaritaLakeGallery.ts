@@ -5,6 +5,7 @@ export const RanchoSantaMargaritaLakeGallery: Gallery = {
   title: 'Rancho Santa Margarita Lake',
   description: 'Stunning views of the lake, reflections, and surrounding birds',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191844/ranchosantamargaritalake/dsc05905.jpg', orientation: 'horizontal', dominantColor: 'rgba(34, 46, 47, 0.6)' },
+  location: { lat: 33.64, lng: -117.60, region: 'California' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191609/ranchosantamargaritalake/dsc05187.jpg', orientation: 'horizontal', dominantColor: 'rgba(29, 51, 39, 0.6)' },
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191633/ranchosantamargaritalake/dsc05198.jpg', orientation: 'horizontal', dominantColor: 'rgba(40, 61, 39, 0.6)' },

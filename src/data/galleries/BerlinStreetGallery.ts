@@ -5,6 +5,7 @@ export const BerlinStreetGallery: Gallery = {
   title: 'Berlin Street',
   description: 'The "silence" of Berlin',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747730807/berlinstreet/dsc01302.jpg', orientation: 'horizontal', dominantColor: 'rgba(42, 48, 43, 0.6)' },
+  location: { lat: 52.52, lng: 13.40, region: 'Germany' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747730763/berlinstreet/dsc00725.jpg', orientation: 'horizontal', dominantColor: 'rgba(48, 48, 48, 0.6)' },
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747730764/berlinstreet/dsc00732.jpg', orientation: 'horizontal', dominantColor: 'rgba(176, 172, 169, 0.6)' },

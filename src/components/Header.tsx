@@ -78,6 +78,7 @@ export default function Header() {
   // The home page opens over a dark cinematic hero, so the transparent header
   // needs light text there (until it drops to a light background on hover).
   const isHome = pathname === '/';
+  const isMap = pathname === '/map';
   // The About hero is a light stage with a dark portrait that tracks the cursor
   // up into the header. mix-blend-difference keeps the nav legible over both.
   const isAbout = pathname === '/about';
@@ -91,7 +92,7 @@ export default function Header() {
 
   const textClass = isAbout
     ? 'text-white'
-    : isDetail || blackBg || ((isHome || isResume) && !fromHover.current) ? 'text-white' : 'text-black';
+    : isDetail || blackBg || ((isHome || isResume || isMap) && !fromHover.current) ? 'text-white' : 'text-black';
 
   const blendClass = isAbout && !fromHover.current ? 'mix-blend-difference' : '';
 
@@ -107,6 +108,7 @@ export default function Header() {
             {[
               { to: '/about', label: 'About' },
               { to: '/photography', label: 'Photography' },
+              { to: '/map', label: 'Map' },
               // { to: '/blog', label: 'Blog' },
               { to: '/resume', label: 'Resume' },
               { to: '/contact', label: 'Contact' },

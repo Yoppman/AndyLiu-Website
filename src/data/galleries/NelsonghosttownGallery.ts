@@ -5,6 +5,7 @@ export const NelsonGhostTownGallery: Gallery = {
   title: 'Nelson Ghost Town',
   description: 'Gold mining ghost town',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747732052/nelsonghosttown/dsc02916.jpg', orientation: 'horizontal', dominantColor: 'rgba(148, 128, 95, 0.6)' },
+  location: { lat: 35.79, lng: -114.78, region: 'Nevada' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747732047/nelsonghosttown/dsc02868.jpg', orientation: 'horizontal', dominantColor: 'rgba(54, 22, 15, 0.6)' },
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747732049/nelsonghosttown/dsc02895.jpg', orientation: 'horizontal', dominantColor: 'rgba(71, 57, 39, 0.6)' },

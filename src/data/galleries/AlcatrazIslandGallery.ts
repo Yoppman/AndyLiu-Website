@@ -5,6 +5,7 @@ export const AlcatrazIslandGallery: Gallery = {
   title: 'Alcatraz Island & Ocean Beach',
   description: 'Prison, golden gate, and the bay ',
   hero: { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755392051/alcatrazisland/dsc07758.jpg', orientation: 'horizontal', dominantColor: 'rgba(144, 177, 188, 0.6)' },
+  location: { lat: 37.83, lng: -122.42, region: 'California' },
   photos: [
     { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755392046/alcatrazisland/dsc07756.jpg', orientation: 'horizontal', dominantColor: 'rgba(181, 191, 192, 0.6)' },
     { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755392051/alcatrazisland/dsc07758.jpg', orientation: 'horizontal', dominantColor: 'rgba(144, 177, 188, 0.6)' },

@@ -5,6 +5,7 @@ export const PachecoPassGallery: Gallery = {
   title: 'Pachecopass',
   description: 'Serendipity',
   hero:  { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191521/pachecopass/dsc05989.jpg', orientation: 'horizontal', dominantColor: 'rgba(125, 143, 170, 0.6)' },
+  location: { lat: 37.06, lng: -121.21, region: 'California' },
   photos: [
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191477/pachecopass/dsc05975.jpg', orientation: 'horizontal', dominantColor: 'rgba(72, 76, 68, 0.6)' },
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751191487/pachecopass/dsc05978.jpg', orientation: 'horizontal', dominantColor: 'rgba(86, 94, 109, 0.6)' },

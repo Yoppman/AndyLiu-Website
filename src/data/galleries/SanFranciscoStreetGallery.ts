@@ -5,6 +5,7 @@ export const SanFranciscoStreetGallery: Gallery = {
   title: 'San Francisco Street',
   description: 'Palace, Painted Ladies, Vintage',
   hero:     { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755388376/sanfranciscostreet/dsc06996.jpg', orientation: 'horizontal', dominantColor: 'rgba(178, 199, 203, 0.6)' },
+  location: { lat: 37.77, lng: -122.41, region: 'California' },
   photos: [
     { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755388167/sanfranciscostreet/dsc06813.jpg', orientation: 'horizontal', dominantColor: 'rgba(67, 72, 66, 0.6)' },
     { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755388185/sanfranciscostreet/dsc06819.jpg', orientation: 'horizontal', dominantColor: 'rgba(56, 48, 35, 0.6)' },

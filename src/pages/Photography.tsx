@@ -1,9 +1,11 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
+import { LayoutGrid, Rows3 } from 'lucide-react';
 import { galleries } from '../data/galleries';
 import { DirectionAwareHover } from '../components/ui/direction-aware-hover';
 import PageTransition from '../components/PageTransition';
+import MasonryGrid from '../components/MasonryGrid';
 import { useTransition } from '../context/TransitionContext';
 
 // Vite env flag
@@ -40,9 +42,20 @@ const itemVariants = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
+type ViewMode = 'grid' | 'masonry';
+
 const Photography: React.FC = () => {
   const { setMorphSource } = useTransition();
   const navigate = useNavigate();
+
+  const [viewMode, setViewMode] = useState<ViewMode>(
+    () => (localStorage.getItem('photography-view') as ViewMode) || 'grid',
+  );
+
+  const switchView = useCallback((mode: ViewMode) => {
+    setViewMode(mode);
+    localStorage.setItem('photography-view', mode);
+  }, []);
 
   const handleCardClick = useCallback(
     (e: React.MouseEvent<HTMLAnchorElement>, gallery: typeof galleries[0], imageUrl: string) => {
@@ -52,55 +65,94 @@ const Photography: React.FC = () => {
       setMorphSource({ rect, imageUrl, slug: gallery.slug });
       navigate(`/photography/${gallery.slug}`);
     },
-    [setMorphSource, navigate]
+    [setMorphSource, navigate],
   );
 
   return (
     <PageTransition>
     <div className="max-w-7xl mx-auto px-6 py-16 pt-24">
-      <h1 className="font-cormorant font-bold text-4xl mb-12 text-center">
-        Photography Collections
-      </h1>
+      {/* Header row: title + view toggle */}
+      <div className="flex items-center justify-between mb-12">
+        <div /> {/* spacer for centering */}
+        <h1 className="font-cormorant font-bold text-4xl text-center">
+          Photography Collections
+        </h1>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => switchView('grid')}
+            className={`p-2 rounded-md transition-colors ${
+              viewMode === 'grid'
+                ? 'text-neutral-900 bg-neutral-200/60'
+                : 'text-neutral-400 hover:text-neutral-600'
+            }`}
+            aria-label="Grid view"
+            title="Grid view"
+          >
+            <LayoutGrid size={18} />
+          </button>
+          <button
+            onClick={() => switchView('masonry')}
+            className={`p-2 rounded-md transition-colors ${
+              viewMode === 'masonry'
+                ? 'text-neutral-900 bg-neutral-200/60'
+                : 'text-neutral-400 hover:text-neutral-600'
+            }`}
+            aria-label="Masonry view"
+            title="Masonry view"
+          >
+            <Rows3 size={18} />
+          </button>
+        </div>
+      </div>
 
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
-        variants={containerVariants}
-        initial="initial"
-        animate="animate"
-      >
-        {galleries.map((gallery, index) => {
-          const preview = gallery.hero || gallery.photos[0];
+      {viewMode === 'grid' ? (
+        /* ── Grid view (original) ── */
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center"
+          variants={containerVariants}
+          initial="initial"
+          animate="animate"
+        >
+          {galleries.map((gallery, index) => {
+            const preview = gallery.hero || gallery.photos[0];
 
-          const imageUrl = PLACEHOLDER_ONLY
-            ? buildPlaceholderSrc(preview.src)
-            : buildSrc(preview.src, 2000);
+            const imageUrl = PLACEHOLDER_ONLY
+              ? buildPlaceholderSrc(preview.src)
+              : buildSrc(preview.src, 2000);
 
-          const placeholderClasses = PLACEHOLDER_ONLY ? 'blur-xl scale-105' : '';
-          const perfClasses = index < 6 ? '' : 'will-change-transform';
+            const placeholderClasses = PLACEHOLDER_ONLY ? 'blur-xl scale-105' : '';
+            const perfClasses = index < 6 ? '' : 'will-change-transform';
 
-          return (
-            <motion.div key={gallery.slug} variants={itemVariants}>
-              <Link
-                to={`/photography/${gallery.slug}`}
-                className="block"
-                onClick={(e) => handleCardClick(e, gallery, imageUrl)}
-              >
-                <DirectionAwareHover
-                  imageUrl={imageUrl}
-                  className="h-80 w-80 md:h-96 md:w-96 rounded-xl"
-                  childrenClassName="font-cormorant"
-                  imageClassName={`${perfClasses} ${placeholderClasses}`.trim()}
+            return (
+              <motion.div key={gallery.slug} variants={itemVariants}>
+                <Link
+                  to={`/photography/${gallery.slug}`}
+                  className="block"
+                  onClick={(e) => handleCardClick(e, gallery, imageUrl)}
                 >
-                  <p className="font-bold text-xl mb-2">{gallery.title}</p>
-                  <p className="font-normal text-sm opacity-90 line-clamp-2">
-                    {gallery.description}
-                  </p>
-                </DirectionAwareHover>
-              </Link>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+                  <DirectionAwareHover
+                    imageUrl={imageUrl}
+                    className="h-80 w-80 md:h-96 md:w-96 rounded-xl"
+                    childrenClassName="font-cormorant"
+                    imageClassName={`${perfClasses} ${placeholderClasses}`.trim()}
+                  >
+                    <p className="font-bold text-xl mb-2">{gallery.title}</p>
+                    <p className="font-normal text-sm opacity-90 line-clamp-2">
+                      {gallery.description}
+                    </p>
+                  </DirectionAwareHover>
+                </Link>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      ) : (
+        /* ── Masonry view ── */
+        <MasonryGrid
+          galleries={galleries}
+          onCardClick={handleCardClick}
+        />
+      )}
     </div>
     </PageTransition>
   );

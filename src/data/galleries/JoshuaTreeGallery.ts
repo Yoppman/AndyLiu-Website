@@ -5,6 +5,7 @@ export const JoshuaTreeGallery: Gallery = {
   title: 'Joshua Tree National Park',
   description: 'Dessert, rocks, and Joshua trees',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512319/joshuatree/dsc04025.jpg', orientation: 'horizontal', dominantColor: 'rgba(51, 36, 9, 0.6)' },
+  location: { lat: 33.87, lng: -115.90, region: 'California' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512288/joshuatree/dsc03967.jpg', orientation: 'horizontal', dominantColor: 'rgba(164, 137, 107, 0.6)' },
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512301/joshuatree/dsc03975.jpg', orientation: 'horizontal', dominantColor: 'rgba(180, 145, 104, 0.6)' },

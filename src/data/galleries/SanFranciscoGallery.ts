@@ -5,6 +5,7 @@ export const SanFranciscoGallery: Gallery = {
   title: 'San Francisco Classic',
   description: 'Attractions, architecture, and history',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751189805/sanfrancisco/dsc06577.jpg', orientation: 'horizontal', dominantColor: 'rgba(224, 218, 197, 0.6)' },
+  location: { lat: 37.78, lng: -122.42, region: 'California' },
   photos: [
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751189663/sanfrancisco/dsc06488.jpg', orientation: 'horizontal', dominantColor: 'rgba(58, 63, 56, 0.6)' },
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1751189679/sanfrancisco/dsc06504.jpg', orientation: 'horizontal', dominantColor: 'rgba(32, 30, 22, 0.6)' },

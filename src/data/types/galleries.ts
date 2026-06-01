@@ -6,10 +6,17 @@ export interface PhotoEntry {
     lightroom?: boolean | 0 | 1;
   }
   
+  export interface GalleryLocation {
+    lat: number
+    lng: number
+    region: string
+  }
+
   export interface Gallery {
     slug:        string
     title:       string
     description: string
     photos:      PhotoEntry[]
     hero?: PhotoEntry; // Optional custom hero image
+    location?: GalleryLocation
   }

@@ -5,6 +5,7 @@ export const PalmSpringGallery: Gallery = {
   title: 'Palm Spring',
   description: 'Cable car, breath-taking viewpoints, and mountains',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512413/palmspring/dsc04910.jpg', orientation: 'horizontal', dominantColor: 'rgba(121, 125, 116, 0.6)' },
+  location: { lat: 33.83, lng: -116.54, region: 'California' },
   photos: [
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512313/palmspring/dsc04832.jpg', orientation: 'horizontal', dominantColor: 'rgba(115, 108, 90, 0.6)' },
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1748512363/palmspring/dsc04893.jpg', orientation: 'horizontal', dominantColor: 'rgba(145, 133, 115, 0.6)' },
