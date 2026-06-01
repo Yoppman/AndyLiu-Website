@@ -22,7 +22,7 @@ const pins: Pin[] = [
   { id: 'rl', label: 'Rancho Lake', gallery: 'ranchosantamargaritalake', x: 16, y: 55, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1747459484/DSC02462_bqch9d.jpg' },
   { id: 'ai', label: 'Alcatraz Island', gallery: 'alcatrazisland', x: 7, y: 37, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1751189995/sanfrancisco/dsc06738.jpg' },
   { id: 'ngt', label: 'Nelson Ghost Town', gallery: 'nelson-ghost-town', x: 22, y: 52, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1747808971/coffee/dsc01861.jpg' },
-  { id: 'irv', label: 'Irvine (Home)', x: 15, y: 55 },
+  { id: 'home', label: 'Santa Clara (Home)', x: 9, y: 40 },
   { id: 'berlin', label: 'Berlin', gallery: 'berlinstreet', x: 53, y: 24, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1747730763/berlinstreet/dsc00725.jpg' },
   { id: 'sach', label: 'Sachsenhausen', gallery: 'sachsenhausen-concentration', x: 54, y: 23, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1747730811/berlinstreet/dsc01321.jpg' },
 ];
@@ -90,7 +90,7 @@ const TravelMap: React.FC = () => {
           >
             {/* Pulse ring */}
             <motion.div
-              className={`absolute inset-0 rounded-full ${pin.id === 'irv' ? 'bg-amber-400' : 'bg-neutral-800'}`}
+              className={`absolute inset-0 rounded-full ${pin.id === 'home' ? 'bg-amber-400' : 'bg-neutral-800'}`}
               animate={{ scale: [1, 2, 1], opacity: [0.4, 0, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, delay: i * 0.3 }}
               style={{ width: 12, height: 12, margin: -3 }}
@@ -100,7 +100,7 @@ const TravelMap: React.FC = () => {
             <motion.div
               whileHover={{ scale: 1.8 }}
               className={`w-3 h-3 rounded-full cursor-pointer shadow-md relative z-10 ${
-                pin.id === 'irv' ? 'bg-amber-500 ring-2 ring-amber-300' : 'bg-neutral-800'
+                pin.id === 'home' ? 'bg-amber-500 ring-2 ring-amber-300' : 'bg-neutral-800'
               }`}
             />
 
@@ -136,10 +136,10 @@ const TravelMap: React.FC = () => {
           </motion.div>
         ))}
 
-        {/* "Home" label for Irvine */}
+        {/* "Home" label for Santa Clara */}
         <div
           className="absolute font-cormorant text-[10px] text-amber-600 tracking-wider"
-          style={{ left: '17%', top: '58%' }}
+          style={{ left: '11%', top: '40%' }}
         >
           HOME
         </div>

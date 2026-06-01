@@ -90,8 +90,6 @@ const LivingMosaic: React.FC<Props> = ({ photos }) => {
 
   const wallX = useTransform(px, [-1, 1], [18, -18]);
   const wallScale = useTransform(scrollYProgress, [0, 1], [1.18, 1.04]);
-  const wallBlur = useTransform(scrollYProgress, [0, 0.7, 1], [0, 0, 3]);
-  const blurFilter = useTransform(wallBlur, (b) => `blur(${b}px)`);
 
   // Title surfaces in the second half of the act.
   const titleOpacity = useTransform(scrollYProgress, [0.28, 0.62], [0, 1]);
@@ -110,7 +108,7 @@ const LivingMosaic: React.FC<Props> = ({ photos }) => {
         {/* The drifting wall */}
         <motion.div
           className="absolute inset-0 flex gap-2 md:gap-3 px-2 md:px-3"
-          style={{ x: wallX, scale: wallScale, filter: blurFilter, transformOrigin: 'center' }}
+          style={{ x: wallX, scale: wallScale, transformOrigin: 'center' }}
           aria-hidden
         >
           {columns.map((col, ci) => (

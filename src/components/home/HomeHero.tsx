@@ -1,15 +1,16 @@
 import React, { useMemo } from 'react';
 import LivingMosaic from './LivingMosaic';
-import CinematicSlices from './CinematicSlices';
+import FloatingGallery from './FloatingGallery';
+import ComicGrid from './ComicGrid';
 import LiquidShader from './LiquidShader';
 import { mosaicPhotos, HERO_IMAGES } from './heroImages';
 
 /**
- * The home title sequence — three scroll-driven acts that play like the
- * opening of a film about the work:
- *   I.  Living Mosaic   — a wall of real photographs that resolves to the title
- *   II. Slice Reveal    — (next)
- *   III. Liquid          — (next)
+ * The home title sequence:
+ *   I.   Living Mosaic   — a wall of real photographs that resolves to the title
+ *   II.  Selected Frames — fly through a constellation of landscape photographs,
+ *        then a nostalgic comic-grid collage + an invitation to artists
+ *   III. Liquid          — a flowing WebGL surface two photographs dissolve through
  */
 const HomeHero: React.FC = () => {
   const photos = useMemo(() => mosaicPhotos(45), []);
@@ -17,8 +18,9 @@ const HomeHero: React.FC = () => {
   return (
     <div className="relative bg-[#0a0a0b] text-white">
       <LivingMosaic photos={photos} />
-      <CinematicSlices images={HERO_IMAGES} />
-      <LiquidShader images={[HERO_IMAGES[1], HERO_IMAGES[3]]} />
+      <FloatingGallery />
+      <ComicGrid />
+      <LiquidShader images={[HERO_IMAGES[1], HERO_IMAGES[2]]} />
     </div>
   );
 };

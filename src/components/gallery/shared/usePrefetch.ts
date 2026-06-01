@@ -1,10 +1,15 @@
-import { useEffect, useRef, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { PLACEHOLDER_ONLY, cldFull, Photo } from './cloudinaryUtils';
 
+/**
+ * Preloads only what helps the Largest Contentful Paint: the hero image and the
+ * first couple of photos. The grid itself is loaded just-in-time by <LazyImage>
+ * (IntersectionObserver, rootMargin 200px), so there is intentionally NO bulk
+ * prefetch — eagerly fetching three widths of every photo (366 requests for a
+ * 122-photo gallery) saturated the connection and competed with the images the
+ * user was actually scrolling to.
+ */
 export function usePrefetch(photos: Photo[], heroSrc: string) {
-  const prefetchedUrlSetRef = useRef<Set<string>>(new Set());
-  const prefetchImageElementsRef = useRef<HTMLImageElement[]>([]);
-
   useLayoutEffect(() => {
     if (PLACEHOLDER_ONLY) return;
     const link = document.createElement('link');
@@ -30,40 +35,5 @@ export function usePrefetch(photos: Photo[], heroSrc: string) {
       });
     });
     return () => { links.forEach((l) => l.remove()); };
-  }, [photos]);
-
-  useEffect(() => {
-    if (!photos?.length || PLACEHOLDER_ONLY) return;
-    const idle = (cb: () => void) =>
-      (window as any).requestIdleCallback
-        ? (window as any).requestIdleCallback(cb, { timeout: 2000 })
-        : setTimeout(cb, 150);
-
-    let cancelled = false;
-    idle(() => {
-      if (cancelled) return;
-      let delayMs = 0;
-      photos.forEach((p) => {
-        [300, 600, 900].forEach((w) => {
-          const url = cldFull(p.src, w);
-          if (prefetchedUrlSetRef.current.has(url)) return;
-          prefetchedUrlSetRef.current.add(url);
-          setTimeout(() => {
-            if (cancelled) return;
-            const img = new Image();
-            img.decoding = 'async';
-            img.loading = 'eager';
-            img.referrerPolicy = 'no-referrer';
-            img.src = url;
-            prefetchImageElementsRef.current.push(img);
-          }, delayMs);
-          delayMs += 40;
-        });
-      });
-    });
-    return () => {
-      cancelled = true;
-      prefetchImageElementsRef.current = [];
-    };
   }, [photos]);
 }

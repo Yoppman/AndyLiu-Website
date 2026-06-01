@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useSpring, useTransform } from 'motion/react';
 
 interface Project {
   title: string;
@@ -92,13 +92,31 @@ const ProjectCard: React.FC<{
     [1 - index * 0.02, 1]
   );
 
+  // Cursor-driven 3D tilt on hover.
+  const rotateX = useSpring(0, { stiffness: 150, damping: 15 });
+  const rotateY = useSpring(0, { stiffness: 150, damping: 15 });
+  const handleMove = (e: React.MouseEvent) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    rotateY.set(((e.clientX - r.left) / r.width - 0.5) * 12);
+    rotateX.set(-((e.clientY - r.top) / r.height - 0.5) * 12);
+  };
+  const handleLeave = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
   return (
     <motion.div
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
       className="absolute top-0 left-0 w-full bg-white rounded-xl shadow-lg border-l-4 border-gradient-to-b p-6"
       style={{
         y: yOffset,
         rotate,
         scale,
+        rotateX,
+        rotateY,
+        transformPerspective: 900,
         zIndex: total - index,
         borderLeftColor: `hsl(${220 + index * 30}, 60%, 55%)`,
       }}
