@@ -12,4 +12,67 @@
   animation: floatUp 1.5s ease-in-out infinite;
 }
 
+/* --- Leaflet location map (LocationInfo) --- */
+/* Elegant amber pin with a soft pulsing halo */
+.location-pin {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: #f59e0b; /* amber-500 */
+  border: 3px solid #ffffff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.location-pin::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  border: 2px solid rgba(245, 158, 11, 0.55);
+  transform: translate(-50%, -50%) scale(0.7);
+  animation: locationPulse 2.2s ease-out infinite;
+}
+
+@keyframes locationPulse {
+  0% { transform: translate(-50%, -50%) scale(0.6); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0; }
+}
+
+/* Refine Leaflet's default chrome to match the editorial palette */
+.leaflet-container {
+  font-family: inherit;
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+  color: #44403c; /* stone-700 */
+  border-bottom-color: #e7e5e4;
+}
+
+.leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 10px;
+  color: #78716c; /* stone-500 */
+}
+
+.leaflet-tooltip.leaflet-tooltip-top {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #292524; /* stone-800 */
+  background: #ffffff;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  padding: 4px 10px;
+}
+
+.leaflet-tooltip-top::before {
+  border-top-color: #ffffff;
+}
+
 

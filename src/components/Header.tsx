@@ -75,17 +75,29 @@ export default function Header() {
   const base = 'fixed top-0 left-0 w-full z-50 transition-all duration-300 ease-in-out';
   const translate = visible ? 'translate-y-0' : '-translate-y-full';
 
+  // The home page opens over a dark cinematic hero, so the transparent header
+  // needs light text there (until it drops to a light background on hover).
+  const isHome = pathname === '/';
+  // The About hero is a light stage with a dark portrait that tracks the cursor
+  // up into the header. mix-blend-difference keeps the nav legible over both.
+  const isAbout = pathname === '/about';
+  const isResume = pathname === '/resume';
+
   // Determine background color:
   const bgClass =
     isDetail
       ? blackBg ? 'bg-black' : 'bg-transparent'
       : blackBg ? 'bg-black' : fromHover.current ? 'bg-[#f4f4f3]' : 'bg-transparent';
 
-  const textClass = isDetail || blackBg ? 'text-white' : 'text-black';
+  const textClass = isAbout
+    ? 'text-white'
+    : isDetail || blackBg || ((isHome || isResume) && !fromHover.current) ? 'text-white' : 'text-black';
+
+  const blendClass = isAbout && !fromHover.current ? 'mix-blend-difference' : '';
 
   return (
     <header className={`${base} ${translate} ${bgClass}`}>
-      <div className={`max-w-7xl mx-auto px-10 h-20 flex items-center justify-between ${textClass}`}>
+      <div className={`max-w-7xl mx-auto px-10 h-20 flex items-center justify-between ${textClass} ${blendClass}`}>
         <Link to="/" className="text-3xl font-cormorant tracking-wide">
           Andy Liu
         </Link>

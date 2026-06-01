@@ -59,7 +59,7 @@ export const contactData: ContactData = {
     }
   ],
   location: {
-    city: 'Irvine',
+    city: 'Santa Clara',
     state: 'California',
     availability: 'Available for Coffee Chat!'
   },
