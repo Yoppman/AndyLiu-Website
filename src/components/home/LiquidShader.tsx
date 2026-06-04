@@ -3,6 +3,7 @@ import { motion, useTransform } from 'framer-motion';
 import { cldFull } from '../gallery/shared/cloudinaryUtils';
 import { useScrollProgress } from './useScrollProgress';
 import { useNearViewport } from './useNearViewport';
+import SceneErrorBoundary from '../webgl/SceneErrorBoundary';
 
 // three.js lives in its own chunk — only fetched when this act mounts.
 const LiquidScene = React.lazy(() => import('./LiquidScene'));
@@ -76,9 +77,11 @@ const LiquidShader: React.FC<{ images: string[] }> = ({ images }) => {
     <section ref={sectionRef} className="relative" style={{ height: '180vh' }}>
       <div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
         {ok && spawned ? (
-          <Suspense fallback={Still}>
-            <LiquidScene images={images} progress={progress} active={active} />
-          </Suspense>
+          <SceneErrorBoundary fallback={Still}>
+            <Suspense fallback={Still}>
+              <LiquidScene images={images} progress={progress} active={active} />
+            </Suspense>
+          </SceneErrorBoundary>
         ) : ok ? null : (
           Still
         )}

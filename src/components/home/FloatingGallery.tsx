@@ -4,6 +4,7 @@ import { useScrollProgress } from './useScrollProgress';
 import { useNearViewport } from './useNearViewport';
 import { cldFull } from '../gallery/shared/cloudinaryUtils';
 import { SELECTED_FRAMES } from './heroImages';
+import SceneErrorBoundary from '../webgl/SceneErrorBoundary';
 
 const FloatingGalleryScene = React.lazy(() => import('./FloatingGalleryScene'));
 
@@ -84,9 +85,11 @@ const FloatingGallery: React.FC = () => {
         style={{ background: 'radial-gradient(120% 100% at 50% 30%, #16161a 0%, #0a0a0b 70%)' }}
       >
         {ok && spawned && (
-          <Suspense fallback={null}>
-            <FloatingGalleryScene images={photos} progress={progress} active={active} />
-          </Suspense>
+          <SceneErrorBoundary>
+            <Suspense fallback={null}>
+              <FloatingGalleryScene images={photos} progress={progress} active={active} />
+            </Suspense>
+          </SceneErrorBoundary>
         )}
 
         {/* cinematic edge framing over the scene */}

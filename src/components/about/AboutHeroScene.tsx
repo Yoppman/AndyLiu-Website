@@ -1,6 +1,8 @@
 import { useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame } from '@react-three/fiber';
+import ReleaseContextOnUnmount from '../webgl/ReleaseContextOnUnmount';
+import SceneErrorBoundary from '../webgl/SceneErrorBoundary';
 
 // Organic vertex displacement (Ashima simplex noise) + a fresnel-lit surface,
 // so the orb wobbles like liquid glass and glows amber at its rim.
@@ -122,15 +124,18 @@ const AboutHeroScene: React.FC = () => {
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   return (
-    <Canvas
-      dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-      style={{ position: 'absolute', inset: 0 }}
-      camera={{ fov: 45, position: [0, 0, 5], near: 0.1, far: 50 }}
-      frameloop={reduce ? 'demand' : 'always'}
-    >
-      <Orb reduce={reduce} />
-    </Canvas>
+    <SceneErrorBoundary>
+      <Canvas
+        dpr={[1, 2]}
+        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        style={{ position: 'absolute', inset: 0 }}
+        camera={{ fov: 45, position: [0, 0, 5], near: 0.1, far: 50 }}
+        frameloop={reduce ? 'demand' : 'always'}
+      >
+        <ReleaseContextOnUnmount />
+        <Orb reduce={reduce} />
+      </Canvas>
+    </SceneErrorBoundary>
   );
 };
 

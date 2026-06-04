@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import type { MotionValue } from 'framer-motion';
 import { cldFull } from '../gallery/shared/cloudinaryUtils';
-import ReleaseContextOnUnmount from './ReleaseContextOnUnmount';
+import ReleaseContextOnUnmount from '../webgl/ReleaseContextOnUnmount';
 
 // Fullscreen quad: ignore the camera and draw straight in clip space.
 const VERT = /* glsl */ `
