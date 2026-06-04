@@ -36,6 +36,16 @@ const assignments: Record<string, HeroVariant> = {
   'laguna-beach': 'cinematic',
   santacruz: 'standard',
   ranchosantamargaritalake: 'minimal',
+  london: 'cinematic',
+  paris: 'split',
+  venice: 'cinematic',
+  florence: 'minimal',
+  rome: 'split',
+  barcelona: 'cinematic',
+  hawaii: 'minimal',
+  orangecounty: 'standard',
+  ussmidway: 'cinematic',
+  gettymuseum: 'cinematic',
 };
 
 export function getTemplateAssignment(slug: string): TemplateAssignment {
