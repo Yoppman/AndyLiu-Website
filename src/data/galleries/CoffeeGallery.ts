@@ -5,6 +5,7 @@ export const CoffeeGallery: Gallery = {
   title: 'Coffee',
   description: 'Brewing, smelling, tasting',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747808974/coffee/dsc01875.jpg', orientation: 'horizontal', dominantColor: 'rgba(64, 48, 29, 0.6)'  },
+  location: { lat: 37.35, lng: -121.96, region: 'California' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747808971/coffee/dsc01861.jpg', orientation: 'horizontal', dominantColor: 'rgba(136, 81, 29, 0.6)'  },
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747808970/coffee/dsc01857.jpg', orientation: 'horizontal', dominantColor: 'rgba(45, 25, 9, 0.6)'  },

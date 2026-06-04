@@ -5,6 +5,7 @@ export const ArchitectureGallery: Gallery = {
   title: 'Architecture',
   description: 'Spectacular of architecture from Germany',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747773515/architecture/dsc02448.jpg', orientation: 'horizontal', dominantColor: 'rgba(104, 101, 82, 0.6)' },
+  location: { lat: 52.52, lng: 13.40, region: 'Germany' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747773487/architecture/dsc01629.jpg', orientation: 'horizontal', dominantColor: 'rgba(54, 47, 33, 0.6)' },
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747773488/architecture/dsc02173.jpg', orientation: 'horizontal', dominantColor: 'rgba(192, 200, 187, 0.6)' },

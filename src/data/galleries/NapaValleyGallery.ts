@@ -5,6 +5,7 @@ export const NapaValleyGallery: Gallery = {
   title: 'Napa Valley',
   description: 'Wineries, winetasting, and vineyards',
   hero: { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755389471/napavalley/dsc07549.jpg', orientation: 'horizontal', dominantColor: 'rgba(216, 216, 216, 0.6)' },
+  location: { lat: 38.50, lng: -122.27, region: 'California' },
   photos: [
       { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755389471/napavalley/dsc07145.jpg', orientation: 'horizontal', dominantColor: 'rgba(216, 216, 216, 0.6)' },
       { src: 'https://res.cloudinary.com/duo70zkqx/image/upload/v1755389481/napavalley/dsc07152.jpg', orientation: 'horizontal', dominantColor: 'rgba(59, 44, 30, 0.6)' },

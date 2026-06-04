@@ -7,6 +7,7 @@ export const LagunaBeachGallery: Gallery =
     title: 'Laguna Beach',
     description: 'Stunning seascapes and coastal moments',
     hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747703401/LagunaBeach/dsc03805.jpg', orientation: 'horizontal', dominantColor: 'rgba(77, 78, 67, 0.6)' },
+    location: { lat: 33.54, lng: -117.78, region: 'California' },
     photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747703358/LagunaBeach/dsc03617.jpg', orientation: 'horizontal', dominantColor: 'rgba(192, 182, 169, 0.6)' },
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747703329/LagunaBeach/dsc03586.jpg', orientation: 'horizontal', dominantColor: 'rgba(27, 33, 21, 0.6)' },

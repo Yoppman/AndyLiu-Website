@@ -5,6 +5,7 @@ export const SachsenhausenConcentrationGallery: Gallery = {
   title: 'Sachsenhausen Concentration',
   description: 'Anger, rage, and the power of the Nazis',
   hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747812463/sachsenhausenconcentration/dsc01971.jpg', orientation: 'horizontal', dominantColor: 'rgba(220, 231, 230, 0.6)' },
+  location: { lat: 52.77, lng: 13.26, region: 'Germany' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747812464/sachsenhausenconcentration/dsc01986.jpg', orientation: 'horizontal', dominantColor: 'rgba(60, 67, 46, 0.6)' },
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747812460/sachsenhausenconcentration/dsc01957.jpg', orientation: 'horizontal', dominantColor: 'rgba(85, 95, 79, 0.6)' },

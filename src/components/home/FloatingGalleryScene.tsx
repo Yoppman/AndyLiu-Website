@@ -4,7 +4,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import type { MotionValue } from 'framer-motion';
 import { cldFull } from '../gallery/shared/cloudinaryUtils';
 import { galleryDimensions } from '../../data/galleryDimensions';
-import ReleaseContextOnUnmount from './ReleaseContextOnUnmount';
+import ReleaseContextOnUnmount from '../webgl/ReleaseContextOnUnmount';
 
 const VERT = /* glsl */ `
   varying vec2 vUv;

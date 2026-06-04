@@ -15,12 +15,14 @@ export const DirectionAwareHover = ({
   childrenClassName,
   imageClassName,
   className,
+  style,
 }: {
   imageUrl: string;
   children: React.ReactNode | string;
   childrenClassName?: string;
   imageClassName?: string;
   className?: string;
+  style?: React.CSSProperties;
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [direction, setDirection] = useState<"top" | "bottom" | "left" | "right">("left");
@@ -65,6 +67,7 @@ export const DirectionAwareHover = ({
         "md:h-96 w-60 h-60 md:w-96 bg-transparent rounded-lg overflow-hidden group/card relative cursor-pointer",
         className
       )}
+      style={style}
       whileHover="hover"
       initial="initial"
     >

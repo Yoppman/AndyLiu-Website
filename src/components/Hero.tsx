@@ -57,10 +57,16 @@ const Hero: React.FC = () => {
 
       <div className="relative max-w-7xl mx-auto px-6 py-16 md:py-20">
         <div className="flex flex-col md:flex-row md:items-center md:space-x-12">
-          {/* Left: Portrait with 3D tilt and floating animation */}
+          {/* Left: Portrait with 3D tilt and floating animation.
+              The image is a landscape file stood upright with a 270° CSS rotation,
+              so its visual box is taller than its layout box and spills out the
+              bottom. On the stacked mobile layout that spill overlapped the
+              "Hello," text below it, so reserve viewport-proportional space under
+              the image (≈ the spill height). On md+ the columns sit side by side,
+              so no reserve is needed. */}
           <motion.div
             variants={itemVariants}
-            className="md:w-1/2 mb-10 md:mb-0 flex items-center justify-center"
+            className="md:w-1/2 mb-[16vw] md:mb-0 flex items-center justify-center"
           >
             <motion.div
               onMouseMove={handleMouseMove}
