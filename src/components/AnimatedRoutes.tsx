@@ -12,6 +12,7 @@ import Contact from '../pages/Contact';
 // Lazy-load heavy pages to keep the main bundle lean
 const MapExplorer = lazy(() => import('../pages/MapExplorer'));
 const Experimental = lazy(() => import('../pages/Experimental'));
+const Portraits = lazy(() => import('../pages/Portraits'));
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -22,6 +23,7 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/photography" element={<Photography />} />
+        <Route path="/photography/portraits" element={<Suspense fallback={null}><Portraits /></Suspense>} />
         <Route path="/photography/:slug" element={<GalleryDetail />} />
         <Route path="/map" element={<Suspense fallback={null}><MapExplorer /></Suspense>} />
         <Route path="/experimental" element={<Suspense fallback={null}><Experimental /></Suspense>} />

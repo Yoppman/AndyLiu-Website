@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { LayoutGrid, Rows3 } from 'lucide-react';
+import { LayoutGrid, Rows3, Aperture } from 'lucide-react';
 import { galleries } from '../data/galleries';
 import { DirectionAwareHover } from '../components/ui/direction-aware-hover';
 import PageTransition from '../components/PageTransition';
@@ -73,7 +73,17 @@ const Photography: React.FC = () => {
     <div className="max-w-7xl mx-auto px-6 py-16 pt-24">
       {/* Header row: title + view toggle */}
       <div className="flex items-center justify-between mb-12">
-        <div /> {/* spacer for centering */}
+        {/* Portraits subpage link — balances the view toggle, keeps the title centered */}
+        <Link
+          to="/photography/portraits"
+          className="group inline-flex items-center gap-2 text-neutral-500 transition-colors hover:text-neutral-900"
+        >
+          <Aperture size={16} strokeWidth={1.5} className="opacity-70 transition-transform duration-500 group-hover:rotate-90" />
+          <span className="font-cormorant text-base">Portraits</span>
+          <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">
+            beta
+          </span>
+        </Link>
         <h1 className="font-cormorant font-bold text-4xl text-center">
           Photography Collections
         </h1>

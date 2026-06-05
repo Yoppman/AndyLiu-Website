@@ -17,6 +17,124 @@ export interface GalleryStory {
 }
 
 export const galleryStories: Record<string, GalleryStory> = {
+  carmelbythesea: {
+    meta: 'Carmel-by-the-Sea · A Day to Myself',
+    intro:
+      'I went to Carmel alone, on purpose, with no plan but to look at things slowly. There is a particular freedom in a solo photography day — no one to wait for, no one waiting — the whole afternoon spent following the light wherever it went: down a brick lane of storybook cottages, past gallery windows, out to a beach where the cypress trees lean over the white sand as though they were guarding something. I took my time. I sat where I wanted, photographed what I wanted, spoke to no one, and was perfectly, unexpectedly content. Some days you are not lonely; you are simply good company for yourself.',
+    signoff:
+      'I watched the sun go down through the car window on the way out, in no hurry to leave and no reason to stay, and felt the quiet satisfaction of a day spent entirely as I pleased. I drove home alone and happy — which I have learned, slowly, are not opposites.',
+    captions: {
+      0: 'A cypress leans out over the white sand the way the best trees do — as if it has been posing for photographers for a hundred years and has decided, on balance, that it does not really mind.',
+      6: 'The town is almost too charming to be real: brick lanes, planted courtyards, cottages that look drawn rather than built. Alone, with no one to perform my delight for, I found I delighted in it more.',
+      13: 'A little inn with a hand-painted sign and chairs set out for an evening nobody had to schedule. I stood and looked at it far longer than the photograph required, simply because there was no one to hurry me.',
+      20: 'Carmel keeps more galleries than seems plausible for a town its size — lit windows full of other people’s seeing. I am always a little reassured to find a place that takes looking this seriously.',
+      27: 'And then the sun, going down through the car window on the way out: the day signing off in orange, me in no hurry at all, savouring the rare and simple luxury of an afternoon spent exactly as I wished.',
+    },
+  },
+
+  mammothlake: {
+    meta: 'Mammoth Lakes · Everything but the Riding',
+    intro:
+      'There are no good photographs of the actual snowboarding, because I was finally good enough to want both hands. The camera stayed back in the condo while I went up the mountain and, for the first time, came down it like I meant to — linking turns, reading the snow, falling less and laughing more. So this is a gallery of everything around the riding: the drive in past the caution-ice signs, the gear shop, the village in the cold afternoon light, the long happy exhaustion between runs. The best part is missing, and that is exactly how I know it was the best part. Some things you keep in your legs instead of your hard drive.',
+    signoff:
+      'I came down off Mammoth a little better than I went up — not good, but better, which at the beginning is the only thing that counts. The pictures are of parking lots and boot racks. The mountain I just remember.',
+    captions: {
+      0: 'You feel the altitude before you see the snow — the pines get serious, the air goes thin and bright, and a little screen on the dash shows you the road you have only just driven.',
+      4: 'The morning ritual is the gear shop: walls of boots and gloves, the smell of wax and new nylon, everyone quietly pretending they know their size. Half of snowboarding is shopping for snowboarding.',
+      8: 'Between runs there is the village — brick and timber, a bookshop, a ski shop, the cold sun coming down the walkway — the whole little town built around the simple plan of riding up a mountain and sliding back down it.',
+      12: 'And then the in-between: the tired, grinning, can’t-feel-my-toes hour when you finally sit down for the first time all day and realize you got a little better, and not one person got a single photo of it.',
+    },
+  },
+
+  film: {
+    meta: 'On Film · Grain & Guesswork',
+    intro:
+      'Every so often I put the digital camera down and shoot a roll of film, mostly to remember how it felt before I could see the picture the instant I took it. Thirty-six frames, no screen, no second chances — you compose, you guess at the light, you wind on, and then you wait two weeks to learn whether you were any good. These are scans from a couple of rolls shot around San Francisco and one loud night at a party down in LA: grain, soft focus, a few frames blown out, and a few that came back better than anything I could have planned. Film does not flatter you; it just tells the truth slowly. I had forgotten how much I liked the not-knowing.',
+    signoff:
+      'Half the roll is mistakes and I kept most of them anyway, because a film mistake has a warmth a clean digital file never quite earns. There is something honest about a photograph you could not check, could not fix, and simply had to trust.',
+    captions: {
+      0: 'It begins, fittingly, with a wall of cameras — boxes of the same patient machines I was using to take the picture. A photograph, on film, of the tools for taking photographs on film. The roll knew exactly what it was about.',
+      7: 'San Francisco takes film well — the bay light is soft and a little nostalgic to begin with, and the grain simply agrees with the painted houses and the murals and the hills.',
+      15: 'Now and then the light and the guess line up and a frame comes back perfect, and you feel, briefly, as though you understand something you do not actually understand.',
+      23: 'And then one loud night at a party down south: film in a dark room, pushed and grainy and forgiving, everyone a little blurred and a little glowing — exactly the way the night actually felt.',
+      31: 'The light leaks and the soft focus and the blown highlights are not flaws here; they are the point. Film remembers a night the way you do — warmly, and slightly wrong.',
+      39: 'Two weeks later the scans arrive and you meet your own evening again, a stranger and a friend at once. You cannot fix a frame of it. You would not want to.',
+    },
+  },
+
+  redwoodforest: {
+    meta: 'Redwood Forest · The Roaring Camp Line',
+    intro:
+      'There is a little steam train in the Santa Cruz mountains that still runs the way trains used to — coal smoke, a brass whistle, an engineer in a plaid shirt working levers older than his grandfather. It climbs at a walking pace into a forest of coast redwoods, trees that were already enormous when the rails were laid, and somewhere up among them, that day, the engine simply stopped. We sat there, stuck on a grade in the green half-light, while the crew tinkered and the whole car went quiet and then, slowly, delighted. Of all the things that went right on that trip, the breakdown is the one I kept. Some of the best places are the ones that refuse to let you hurry.',
+    signoff:
+      'Eventually the engine coughed back to life and carried us down out of the trees, and the car clapped — the way you clap for something you have decided to love. I have taken faster trains to better places, and remember none of them half so well.',
+    captions: {
+      0: 'It begins like a memory of a place you never went: a white clapboard schoolhouse on a green hill, a bell, the smell of cut grass and old wood. The twentieth century has not entirely arrived here, and that is precisely the appeal.',
+      5: 'The engineer works the old machine by feel and habit, in a good cap and a plaid shirt, the way you tend a thing you have known your whole life. There is no app for any of this, and thank goodness.',
+      11: 'The track climbs at a walking pace into the redwoods — trees so vast the train looks like a toy someone left on the forest floor — and the light comes down in long green shafts that make everyone, briefly, lower their voices.',
+      17: 'And then, on a steep grade in the deep shade, the engine simply quit. We sat. The crew tinkered, the forest hummed, and a car full of strangers slowly decided this was the best part of the day.',
+      23: 'At the little depot the families spill out — kids in red jackets, grandparents, somebody’s entire Sunday — into a clearing that smells of steam and pine, in no hurry to be anywhere at all.',
+      29: 'Inside the old station, glass cases of timetables and toys: a whole town’s worth of slow afternoons kept under glass. You leave wanting, absurdly, to have been born a century earlier — at least until you remember the dentistry.',
+    },
+  },
+
+  tahoe: {
+    meta: 'Tahoe · First Turns',
+    intro:
+      'I learned to fall down a mountain in March, which is the wrong month and exactly the right friends. The snow by then has gone soft and forgiving — spring slush, sun-warmed, the kind that takes a beginner’s mistakes without complaint — and the lake below sits enormous and impossibly blue, the bluest thing I have ever fallen toward. We were terrible and happy. You spend the morning meeting the ground, again and again, until somewhere after lunch your body stops arguing and you carve, for three whole seconds, and your friends lose their minds. These are the frames from the start of something — clumsy, cold-fingered, and worth every bruise.',
+    signoff:
+      'By the last run the light had gone gold, our legs were finished, and nobody wanted to stop. The mountains were patient with us — they have seen every beginner there has ever been — and the lake just held its blue and let us go on being amateurs at the foot of something huge.',
+    captions: {
+      0: 'First, the lake: flat and cold and a blue that does not photograph so much as report for duty and dare you to try. The mountains across it still wore the last of their snow.',
+      8: 'Friends on a beach in March, taking pictures of each other taking pictures, in beanies and borrowed jackets, killing the happy gap before the lifts opened.',
+      16: 'Up on the hill the snow had turned soft and merciful — spring slush that forgives a beginner everything — and I spent the first morning getting very well acquainted with the ground.',
+      25: 'There is a specific joy in being bad at something among people who love you: every wipeout a comedy, every small success a roar. We were hopeless, and it was perfect.',
+      34: 'And then, somewhere past noon, the board stops fighting and you link two turns, and for three seconds you are not a catastrophe — you are a snowboarder — and your friends howl as though you had won something.',
+      43: 'Between runs, someone always drifts down to the water and just stands there, hands in pockets, letting the sheer size of the place do its quiet work.',
+      52: 'A pine cone on the wet sand, a shadow, a held breath — the small still things you only notice once your legs have quit and you have, at last, sat down.',
+      60: 'The afternoon turns the snow to gold and then to blue, and the last run is always one more than your legs had agreed to.',
+      68: 'We drove down sunburnt and bruised and absurdly proud — the way you are after the first day of a thing you suspect you will spend years chasing.',
+    },
+  },
+
+  losangeles: {
+    meta: 'Los Angeles · Bunkers & Beer Halls',
+    intro:
+      'This is the most Los Angeles day I know how to describe. You start the morning at a building that looks built to outlast the apocalypse — bare concrete, torque bolts, a vault for a doorway, a sunglasses company cosplaying as a missile silo — and you end the night in a make-believe Bavarian village strung with fairy lights, a live band sweating under a disco ball, friends three rounds deep and arguing happily about nothing. None of it goes together, and that is precisely the point. LA has no theme; it has everything, badly sorted and wonderfully close. These are the frames from a day that refused to make sense, and was the better for it.',
+    signoff:
+      'By the time the band played its last and the village lights went soft at the edges, I had stopped looking for the through-line. Some nights are not a story; they are just good, and loud, and yours. You keep the pictures to prove they happened.',
+    captions: {
+      0: 'It begins at a building that takes itself very seriously — bare concrete and bolts set against the dry hills, a headquarters that would honestly rather be a fortress. You half expect a klaxon.',
+      6: 'The entrance is a riveted steel vault, two great spheres flanking it as though the place might launch. A sunglasses company dreaming in tank-grey and rivets — and somehow it absolutely works.',
+      12: 'Out front, agave and barrel cactus and the brown shoulders of the Santa Ana hills: the future and the desert agreeing, for once, to share a parking lot.',
+      18: 'And then, against all logic, a Bavarian village in California — white stucco, terracotta, a courtyard warming up for the evening like a film set someone forgot to strike.',
+      24: 'The string lights come on and the whole place tilts toward festive — that particular dusk when a day decides it is not finished with you yet.',
+      30: 'Under a disco ball older than anyone in the room, the band leans in, and for a few minutes the hall becomes one warm, slightly off-key animal, and nobody wants to be anywhere else.',
+      36: 'No one here is performing happiness; they are simply happy — which is rarer, and far harder to photograph, than it sounds.',
+      42: 'It ends the way the best nights do: back at someone’s apartment, one lamp on, everyone too wired to sleep and too content to leave — replaying a night that made no sense and asked you to love it anyway.',
+    },
+  },
+
+  yosemite: {
+    meta: 'Yosemite · The Range of Light',
+    intro:
+      'You arrive thinking you have seen mountains, and Yosemite corrects you. The valley opens and the granite simply stands up — two and three thousand feet of bare stone catching the afternoon, the waterfalls coming off the rim as though the rock were breathing out light. You become very small here, and it is a relief: the cliffs were patient for ten million years before you walked in, and will be patient long after you go. John Muir called the Sierra the Range of Light, and standing in it you understand he was not exaggerating — only reporting. Some places you photograph to remember; this one you photograph to believe.',
+    signoff:
+      'I left the way everyone leaves Yosemite — quieter, smaller, and oddly comforted to have been so thoroughly outscaled. The granite does not need us to witness it. But it lets us, and that, I think, is its particular grace.',
+    captions: {
+      0: 'The road climbs along the river and then, without ceremony, the walls stand up on either side and the sky narrows to a blue ribbon. You stop the car. Everyone stops the car.',
+      8: 'Three thousand feet of bare granite, and a person at the base for scale — a smudge, a comma, a reminder of exactly how much of this was never about us.',
+      16: 'The fall comes off the rim and turns to mist halfway down, and the afternoon hangs a rainbow in the spray — casually, the way you might leave a light on. Water has been doing this here since before there were eyes to watch.',
+      24: 'You tip your head back at a sequoia until your neck aches and still cannot find the top. Some of these trees were already old when Rome was only an idea. They do not seem impressed by us, and they are right not to be.',
+      32: 'In the meadow the light goes long and gold and the great walls soften to the colour of old ivory. For an hour the whole valley seems to exhale.',
+      40: 'Down at the creek the river forgets it is scenery and simply gets on with the patient work of moving stone, one cold inch at a time.',
+      48: 'When the water goes still it doubles the mountains, and for a moment there are two Yosemites — the one made of granite and the one made of light — and you cannot honestly say which is the more real.',
+      56: 'On the trail the sun comes down through the pines in solid bars, and you walk through them one at a time — warm, cold, warm — as if the forest were taking attendance.',
+      64: 'Even the fallen things here are monuments: a stump the size of a table, a tangle of roots like a frozen explosion, the slow accounting of a forest that keeps its time in centuries.',
+      72: 'You drive out at dusk and the rear-view fills with granite going blue, and you understand you did not so much see Yosemite as get briefly, gratefully, permitted into it.',
+    },
+  },
+
   gettymuseum: {
     meta: 'The Getty · Stone & Sunset',
     intro:
