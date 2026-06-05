@@ -1,22 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, MapPin, Images, ArrowRight } from 'lucide-react';
 import type { Gallery } from '../../data/types/galleries';
 
-/* ── Cloudinary helpers (same logic as Photography page) ── */
+/* ── Cloudinary helpers ── */
 const isCloudinary = (url: string) =>
   /res\.cloudinary\.com\/[^/]+\/image\/(upload|fetch)\//.test(url);
-
 const withTx = (src: string, tx: string) =>
-  isCloudinary(src)
-    ? src.replace(/(\/image\/(?:upload|fetch)\/)/, `$1${tx}/`)
-    : src;
+  isCloudinary(src) ? src.replace(/(\/image\/(?:upload|fetch)\/)/, `$1${tx}/`) : src;
 
-const buildThumb = (src: string) =>
-  isCloudinary(src)
-    ? withTx(src, 'c_fill,g_auto,w_480,h_320,q_auto,f_auto')
-    : src;
+/** Full cover (crisp). */
+const buildCover = (src: string) =>
+  isCloudinary(src) ? withTx(src, 'c_fill,g_auto,w_480,h_320,q_auto,f_auto') : src;
+/** Tiny blurred placeholder that loads almost instantly (LQIP). */
+const buildLQIP = (src: string) =>
+  isCloudinary(src) ? withTx(src, 'c_fill,g_auto,w_32,h_22,q_30,f_auto') : src;
+/** Small square for the "more photos" filmstrip. */
+const buildTile = (src: string) =>
+  isCloudinary(src) ? withTx(src, 'c_fill,g_auto,w_160,h_160,q_auto,f_auto') : src;
 
 interface GalleryFlyoutProps {
   gallery: Gallery | null;
@@ -24,6 +26,8 @@ interface GalleryFlyoutProps {
 }
 
 const GalleryFlyout: React.FC<GalleryFlyoutProps> = ({ gallery, onClose }) => {
+  const [coverLoaded, setCoverLoaded] = useState(false);
+
   // Close on Escape
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -33,9 +37,22 @@ const GalleryFlyout: React.FC<GalleryFlyoutProps> = ({ gallery, onClose }) => {
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
+  // Reset the cover's load state whenever a different gallery is opened
+  useEffect(() => {
+    setCoverLoaded(false);
+  }, [gallery?.slug]);
+
+  const hero = gallery ? gallery.hero || gallery.photos[0] : null;
+
+  // A few more frames for the strip — skip the cover so it stays the star
+  const morePhotos = useMemo(() => {
+    if (!gallery || !hero) return [];
+    return gallery.photos.filter((p) => p.src !== hero.src).slice(0, 6);
+  }, [gallery, hero]);
+
   return (
     <AnimatePresence>
-      {gallery && (
+      {gallery && hero && (
         <>
           {/* Backdrop — click to dismiss */}
           <motion.div
@@ -66,28 +83,53 @@ const GalleryFlyout: React.FC<GalleryFlyoutProps> = ({ gallery, onClose }) => {
               <X size={16} />
             </button>
 
-            {/* Hero image */}
-            <div className="relative w-full aspect-[3/2] overflow-hidden">
+            {/* Hero image — "developing photo" load */}
+            <div
+              className="relative w-full aspect-[3/2] overflow-hidden"
+              style={{ backgroundColor: hero.dominantColor }}
+            >
+              {/* Blurred low-res placeholder, fades out as the full image arrives */}
               <img
-                src={buildThumb((gallery.hero || gallery.photos[0]).src)}
-                alt={gallery.title}
-                className="w-full h-full object-cover"
+                src={buildLQIP(hero.src)}
+                aria-hidden
+                className={`absolute inset-0 w-full h-full object-cover scale-110 blur-2xl transition-opacity duration-700 ${
+                  coverLoaded ? 'opacity-0' : 'opacity-100'
+                }`}
               />
+              {/* Full-resolution cover */}
+              <img
+                key={hero.src}
+                src={buildCover(hero.src)}
+                alt={gallery.title}
+                onLoad={() => setCoverLoaded(true)}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                  coverLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+              {/* Refined loading ring (dissolves on load) */}
+              <div
+                className={`absolute inset-0 flex items-center justify-center transition-opacity duration-500 ${
+                  coverLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                }`}
+              >
+                <span
+                  className="h-8 w-8 rounded-full border-[1.5px] border-white/20 border-t-amber-400 animate-spin"
+                  style={{ boxShadow: '0 0 14px rgba(245,158,11,0.18)' }}
+                />
+              </div>
               {/* Gradient fade into panel */}
               <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-neutral-950 to-transparent" />
             </div>
 
             {/* Info */}
             <div className="px-6 pb-8 -mt-6 relative">
-              <h2 className="font-cormorant text-2xl text-white font-bold mb-1">
-                {gallery.title}
-              </h2>
+              <h2 className="font-cormorant text-2xl text-white font-bold mb-1">{gallery.title}</h2>
               <p className="font-cormorant text-neutral-400 text-sm leading-relaxed mb-5">
                 {gallery.description}
               </p>
 
               {/* Meta chips */}
-              <div className="flex flex-wrap gap-3 mb-8">
+              <div className="flex flex-wrap gap-3 mb-7">
                 {gallery.location && (
                   <span className="flex items-center gap-1.5 text-xs text-neutral-400 bg-neutral-800/60 px-3 py-1.5 rounded-full">
                     <MapPin size={12} />
@@ -108,6 +150,31 @@ const GalleryFlyout: React.FC<GalleryFlyoutProps> = ({ gallery, onClose }) => {
                 View Gallery
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
               </Link>
+
+              {/* Quiet filmstrip of more frames — present, but dimmer than the cover */}
+              {morePhotos.length > 0 && (
+                <div className="mt-8 pt-6 border-t border-neutral-800/70">
+                  <p className="font-cormorant italic text-neutral-500 text-sm tracking-wide mb-3">
+                    More from this collection
+                  </p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {morePhotos.map((p, i) => (
+                      <Link
+                        key={p.src + i}
+                        to={`/photography/${gallery.slug}`}
+                        className="group relative aspect-square overflow-hidden rounded-md bg-neutral-900"
+                      >
+                        <img
+                          src={buildTile(p.src)}
+                          alt=""
+                          loading="lazy"
+                          className="w-full h-full object-cover opacity-65 saturate-[0.85] transition duration-500 group-hover:opacity-100 group-hover:saturate-100 group-hover:scale-[1.06]"
+                        />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </motion.aside>
         </>
