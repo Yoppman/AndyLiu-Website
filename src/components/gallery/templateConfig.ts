@@ -46,6 +46,13 @@ const assignments: Record<string, HeroVariant> = {
   orangecounty: 'standard',
   ussmidway: 'cinematic',
   gettymuseum: 'cinematic',
+  yosemite: 'cinematic',
+  losangeles: 'split',
+  redwoodforest: 'split',
+  tahoe: 'cinematic',
+  mammothlake: 'minimal',
+  film: 'split',
+  carmelbythesea: 'cinematic',
 };
 
 export function getTemplateAssignment(slug: string): TemplateAssignment {

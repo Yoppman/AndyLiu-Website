@@ -35,6 +35,13 @@ const pins: Pin[] = [
   { id: 'orangecounty', label: 'Orange County', gallery: 'orangecounty', x: 13.5, y: 58, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780567672/orangecounty/dsc00550.jpg' },
   { id: 'ussmidway', label: 'USS Midway · San Diego', gallery: 'ussmidway', x: 13, y: 62, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780567764/ussmidway/dsc00694.jpg' },
   { id: 'getty', label: 'The Getty · LA', gallery: 'gettymuseum', x: 12, y: 54, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780568239/gettymuseum/dsc02124.jpg' },
+  { id: 'yosemite', label: 'Yosemite', gallery: 'yosemite', x: 11.5, y: 37, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780627009/yosemite/dsc03012.jpg' },
+  { id: 'losangeles', label: 'Los Angeles', gallery: 'losangeles', x: 12.5, y: 55, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780628332/losangeles/dsc04587.jpg' },
+  { id: 'redwoodforest', label: 'Redwood Forest · Santa Cruz', gallery: 'redwoodforest', x: 8, y: 41, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780630889/redwoodforest/dsc06176.jpg' },
+  { id: 'tahoe', label: 'Lake Tahoe', gallery: 'tahoe', x: 11, y: 33, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780630914/tahoe/dsc04839.jpg' },
+  { id: 'mammothlake', label: 'Mammoth Lakes', gallery: 'mammothlake', x: 12.5, y: 38, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780631738/mammothlake/dsc06342.jpg' },
+  { id: 'film', label: 'On Film · San Francisco', gallery: 'film', x: 8, y: 37, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780631753/film/84171998417199-r1-004-0a.jpg' },
+  { id: 'carmelbythesea', label: 'Carmel-by-the-Sea', gallery: 'carmelbythesea', x: 7, y: 44, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780632209/carmelbythesea/dsc06521.jpg' },
 ];
 
 const TravelMap: React.FC = () => {
