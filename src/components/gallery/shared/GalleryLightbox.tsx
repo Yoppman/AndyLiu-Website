@@ -19,6 +19,12 @@ interface Props {
 
 const clamp = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 
+/** Pull "r, g, b" out of a stored dominantColor (e.g. "rgba(196,203,193,0.6)"). */
+const rgbOf = (rgba: string): string => {
+  const m = rgba.match(/(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+  return m ? `${m[1]}, ${m[2]}, ${m[3]}` : '255, 255, 255';
+};
+
 // A snappy-but-soft settle, tuned to feel like the macOS Photos page turn.
 const SPRING = { type: 'spring', stiffness: 680, damping: 52, restDelta: 0.4 } as const;
 
@@ -350,6 +356,25 @@ const GalleryCarousel: React.FC<{
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
       >
+        {/* Ambient glow — the current photograph softly lights the dark room.
+            Crossfades gently as you move between frames. */}
+        <AnimatePresence>
+          <motion.div
+            key={cur}
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.9, ease: 'easeOut' }}
+            style={{
+              background: `radial-gradient(110% 95% at 50% 46%, rgba(${rgbOf(
+                photos[cur].dominantColor,
+              )}, 0.26) 0%, rgba(${rgbOf(photos[cur].dominantColor)}, 0.08) 50%, transparent 80%)`,
+            }}
+          />
+        </AnimatePresence>
+
         {/* the sliding track of frames */}
         <motion.div className="absolute left-1/2 top-0 h-full" style={{ x: trackX }}>
           {[-1, 0, 1].map((role) => {
