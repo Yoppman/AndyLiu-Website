@@ -43,7 +43,7 @@ const GalleryDetail: React.FC = () => {
   const imgRefs = useRef<(HTMLImageElement | null)[]>([]);
 
   const bgColor = useDynamicBg(photos, imgRefs, [renderDeferredGrid]);
-  const { lightboxIdx, setLightboxIdx } = useLightbox(photos);
+  const { lightboxIdx, setLightboxIdx } = useLightbox();
   usePrefetch(photos, heroImage.src);
   const { showTopArrow, scrollToTop } = useScrollTop();
 

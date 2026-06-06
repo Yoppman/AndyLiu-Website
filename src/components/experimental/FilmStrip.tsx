@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from 'motion/react';
 import { galleries } from '../../data/galleries';
 import { galleryDimensions } from '../../data/galleryDimensions';
 import type { Gallery } from '../../data/types/galleries';
@@ -171,7 +171,7 @@ interface FilmFrameProps {
   width: number;
   dominantColor: string;
   index: number;
-  progress: ReturnType<typeof useTransform>;
+  progress: MotionValue<number>;
   totalFrames: number;
 }
 
