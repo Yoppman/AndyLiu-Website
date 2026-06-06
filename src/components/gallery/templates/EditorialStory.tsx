@@ -235,7 +235,7 @@ const EditorialStory: React.FC<GalleryTemplateProps & { captions?: Record<number
 
   return (
     <div className="max-w-[1500px] mx-auto px-6 sm:px-10 md:px-16 lg:px-24 py-10 md:py-16">
-      <div ref={ref} className="w-full flex flex-col" style={{ gap: GAP }}>
+      <div ref={ref} className="flex w-full flex-col gap-12 md:gap-16 lg:gap-20">
         {width > 0 && blocks.map((b, k) => renderBlock(b, k))}
       </div>
     </div>
