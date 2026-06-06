@@ -4,7 +4,7 @@ export const GettymuseumGallery: Gallery = {
   slug: 'gettymuseum',
   title: 'The Getty',
   description: 'Travertine, gardens, and the LA sunset',
-  hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1780568296/gettymuseum/dsc02277.jpg', orientation: 'horizontal', dominantColor: 'rgba(46, 29, 14, 0.6)' },
+  hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1780568285/gettymuseum/dsc02225.jpg', orientation: 'horizontal', dominantColor: 'rgba(44, 38, 42, 0.6)' },
   location: { lat: 34.078, lng: -118.4741, region: 'California' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1780568215/gettymuseum/dsc02048.jpg', orientation: 'horizontal', dominantColor: 'rgba(216, 224, 223, 0.6)' },

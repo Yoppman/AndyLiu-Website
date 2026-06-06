@@ -4,7 +4,7 @@ export const CarmelbytheseaGallery: Gallery = {
   slug: 'carmelbythesea',
   title: 'Carmel-by-the-Sea',
   description: 'Cypress, white sand, and a day entirely my own',
-  hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1780632209/carmelbythesea/dsc06521.jpg', orientation: 'vertical', dominantColor: 'rgba(32, 28, 20, 0.6)' },
+  hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1780632206/carmelbythesea/dsc06510.jpg', orientation: 'horizontal', dominantColor: 'rgba(196, 203, 193, 0.6)' },
   location: { lat: 36.5552, lng: -121.9233, region: 'California' },
   photos: [
       { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1780632204/carmelbythesea/dsc06497.jpg', orientation: 'horizontal', dominantColor: 'rgba(50, 39, 17, 0.6)' },
