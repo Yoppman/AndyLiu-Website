@@ -111,7 +111,6 @@ export default function Header() {
               { to: '/photography', label: 'Photography' },
               { to: '/map', label: 'Map' },
               // { to: '/blog', label: 'Blog' },
-              { to: '/resume', label: 'Resume' },
               { to: '/contact', label: 'Contact' },
             ].map(({ to, label }) => (
               <li key={to}>

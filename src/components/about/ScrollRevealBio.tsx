@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'motion/react';
 
 /**
@@ -96,25 +97,48 @@ const ScrollRevealBio: React.FC = () => {
             className="order-1 flex justify-center px-4 lg:order-2 lg:justify-end lg:px-0"
             style={{ y: portraitY }}
           >
-            <div className="relative">
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -inset-8 blur-2xl"
-                style={{
-                  background:
-                    'radial-gradient(closest-side, rgba(244,208,150,0.16), transparent)',
-                }}
-              />
-              <motion.img
-                src={PORTRAIT}
-                alt="Portrait of Andy Liu"
-                draggable={false}
-                className="relative w-full max-w-[360px] rounded-[3px] shadow-[0_35px_70px_-20px_rgba(0,0,0,0.6)] md:max-w-[420px]"
-                initial={{ opacity: 0, scale: 0.96 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-              />
+            <div className="flex flex-col items-center">
+              <div className="relative">
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute -inset-8 blur-2xl"
+                  style={{
+                    background:
+                      'radial-gradient(closest-side, rgba(244,208,150,0.16), transparent)',
+                  }}
+                />
+                <motion.img
+                  src={PORTRAIT}
+                  alt="Portrait of Andy Liu"
+                  draggable={false}
+                  className="relative w-full max-w-[360px] rounded-[3px] shadow-[0_35px_70px_-20px_rgba(0,0,0,0.6)] md:max-w-[420px]"
+                  initial={{ opacity: 0, scale: 0.96 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                />
+              </div>
+
+              {/* Résumé — a quiet hairline button that ignites amber on hover */}
+              <motion.div
+                className="mt-8"
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <Link
+                  to="/resume"
+                  className="group inline-flex items-center gap-3 rounded-full border border-white/15 px-7 py-3 transition-all duration-500 hover:border-amber-400/50 hover:bg-amber-400/[0.06]"
+                >
+                  <span className="font-cormorant text-sm uppercase tracking-[0.35em] text-[#efeae1]/80 transition-colors duration-500 group-hover:text-amber-300">
+                    My Résumé
+                  </span>
+                  <span className="text-[#efeae1]/50 transition-all duration-500 group-hover:translate-x-1 group-hover:text-amber-300">
+                    &rarr;
+                  </span>
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         </div>

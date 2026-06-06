@@ -75,12 +75,7 @@ const Contact: React.FC = () => {
           </div>
         </section>
 
-        {/* Act 2 — the atlas */}
-        <section className="bg-[#0a0a0b] px-6 py-20 md:py-28">
-          <TravelMap />
-        </section>
-
-        {/* Act 3 — the details */}
+        {/* Act 2 — the details */}
         <section className="bg-[#0a0a0b] px-6 py-20 md:py-28">
           <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-24">
             <div>
@@ -137,6 +132,11 @@ const Contact: React.FC = () => {
               <DraggableBusinessCard />
             </div>
           </div>
+        </section>
+
+        {/* Act 3 — the atlas */}
+        <section className="bg-[#0a0a0b] px-6 py-20 md:py-28">
+          <TravelMap />
         </section>
 
         {/* Act 4 — the sign-off */}
