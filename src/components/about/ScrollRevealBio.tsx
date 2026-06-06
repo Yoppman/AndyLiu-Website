@@ -91,25 +91,21 @@ const ScrollRevealBio: React.FC = () => {
             </div>
           </div>
 
-          {/* Portrait */}
+          {/* Portrait — a clean hung print, no matte */}
           <motion.div
             className="order-1 flex justify-center px-4 lg:order-2 lg:justify-end lg:px-0"
             style={{ y: portraitY }}
           >
-            <motion.div
-              className="max-w-[340px] rounded-[1.75rem] border border-neutral-200 bg-neutral-50 p-3 shadow-xl md:max-w-[400px]"
-              initial={{ opacity: 0, scale: 0.94 }}
+            <motion.img
+              src={PORTRAIT}
+              alt="Portrait of Andy Liu"
+              draggable={false}
+              className="w-full max-w-[360px] rounded-[3px] shadow-[0_35px_70px_-20px_rgba(0,0,0,0.45)] md:max-w-[420px]"
+              initial={{ opacity: 0, scale: 0.96 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <img
-                src={PORTRAIT}
-                alt="Portrait of Andy Liu"
-                draggable={false}
-                className="h-auto w-full rounded-[1.25rem]"
-              />
-            </motion.div>
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            />
           </motion.div>
         </div>
       </div>
