@@ -7,14 +7,7 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion';
-import {
-  cldFull,
-  cldSet,
-  cldSquare,
-  cldSquareSet,
-  aspectOf,
-  type Photo,
-} from '../../gallery/shared/cloudinaryUtils';
+import { cldSquare, cldSquareSet, type Photo } from '../../gallery/shared/cloudinaryUtils';
 import { useScrollProgress } from '../useScrollProgress';
 import { wallCoversAndFrames, londonCenterPhoto } from '../heroImages';
 
@@ -24,9 +17,8 @@ import { wallCoversAndFrames, londonCenterPhoto } from '../heroImages';
  * A living wall of curated photographs — every gallery's cover plus the
  * Selected Frames (never random). It parallaxes with scroll and leans toward
  * the cursor; individual tiles gently crossfade to other frames over time, so
- * the wall quietly evolves. At its heart, fixed and steady, sits the London
- * mirror-selfie — always centered while the rest drifts around it. A literary
- * line surfaces over it all on scroll.
+ * the wall quietly evolves. One tile is pinned and never swaps: the London
+ * mirror-selfie, placed in the middle of the middle column.
  *
  * Performance: transforms only + occasional opacity crossfades (no continuous
  * animation, no per-image CSS filters, no full-screen blends). No WebGL.
@@ -36,6 +28,7 @@ const GRAIN =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>";
 
 const SLOTS_PER_COL = 5;
+const MID_SLOT = Math.floor(SLOTS_PER_COL / 2);
 const SWAP_MS = 2600; // how often one tile crossfades to a fresh frame
 
 const reduceMotion = () =>
@@ -69,14 +62,19 @@ function seededShuffle<T>(arr: T[], seed = 11): T[] {
   return a;
 }
 
-/** Lay the pool (minus the centerpiece) out into cols × SLOTS_PER_COL slots. */
+/** Lay the pool out into cols × SLOTS_PER_COL, pinning the centerpiece to the
+ *  middle slot of the middle column. */
 function buildGrid(cols: number, pool: Photo[], center?: Photo): Photo[][] {
   const deck = seededShuffle(pool.filter((p) => p.src !== center?.src));
   const grid: Photo[][] = Array.from({ length: cols }, () => []);
   if (deck.length === 0) return grid;
+  const midCol = Math.floor(cols / 2);
   let k = 0;
   for (let c = 0; c < cols; c++) {
-    for (let r = 0; r < SLOTS_PER_COL; r++) grid[c].push(deck[k++ % deck.length]);
+    for (let r = 0; r < SLOTS_PER_COL; r++) {
+      if (c === midCol && r === MID_SLOT && center) grid[c].push(center);
+      else grid[c].push(deck[k++ % deck.length]);
+    }
   }
   return grid;
 }
@@ -107,8 +105,8 @@ const Column: React.FC<{
           <AnimatePresence>
             <motion.img
               key={p.src}
-              src={cldSquare(p.src, 200)}
-              srcSet={cldSquareSet(p.src, [200, 320])}
+              src={cldSquare(p.src, 720)}
+              srcSet={cldSquareSet(p.src, [420, 720, 1080])}
               sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
               alt=""
               loading={eager && i === 0 ? 'eager' : 'lazy'}
@@ -164,7 +162,8 @@ const WallOpening: React.FC = () => {
     setGrid(buildGrid(cols, pool, center));
   }, [cols, pool, center]);
 
-  // Quietly evolve: every SWAP_MS, crossfade one slot to a frame not on the wall.
+  // Quietly evolve: every SWAP_MS, crossfade one (non-pinned) slot to a frame
+  // not currently on the wall.
   useEffect(() => {
     if (reduce) return;
     const centerSrc = center?.src;
@@ -172,12 +171,14 @@ const WallOpening: React.FC = () => {
       if (document.hidden) return;
       setGrid((prev) => {
         if (prev.length === 0) return prev;
+        const midCol = Math.floor(prev.length / 2);
         const shown = new Set<string>();
         prev.forEach((col) => col.forEach((p) => shown.add(p.src)));
         const spare = pool.filter((p) => p.src !== centerSrc && !shown.has(p.src));
         if (spare.length === 0) return prev;
         const c = Math.floor(Math.random() * prev.length);
         const r = Math.floor(Math.random() * prev[c].length);
+        if (c === midCol && r === MID_SLOT) return prev; // never swap the pinned tile
         const next = prev.map((col) => col.slice());
         next[c][r] = spare[Math.floor(Math.random() * spare.length)];
         return next;
@@ -212,28 +213,6 @@ const WallOpening: React.FC = () => {
           style={{ backgroundImage: `url("${GRAIN}")`, backgroundSize: '170px 170px' }}
           aria-hidden
         />
-
-        {/* The fixed heart — London's mirror-selfie, always centered and steady */}
-        {center && (
-          <motion.div
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-            style={{ height: '34vh', aspectRatio: String(aspectOf(center)) }}
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-            aria-hidden
-          >
-            <img
-              src={cldFull(center.src, 900)}
-              srcSet={cldSet(center.src, [600, 900, 1200])}
-              sizes="34vh"
-              alt=""
-              draggable={false}
-              className="h-full w-full rounded-[3px] object-cover shadow-[0_30px_80px_rgba(0,0,0,0.6)] ring-1 ring-white/10"
-              style={{ backgroundColor: center.dominantColor }}
-            />
-          </motion.div>
-        )}
 
         {/* Filmic pool so the line reads over the wall */}
         <motion.div
