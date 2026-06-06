@@ -151,7 +151,7 @@ const Photography: React.FC = () => {
                         loading="lazy"
                         decoding="async"
                         draggable={false}
-                        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.04] ${
+                        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-1000 ease-out group-hover:scale-[1.04] ${
                           PLACEHOLDER_ONLY ? 'scale-105 blur-xl' : ''
                         }`}
                         style={{ backgroundColor: preview.dominantColor }}
