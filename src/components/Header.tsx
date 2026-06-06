@@ -79,7 +79,7 @@ export default function Header() {
   // needs light text there (until it drops to a light background on hover).
   const isHome = pathname === '/';
   const isMap = pathname === '/map';
-  const isDarkPage = isMap || pathname === '/experimental';
+  const isDarkPage = isMap || pathname === '/experimental' || pathname === '/contact';
   // The About hero is a light stage with a dark portrait that tracks the cursor
   // up into the header. mix-blend-difference keeps the nav legible over both.
   const isAbout = pathname === '/about';
