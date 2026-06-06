@@ -270,3 +270,9 @@
   transform: translate(-50%, -50%) scale(0.7);
   animation: locationPulse 2.2s ease-out infinite;
 }
+
+/* ─── Spectrum: skip rendering offscreen tiles so the whole archive stays smooth ─── */
+.spectrum-tile {
+  content-visibility: auto;
+  contain-intrinsic-size: 90px 90px;
+}
