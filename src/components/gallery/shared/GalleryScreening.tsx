@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Pause } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Pause } from 'lucide-react';
 import { cldFull, Photo } from './cloudinaryUtils';
 
 interface Props {
@@ -13,7 +13,7 @@ interface Props {
   onClose: () => void;
 }
 
-const DWELL = 5000; // ms each photograph holds before the dissolve
+const DWELL = 5000; // ms each photograph holds before auto-advancing
 
 /** "r, g, b" from a stored dominantColor string. */
 const rgbOf = (rgba: string): string => {
@@ -27,6 +27,10 @@ type Phase = 'intro' | 'playing' | 'end';
  * "Screening" — a gallery played as a short film. Each photograph is shown
  * whole (letterboxed, lit by its own ambient color), slowly cross-dissolving;
  * the written intro opens it, captions are subtitles, the signoff closes it.
+ *
+ * Pacing: a frame holds DWELL ms — a thin progress bar fills and its end drives
+ * the advance (so it never feels frozen). Click the right/left half (or the
+ * arrows, or press →/←) to step immediately; space pauses; Esc closes.
  * No WebGL — images + transforms only.
  */
 const GalleryScreening: React.FC<Props> = ({
@@ -48,7 +52,12 @@ const GalleryScreening: React.FC<Props> = ({
   const [phase, setPhase] = useState<Phase>(intro ? 'intro' : 'playing');
   const [i, setI] = useState(startIdx);
   const [paused, setPaused] = useState(false);
-  const [chrome, setChrome] = useState(true);
+
+  const goNext = useCallback(() => {
+    if (i >= photos.length - 1) setPhase('end');
+    else setI(i + 1);
+  }, [i, photos.length]);
+  const goPrev = useCallback(() => setI((p) => Math.max(0, p - 1)), []);
 
   // Opening title card → first frame.
   useEffect(() => {
@@ -56,16 +65,6 @@ const GalleryScreening: React.FC<Props> = ({
     const id = window.setTimeout(() => setPhase('playing'), 4200);
     return () => window.clearTimeout(id);
   }, [phase]);
-
-  // Auto-advance through the frames; the last one rolls into the closing card.
-  useEffect(() => {
-    if (phase !== 'playing' || paused) return;
-    const id = window.setTimeout(() => {
-      if (i >= photos.length - 1) setPhase('end');
-      else setI(i + 1);
-    }, DWELL);
-    return () => window.clearTimeout(id);
-  }, [phase, paused, i, photos.length]);
 
   // Warm the next couple of frames so the dissolve never waits.
   useEffect(() => {
@@ -85,15 +84,12 @@ const GalleryScreening: React.FC<Props> = ({
       else if (e.code === 'Space') {
         e.preventDefault();
         if (phase === 'playing') setPaused((p) => !p);
-      } else if (e.key === 'ArrowRight' && phase === 'playing') {
-        setI((p) => Math.min(photos.length - 1, p + 1));
-      } else if (e.key === 'ArrowLeft' && phase === 'playing') {
-        setI((p) => Math.max(0, p - 1));
-      }
+      } else if (e.key === 'ArrowRight' && phase === 'playing') goNext();
+      else if (e.key === 'ArrowLeft' && phase === 'playing') goPrev();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [phase, onClose, photos.length]);
+  }, [phase, onClose, goNext, goPrev]);
 
   // Lock scroll while open.
   useEffect(() => {
@@ -104,32 +100,28 @@ const GalleryScreening: React.FC<Props> = ({
     };
   }, []);
 
-  // Chrome (and cursor) fade away when the pointer rests.
-  useEffect(() => {
-    let t: number | undefined;
-    const wake = () => {
-      setChrome(true);
-      window.clearTimeout(t);
-      t = window.setTimeout(() => setChrome(false), 2600);
-    };
-    wake();
-    window.addEventListener('mousemove', wake);
-    return () => {
-      window.removeEventListener('mousemove', wake);
-      window.clearTimeout(t);
-    };
-  }, []);
+  // Click the left half to go back, the right half to go forward; in the
+  // opening title, a click skips straight to the frames.
+  const onBackdropClick = (e: React.MouseEvent) => {
+    if (phase === 'intro') {
+      setPhase('playing');
+      return;
+    }
+    if (phase !== 'playing') return;
+    if (e.clientX < window.innerWidth / 2) goPrev();
+    else goNext();
+  };
 
   const photo = photos[i];
 
   return (
     <motion.div
-      className={`fixed inset-0 z-[80] overflow-hidden bg-black ${chrome ? '' : 'cursor-none'}`}
+      className="fixed inset-0 z-[80] cursor-pointer overflow-hidden bg-black"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      onClick={() => phase === 'playing' && setPaused((p) => !p)}
+      onClick={onBackdropClick}
     >
       {/* Ambient color of the current frame */}
       {phase === 'playing' && (
@@ -200,7 +192,7 @@ const GalleryScreening: React.FC<Props> = ({
         {phase === 'playing' && captions?.[i] && (
           <motion.div
             key={`cap-${i}`}
-            className="pointer-events-none absolute inset-x-0 bottom-[11vh] flex justify-center px-8"
+            className="pointer-events-none absolute inset-x-0 bottom-[12vh] flex justify-center px-8"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
@@ -253,39 +245,80 @@ const GalleryScreening: React.FC<Props> = ({
         )}
       </AnimatePresence>
 
-      {/* Chrome — fades out when the pointer rests */}
-      <motion.div animate={{ opacity: chrome ? 1 : 0 }} transition={{ duration: 0.4 }}>
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          aria-label="Close"
-          className="absolute right-6 top-6 z-10 text-white/60 transition-colors hover:text-white"
-        >
-          <X size={28} />
-        </button>
-        {phase === 'playing' && (
-          <div className="absolute left-6 top-6 font-cormorant text-sm uppercase tracking-[0.25em] text-white/55">
-            {title} · {i + 1}/{photos.length}
-          </div>
-        )}
-      </motion.div>
+      {/* Close (always available) */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        aria-label="Close"
+        className="absolute right-6 top-6 z-10 text-white/60 transition-colors hover:text-white"
+      >
+        <X size={28} />
+      </button>
 
-      {/* Paused glyph */}
-      <AnimatePresence>
-        {phase === 'playing' && paused && (
-          <motion.div
-            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white/70"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
+      {/* Playing chrome — subtle, but always visible so it never feels stuck */}
+      {phase === 'playing' && (
+        <>
+          <div className="pointer-events-none absolute left-6 top-6 font-cormorant text-sm uppercase tracking-[0.25em] text-white/50">
+            {title}
+          </div>
+
+          {i > 0 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                goPrev();
+              }}
+              aria-label="Previous"
+              className="absolute left-3 top-1/2 z-10 -translate-y-1/2 text-white/25 transition-colors hover:text-white/80 md:left-6"
+            >
+              <ChevronLeft size={40} />
+            </button>
+          )}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              goNext();
+            }}
+            aria-label="Next"
+            className="absolute right-3 top-1/2 z-10 -translate-y-1/2 text-white/25 transition-colors hover:text-white/80 md:right-6"
           >
-            <Pause size={48} strokeWidth={1} />
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <ChevronRight size={40} />
+          </button>
+
+          <div className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 font-cormorant text-sm tracking-[0.3em] text-white/55">
+            {i + 1} / {photos.length}
+          </div>
+
+          {/* Progress bar — fills over DWELL; its end drives the auto-advance */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[2px] bg-white/10">
+            <div
+              key={i}
+              onAnimationEnd={goNext}
+              className="h-full origin-left bg-white/55"
+              style={{
+                animation: `screeningProgress ${DWELL}ms linear forwards`,
+                animationPlayState: paused ? 'paused' : 'running',
+              }}
+            />
+          </div>
+
+          <AnimatePresence>
+            {paused && (
+              <motion.div
+                className="pointer-events-none absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 text-white/70"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+              >
+                <Pause size={48} strokeWidth={1} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      )}
     </motion.div>
   );
 };

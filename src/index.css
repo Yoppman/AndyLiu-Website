@@ -276,3 +276,9 @@
   content-visibility: auto;
   contain-intrinsic-size: 90px 90px;
 }
+
+/* ─── Screening: per-frame progress bar (its end drives the auto-advance) ─── */
+@keyframes screeningProgress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}

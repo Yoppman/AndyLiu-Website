@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { galleries } from '../data/galleries';
-import { cldSquare } from '../components/gallery/shared/cloudinaryUtils';
+import { cldSquare, type Photo } from '../components/gallery/shared/cloudinaryUtils';
+import { useLightbox } from '../components/gallery/shared/useLightbox';
+import GalleryLightbox from '../components/gallery/shared/GalleryLightbox';
 import PageTransition from '../components/PageTransition';
 
 /** RGB (0–255) → HSL with hue in degrees, s/l in 0–1. */
@@ -38,26 +39,34 @@ function sortKey(rgba: string): number {
 interface Tile {
   src: string;
   color: string;
-  slug: string;
   title: string;
+  orientation: 'horizontal' | 'vertical';
 }
 
 /**
  * "Spectrum" — the whole archive arranged by color into one flowing tapestry.
- * A dense grid of square crops on black; hover to zoom a frame, click to jump
- * to its gallery. Offscreen tiles are skipped via CSS content-visibility
- * (.spectrum-tile) so even the full set stays smooth.
+ * A dense grid of square crops on black; hover to zoom a frame, click to open
+ * it in the lightbox (which then lets you swipe the full color-sorted run).
+ * Offscreen tiles are skipped via CSS content-visibility (.spectrum-tile).
  */
 const Spectrum: React.FC = () => {
   const tiles = useMemo<Tile[]>(() => {
     const all: Tile[] = [];
     for (const g of galleries) {
       for (const p of g.photos) {
-        all.push({ src: p.src, color: p.dominantColor, slug: g.slug, title: g.title });
+        all.push({ src: p.src, color: p.dominantColor, title: g.title, orientation: p.orientation });
       }
     }
     return all.sort((a, b) => sortKey(a.color) - sortKey(b.color));
   }, []);
+
+  // The lightbox browses the same color-sorted sequence.
+  const lightboxPhotos = useMemo<Photo[]>(
+    () => tiles.map((t) => ({ src: t.src, orientation: t.orientation, dominantColor: t.color })),
+    [tiles],
+  );
+
+  const { lightboxIdx, setLightboxIdx } = useLightbox();
 
   return (
     <PageTransition>
@@ -82,9 +91,9 @@ const Spectrum: React.FC = () => {
           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(78px, 1fr))' }}
         >
           {tiles.map((t, i) => (
-            <Link
+            <button
               key={t.src + i}
-              to={`/photography/${t.slug}`}
+              onClick={() => setLightboxIdx(i)}
               title={t.title}
               className="spectrum-tile group relative block aspect-square overflow-hidden"
             >
@@ -98,9 +107,16 @@ const Spectrum: React.FC = () => {
                 style={{ backgroundColor: t.color }}
               />
               <span className="pointer-events-none absolute inset-0 ring-inset ring-white/0 transition-all duration-300 group-hover:ring-2 group-hover:ring-white/80" />
-            </Link>
+            </button>
           ))}
         </div>
+
+        <GalleryLightbox
+          photos={lightboxPhotos}
+          title="Spectrum"
+          lightboxIdx={lightboxIdx}
+          setLightboxIdx={setLightboxIdx}
+        />
       </div>
     </PageTransition>
   );
