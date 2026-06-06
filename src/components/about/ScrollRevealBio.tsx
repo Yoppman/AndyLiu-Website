@@ -129,10 +129,11 @@ const ScrollRevealBio: React.FC = () => {
               >
                 <Link
                   to="/resume"
+                  onClick={() => sessionStorage.setItem('about:scrollY', String(window.scrollY))}
                   className="group inline-flex items-center gap-3 rounded-full border border-white/15 px-7 py-3 transition-all duration-500 hover:border-amber-400/50 hover:bg-amber-400/[0.06]"
                 >
                   <span className="font-cormorant text-sm uppercase tracking-[0.35em] text-[#efeae1]/80 transition-colors duration-500 group-hover:text-amber-300">
-                    My Résumé
+                    Résumé
                   </span>
                   <span className="text-[#efeae1]/50 transition-all duration-500 group-hover:translate-x-1 group-hover:text-amber-300">
                     &rarr;
