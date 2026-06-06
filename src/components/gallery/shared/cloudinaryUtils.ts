@@ -58,6 +58,7 @@ export interface Gallery {
   description: string;
   hero?: Photo;
   photos: Photo[];
+  location?: { lat: number; lng: number; region: string };
 }
 
 /** Upright display dimensions for a photo (falls back to canonical 3:2 / 2:3). */

@@ -12,7 +12,6 @@ import GalleryHero from '../components/gallery/shared/GalleryHero';
 import GalleryLightbox from '../components/gallery/shared/GalleryLightbox';
 import GalleryNav from '../components/gallery/shared/GalleryNav';
 import ScrollTopButton from '../components/gallery/shared/ScrollTopButton';
-import { getTemplateAssignment } from '../components/gallery/templateConfig';
 import EditorialStory from '../components/gallery/templates/EditorialStory';
 import GalleryIntro from '../components/gallery/shared/GalleryIntro';
 import { galleryStories } from '../data/galleryStories';
@@ -55,7 +54,6 @@ const GalleryDetail: React.FC = () => {
     idle(() => setRenderDeferredGrid(true));
   }, []);
 
-  const { hero: heroVariant } = getTemplateAssignment(slug || '');
   const story = galleryStories[slug || ''];
   const storyColor = isDarkColor(bgColor) ? '#f1efe9' : '#1b1b1b';
 
@@ -69,8 +67,8 @@ const GalleryDetail: React.FC = () => {
           photo={heroImage}
           title={title}
           isMorphing={isMorphing}
-          variant={heroVariant}
           description={description}
+          region={gallery.location?.region}
         />
 
         <GalleryIntro meta={story?.meta} intro={story?.intro} color={storyColor} />
