@@ -53,14 +53,28 @@ const CinematicHero: React.FC<Props> = ({ photo, title, isMorphing, description 
       <motion.div className="absolute inset-0" style={{ scale, y }}>
         <HeroImg photo={photo} title={title} className="w-full h-full object-cover" />
       </motion.div>
-      <motion.div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity }} />
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-        <h1 className="font-cormorant text-5xl md:text-7xl lg:text-8xl tracking-wide">{title}</h1>
+      <motion.div
+        className="absolute inset-0"
+        style={{
+          opacity: overlayOpacity,
+          background:
+            'linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.12) 32%, rgba(0,0,0,0.12) 64%, rgba(0,0,0,0.62))',
+        }}
+      />
+      <div className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white">
+        <h1 className="font-cormorant text-5xl tracking-wide drop-shadow-[0_2px_24px_rgba(0,0,0,0.55)] md:text-7xl lg:text-8xl">
+          {title}
+        </h1>
         {description && (
-          <p className="font-cormorant text-lg md:text-xl mt-4 max-w-xl text-center opacity-80">
+          <p className="mt-4 max-w-xl font-cormorant text-lg opacity-90 drop-shadow-[0_1px_12px_rgba(0,0,0,0.5)] md:text-xl">
             {description}
           </p>
         )}
+      </div>
+      {/* scroll cue */}
+      <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-white/70">
+        <span className="font-cormorant text-[0.65rem] uppercase tracking-[0.3em]">Scroll</span>
+        <span className="block h-10 w-px bg-gradient-to-b from-white/70 to-transparent" />
       </div>
     </div>
   );
@@ -115,8 +129,8 @@ const GalleryHero: React.FC<Props> = (props) => {
       style={{ opacity: isMorphing ? 0 : 1 }}
     >
       <HeroImg photo={photo} title={title} className="absolute inset-0 w-full h-full object-cover" />
-      <div className="absolute inset-0 bg-black/30" />
-      <h1 className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white font-cormorant text-4xl md:text-5xl lg:text-6xl">
+      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/0 to-black/0" />
+      <h1 className="absolute bottom-8 left-1/2 -translate-x-1/2 font-cormorant text-4xl text-white drop-shadow-[0_2px_16px_rgba(0,0,0,0.5)] md:text-5xl lg:text-6xl">
         {title}
       </h1>
     </div>
