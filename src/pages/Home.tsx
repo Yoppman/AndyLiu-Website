@@ -5,7 +5,7 @@ import LocationInfo from '../components/LocationInfo';
 import GalleryPreview from '../components/GalleryPreview';
 import HomeHero, { type HeroOpening } from '../components/home/HomeHero';
 import PageTransition from '../components/PageTransition';
-import CursorTrailCanvas from '../components/CursorTrailCanvas';
+import CursorGlow from '../components/CursorGlow';
 import DraggableBusinessCard from '../components/contact/DraggableBusinessCard';
 
 const OPENINGS: { id: HeroOpening; label: string }[] = [
@@ -55,7 +55,7 @@ const Home: React.FC = () => {
   return (
     <PageTransition>
     <div className="relative">
-      <CursorTrailCanvas />
+      <CursorGlow />
 
       <OpeningSwitcher value={opening} onChange={setOpening} />
 
