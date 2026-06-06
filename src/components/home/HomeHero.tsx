@@ -27,7 +27,7 @@ const HomeHero: React.FC<{ opening?: HeroOpening }> = ({ opening = 'wall' }) => 
       ) : opening === 'frame' ? (
         <FrameOpening />
       ) : (
-        <WallOpening photos={photos} />
+        <WallOpening />
       )}
       <FloatingGallery />
       <ComicGrid />

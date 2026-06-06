@@ -1,32 +1,46 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   motion,
+  AnimatePresence,
   useMotionValue,
   useSpring,
   useTransform,
   type MotionValue,
 } from 'framer-motion';
-import { cldSquare, cldSquareSet, type Photo } from '../../gallery/shared/cloudinaryUtils';
+import {
+  cldFull,
+  cldSet,
+  cldSquare,
+  cldSquareSet,
+  aspectOf,
+  type Photo,
+} from '../../gallery/shared/cloudinaryUtils';
 import { useScrollProgress } from '../useScrollProgress';
+import { wallCoversAndFrames, londonCenterPhoto } from '../heroImages';
 
 /**
  * Opening · "The Wall"
  * --------------------
- * A living wall of real photographs that parallaxes with scroll and leans
- * toward the cursor; as you descend it sinks into a pool and a single literary
- * line surfaces. Density, then resolution.
+ * A living wall of curated photographs — every gallery's cover plus the
+ * Selected Frames (never random). It parallaxes with scroll and leans toward
+ * the cursor; individual tiles gently crossfade to other frames over time, so
+ * the wall quietly evolves. At its heart, fixed and steady, sits the London
+ * mirror-selfie — always centered while the rest drifts around it. A literary
+ * line surfaces over it all on scroll.
  *
- * Tiles are uniform squares (content-aware Cloudinary crop — gravity auto, so a
- * subject is never chopped). Full compositions live, uncropped, in the gallery.
- *
- * Performance: matches the original Living Mosaic's cost — transforms only
- * (scroll + cursor), no continuous animation, no per-image CSS filters, no
- * full-screen blend modes (the filmic darkening is one static solid veil). No
- * WebGL, so nothing touches the context budget.
+ * Performance: transforms only + occasional opacity crossfades (no continuous
+ * animation, no per-image CSS filters, no full-screen blends). No WebGL.
  */
 
 const GRAIN =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>";
+
+const SLOTS_PER_COL = 5;
+const SWAP_MS = 2600; // how often one tile crossfades to a fresh frame
+
+const reduceMotion = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function useColumns() {
   const [cols, setCols] = useState(5);
@@ -42,17 +56,41 @@ function useColumns() {
   return cols;
 }
 
-/** One column: scroll + cursor parallax via a single transform. Images are
- *  duplicated so the column is tall enough that parallax never reveals an edge.
- *  Square height is set with padding-bottom (a % of width) so flexbox can't
- *  squish it. */
+/** Deterministic shuffle so the first paint is stable across reloads. */
+function seededShuffle<T>(arr: T[], seed = 11): T[] {
+  const a = arr.slice();
+  let s = seed % 2147483647;
+  if (s <= 0) s += 2147483646;
+  const rng = () => (s = (s * 16807) % 2147483647) / 2147483647;
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/** Lay the pool (minus the centerpiece) out into cols × SLOTS_PER_COL slots. */
+function buildGrid(cols: number, pool: Photo[], center?: Photo): Photo[][] {
+  const deck = seededShuffle(pool.filter((p) => p.src !== center?.src));
+  const grid: Photo[][] = Array.from({ length: cols }, () => []);
+  if (deck.length === 0) return grid;
+  let k = 0;
+  for (let c = 0; c < cols; c++) {
+    for (let r = 0; r < SLOTS_PER_COL; r++) grid[c].push(deck[k++ % deck.length]);
+  }
+  return grid;
+}
+
+/** One column: scroll + cursor parallax; tiles crossfade when their slot swaps.
+ *  Slots are duplicated so the column is tall enough that parallax never reveals
+ *  an edge. */
 const Column: React.FC<{
-  col: Photo[];
+  slots: Photo[];
   index: number;
   scroll: MotionValue<number>;
   pointerY: MotionValue<number>;
   eager: boolean;
-}> = ({ col, index, scroll, pointerY, eager }) => {
+}> = ({ slots, index, scroll, pointerY, eager }) => {
   const dir = index % 2 === 0 ? 1 : -1;
   const colScroll = useTransform(scroll, [0, 1], [-7 * dir - 6, 7 * dir]);
   const colMouse = useTransform(pointerY, [-1, 1], [-2.5 * dir, 2.5 * dir]);
@@ -60,37 +98,45 @@ const Column: React.FC<{
 
   return (
     <motion.div className="flex-1 flex flex-col gap-3 md:gap-4" style={{ y }}>
-      {[...col, ...col].map((p, i) => (
+      {[...slots, ...slots].map((p, i) => (
         <div
-          key={p.src + i}
+          key={`${index}-${i}`}
           className="relative w-full shrink-0 overflow-hidden rounded-[2px]"
           style={{ paddingBottom: '100%', backgroundColor: p.dominantColor }}
         >
-          <img
-            src={cldSquare(p.src, 700)}
-            srcSet={cldSquareSet(p.src, [500, 800])}
-            sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
-            alt=""
-            loading={eager && i === 0 ? 'eager' : 'lazy'}
-            decoding="async"
-            draggable={false}
-            className="absolute inset-0 w-full h-full object-cover select-none opacity-90"
-          />
+          <AnimatePresence>
+            <motion.img
+              key={p.src}
+              src={cldSquare(p.src, 200)}
+              srcSet={cldSquareSet(p.src, [200, 320])}
+              sizes="(max-width: 640px) 33vw, (max-width: 1024px) 25vw, 20vw"
+              alt=""
+              loading={eager && i === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              draggable={false}
+              className="absolute inset-0 h-full w-full object-cover select-none"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.9 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.9, ease: 'easeInOut' }}
+            />
+          </AnimatePresence>
         </div>
       ))}
     </motion.div>
   );
 };
 
-const WallOpening: React.FC<{ photos: Photo[] }> = ({ photos }) => {
+const WallOpening: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const cols = useColumns();
-  const reduce =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = reduceMotion();
   const scroll = useScrollProgress(sectionRef);
 
-  // Cursor parallax (subtle, spring-smoothed) — same as the original mosaic.
+  const pool = useMemo(() => wallCoversAndFrames(), []);
+  const center = useMemo(() => londonCenterPhoto(), []);
+
+  // Cursor parallax (subtle, spring-smoothed).
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const px = useSpring(mx, { stiffness: 50, damping: 22 });
@@ -107,21 +153,43 @@ const WallOpening: React.FC<{ photos: Photo[] }> = ({ photos }) => {
 
   const wallX = useTransform(px, [-1, 1], [16, -16]);
   const wallScale = useTransform(scroll, [0, 1], [1.16, 1.04]);
-
-  // The title surfaces in the middle of the act.
   const titleOpacity = useTransform(scroll, [0.16, 0.46], [0, 1]);
   const titleY = useTransform(scroll, [0.16, 0.46], [34, 0]);
-  const scrimOpacity = useTransform(scroll, [0, 0.5], [0.18, 0.74]);
+  const scrimOpacity = useTransform(scroll, [0, 0.5], [0.18, 0.78]);
   const cueOpacity = useTransform(scroll, [0, 0.1], [1, 0]);
 
-  // Split photos into columns (round-robin).
-  const columns: Photo[][] = Array.from({ length: cols }, () => []);
-  photos.forEach((p, i) => columns[i % cols].push(p));
+  // The drifting grid, seeded once and re-laid when the column count changes.
+  const [grid, setGrid] = useState<Photo[][]>(() => buildGrid(5, pool, center));
+  useEffect(() => {
+    setGrid(buildGrid(cols, pool, center));
+  }, [cols, pool, center]);
+
+  // Quietly evolve: every SWAP_MS, crossfade one slot to a frame not on the wall.
+  useEffect(() => {
+    if (reduce) return;
+    const centerSrc = center?.src;
+    const id = window.setInterval(() => {
+      if (document.hidden) return;
+      setGrid((prev) => {
+        if (prev.length === 0) return prev;
+        const shown = new Set<string>();
+        prev.forEach((col) => col.forEach((p) => shown.add(p.src)));
+        const spare = pool.filter((p) => p.src !== centerSrc && !shown.has(p.src));
+        if (spare.length === 0) return prev;
+        const c = Math.floor(Math.random() * prev.length);
+        const r = Math.floor(Math.random() * prev[c].length);
+        const next = prev.map((col) => col.slice());
+        next[c][r] = spare[Math.floor(Math.random() * spare.length)];
+        return next;
+      });
+    }, SWAP_MS);
+    return () => window.clearInterval(id);
+  }, [reduce, pool, center]);
 
   return (
     <section ref={sectionRef} className="relative" style={{ height: '230vh' }}>
       <div className="sticky top-0 h-screen overflow-hidden bg-[#0a0a0b]">
-        {/* The wall */}
+        {/* The drifting, evolving wall */}
         <motion.div
           className="absolute inset-0 flex gap-3 md:gap-4 px-3 md:px-4"
           style={{ x: wallX, scale: wallScale, transformOrigin: 'center' }}
@@ -130,29 +198,50 @@ const WallOpening: React.FC<{ photos: Photo[] }> = ({ photos }) => {
           transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
           aria-hidden
         >
-          {columns.map((col, ci) => (
-            <Column key={ci} col={col} index={ci} scroll={scroll} pointerY={py} eager={ci < 2} />
+          {grid.map((slots, ci) => (
+            <Column key={ci} slots={slots} index={ci} scroll={scroll} pointerY={py} eager={ci < 2} />
           ))}
         </motion.div>
 
-        {/* Static filmic veil — a single solid layer that darkens the wall for
-            cohesion (replaces per-image brightness filters; no per-frame cost) */}
+        {/* Static filmic veil */}
         <div className="absolute inset-0 pointer-events-none bg-black/[0.12]" aria-hidden />
 
-        {/* Scoped film grain (no blend mode → cheap over the moving wall) */}
+        {/* Scoped film grain */}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.06]"
           style={{ backgroundImage: `url("${GRAIN}")`, backgroundSize: '170px 170px' }}
           aria-hidden
         />
 
-        {/* Filmic pool so the line reads and the wall feels like one image */}
+        {/* The fixed heart — London's mirror-selfie, always centered and steady */}
+        {center && (
+          <motion.div
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            style={{ height: '34vh', aspectRatio: String(aspectOf(center)) }}
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            aria-hidden
+          >
+            <img
+              src={cldFull(center.src, 900)}
+              srcSet={cldSet(center.src, [600, 900, 1200])}
+              sizes="34vh"
+              alt=""
+              draggable={false}
+              className="h-full w-full rounded-[3px] object-cover shadow-[0_30px_80px_rgba(0,0,0,0.6)] ring-1 ring-white/10"
+              style={{ backgroundColor: center.dominantColor }}
+            />
+          </motion.div>
+        )}
+
+        {/* Filmic pool so the line reads over the wall */}
         <motion.div
           className="absolute inset-0 pointer-events-none"
           style={{
             opacity: scrimOpacity,
             background:
-              'radial-gradient(115% 80% at 50% 50%, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 42%, transparent 72%), linear-gradient(to bottom, rgba(0,0,0,0.45), transparent 24%, transparent 72%, rgba(0,0,0,0.55))',
+              'radial-gradient(115% 80% at 50% 50%, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.4) 42%, transparent 74%), linear-gradient(to bottom, rgba(0,0,0,0.45), transparent 24%, transparent 72%, rgba(0,0,0,0.55))',
           }}
         />
 
@@ -161,13 +250,13 @@ const WallOpening: React.FC<{ photos: Photo[] }> = ({ photos }) => {
           className="absolute inset-0 flex flex-col items-center justify-center text-center px-6"
           style={{ opacity: titleOpacity, y: titleY }}
         >
-          <span className="font-cormorant tracking-[0.5em] text-[0.65rem] md:text-xs text-[#efeae1]/55 uppercase mb-6 md:mb-8 pl-[0.5em]">
+          <span className="font-cormorant tracking-[0.5em] text-[0.65rem] md:text-xs text-[#efeae1]/55 uppercase mb-6 md:mb-8 pl-[0.5em] drop-shadow-[0_2px_16px_rgba(0,0,0,0.6)]">
             Photographer &middot; Travel &amp; Street
           </span>
-          <p className="font-cormorant italic font-light text-[#efeae1]/70 text-lg md:text-2xl mb-3 md:mb-4">
+          <p className="font-cormorant italic font-light text-[#efeae1]/75 text-lg md:text-2xl mb-3 md:mb-4 drop-shadow-[0_2px_16px_rgba(0,0,0,0.6)]">
             In every hidden corner of the earth&thinsp;&mdash;
           </p>
-          <h1 className="font-cormorant font-light text-[#efeae1] leading-[1.04] text-[12vw] md:text-7xl lg:text-[5.5rem] max-w-[18ch]">
+          <h1 className="font-cormorant font-light text-[#efeae1] leading-[1.04] text-[12vw] md:text-7xl lg:text-[5.5rem] max-w-[18ch] drop-shadow-[0_2px_28px_rgba(0,0,0,0.65)]">
             I honor the story
             <span className="block italic font-extralight">behind the scene.</span>
           </h1>

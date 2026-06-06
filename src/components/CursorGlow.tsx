@@ -41,7 +41,7 @@ const CursorGlow: React.FC = () => {
         className="h-[340px] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-full"
         style={{
           background:
-            'radial-gradient(closest-side, rgba(244,208,150,0.18), rgba(244,208,150,0.06) 42%, transparent 72%)',
+            'radial-gradient(closest-side, rgba(244,208,150,0.3), rgba(244,208,150,0.1) 42%, transparent 72%)',
         }}
       />
     </motion.div>
