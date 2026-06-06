@@ -27,7 +27,7 @@ const ScrollRevealBio: React.FC = () => {
   const portraitY = useTransform(scrollYProgress, [0, 1], [60, -60]);
 
   return (
-    <section ref={sectionRef} className="bg-[#e7e5e0] py-24 md:py-32">
+    <section ref={sectionRef} className="bg-[#0a0a0b] py-24 md:py-32">
       <div className="w-full px-[8vw] sm:px-[6vw] md:px-[4vw] xl:px-[6vw] 2xl:px-[10vw]">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-24">
           {/* Text */}
@@ -40,7 +40,7 @@ const ScrollRevealBio: React.FC = () => {
               transition={{ duration: 0.6 }}
             >
               <span className="h-px w-10 bg-amber-500" />
-              <span className="font-cormorant text-xs uppercase tracking-[0.3em] text-neutral-400">
+              <span className="font-cormorant text-xs uppercase tracking-[0.3em] text-[#efeae1]/45">
                 The person behind the work
               </span>
             </motion.div>
@@ -50,19 +50,19 @@ const ScrollRevealBio: React.FC = () => {
               {playful.map((line, i) => (
                 <div key={line} className="overflow-hidden">
                   <motion.p
-                    className="font-playfair text-3xl leading-[1.2] text-neutral-900 md:text-4xl"
+                    className="font-playfair text-3xl leading-[1.2] text-[#efeae1] md:text-4xl"
                     initial={{ y: '110%' }}
                     whileInView={{ y: '0%' }}
                     viewport={{ once: true, amount: 0.6 }}
                     transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: i * 0.08 }}
                   >
-                    I <span className="italic text-neutral-500">{line}</span>
+                    I <span className="italic text-[#efeae1]/50">{line}</span>
                   </motion.p>
                 </div>
               ))}
             </div>
             <motion.p
-              className="mb-10 font-cormorant text-lg italic text-neutral-600 md:text-xl"
+              className="mb-10 font-cormorant text-lg italic text-[#efeae1]/60 md:text-xl"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
@@ -72,13 +72,13 @@ const ScrollRevealBio: React.FC = () => {
             </motion.p>
 
             {/* Substance */}
-            <div className="border-t border-neutral-300/70 pt-8">
-              <h3 className="mb-5 font-playfair text-xl text-neutral-800">From Taiwan to the Bay</h3>
+            <div className="border-t border-white/10 pt-8">
+              <h3 className="mb-5 font-playfair text-xl text-[#efeae1]/90">From Taiwan to the Bay</h3>
               <div className="space-y-5">
                 {sentences.map((s, i) => (
                   <motion.p
                     key={i}
-                    className="text-base leading-relaxed text-neutral-700 md:text-lg"
+                    className="text-base leading-relaxed text-[#efeae1]/70 md:text-lg"
                     initial={{ opacity: 0, x: -16 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.6 }}
@@ -91,21 +91,31 @@ const ScrollRevealBio: React.FC = () => {
             </div>
           </div>
 
-          {/* Portrait — a clean hung print, no matte */}
+          {/* Portrait — a clean print floating on the dark, lit by a soft glow */}
           <motion.div
             className="order-1 flex justify-center px-4 lg:order-2 lg:justify-end lg:px-0"
             style={{ y: portraitY }}
           >
-            <motion.img
-              src={PORTRAIT}
-              alt="Portrait of Andy Liu"
-              draggable={false}
-              className="w-full max-w-[360px] rounded-[3px] shadow-[0_35px_70px_-20px_rgba(0,0,0,0.45)] md:max-w-[420px]"
-              initial={{ opacity: 0, scale: 0.96 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            />
+            <div className="relative">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -inset-8 blur-2xl"
+                style={{
+                  background:
+                    'radial-gradient(closest-side, rgba(244,208,150,0.16), transparent)',
+                }}
+              />
+              <motion.img
+                src={PORTRAIT}
+                alt="Portrait of Andy Liu"
+                draggable={false}
+                className="relative w-full max-w-[360px] rounded-[3px] shadow-[0_35px_70px_-20px_rgba(0,0,0,0.6)] md:max-w-[420px]"
+                initial={{ opacity: 0, scale: 0.96 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              />
+            </div>
           </motion.div>
         </div>
       </div>

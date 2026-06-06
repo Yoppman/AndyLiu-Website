@@ -16,6 +16,9 @@ const About: React.FC = () => {
         <AboutHero />
       </div>
 
+      {/* The lights go down — the beige overture sinks into the dark story. */}
+      <div aria-hidden className="h-[45vh] bg-gradient-to-b from-[#e7e5e0] to-[#0a0a0b]" />
+
       <div id="bio-section">
         <ScrollRevealBio />
       </div>

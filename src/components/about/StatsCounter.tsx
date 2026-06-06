@@ -44,14 +44,14 @@ const StatItem: React.FC<{ stat: Stat; delay: number }> = ({ stat, delay }) => {
       transition={{ duration: 0.5, delay: delay / 1000 }}
     >
       <div className="flex items-baseline justify-center">
-        <motion.span className="font-cormorant text-6xl md:text-7xl font-bold text-neutral-900">
+        <motion.span className="font-cormorant text-6xl md:text-7xl font-bold text-[#efeae1]">
           {rounded}
         </motion.span>
-        <span className="font-cormorant text-2xl md:text-3xl text-amber-500 ml-1">
+        <span className="font-cormorant text-2xl md:text-3xl text-amber-400 ml-1">
           {stat.suffix}
         </span>
       </div>
-      <p className="mt-3 text-xs md:text-sm uppercase tracking-[0.25em] text-neutral-400 font-sans">
+      <p className="mt-3 text-xs md:text-sm uppercase tracking-[0.25em] text-[#efeae1]/40 font-sans">
         {stat.label}
       </p>
     </motion.div>
@@ -60,9 +60,9 @@ const StatItem: React.FC<{ stat: Stat; delay: number }> = ({ stat, delay }) => {
 
 const StatsCounter: React.FC = () => {
   return (
-    <section className="py-20 md:py-24 bg-[#e7e5e0]">
+    <section className="py-20 md:py-24 bg-[#0a0a0b]">
       <div className="max-w-5xl mx-auto px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-neutral-200">
+        <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
           {stats.map((stat, i) => (
             <StatItem key={stat.label} stat={stat} delay={i * 200} />
           ))}
