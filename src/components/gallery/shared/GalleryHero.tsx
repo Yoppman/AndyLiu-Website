@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
+import { Play } from 'lucide-react';
 import { PLACEHOLDER_ONLY, cldFull, cldSet, cldPlaceholder, Photo } from './cloudinaryUtils';
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
   isMorphing: boolean;
   description?: string;
   region?: string;
+  onPlay?: () => void;
 }
 
 /**
@@ -16,7 +18,7 @@ interface Props {
  * over a vivid gradient (the photo stays alive; the title reads via shadow);
  * a scroll cue. All of it eases away as you scroll into the work.
  */
-const GalleryHero: React.FC<Props> = ({ photo, title, isMorphing, description, region }) => {
+const GalleryHero: React.FC<Props> = ({ photo, title, isMorphing, description, region, onPlay }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
 
@@ -88,6 +90,17 @@ const GalleryHero: React.FC<Props> = ({ photo, title, isMorphing, description, r
             <p className="mt-5 max-w-xl font-cormorant text-lg italic text-white/85 drop-shadow-[0_1px_14px_rgba(0,0,0,0.5)] md:text-xl">
               {description}
             </p>
+          )}
+          {onPlay && (
+            <button
+              onClick={onPlay}
+              className="group mt-8 inline-flex items-center gap-2.5 text-white/80 transition-colors hover:text-white"
+            >
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 transition-colors group-hover:border-white/80">
+                <Play size={13} className="ml-0.5" fill="currentColor" />
+              </span>
+              <span className="font-cormorant text-sm uppercase tracking-[0.35em]">Play</span>
+            </button>
           )}
         </motion.div>
       </motion.div>

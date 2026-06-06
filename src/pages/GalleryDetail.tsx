@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { AnimatePresence } from 'motion/react';
 import { galleries } from '../data/galleries';
 import PageTransition from '../components/PageTransition';
 import { useTransition } from '../context/TransitionContext';
@@ -14,6 +15,7 @@ import GalleryNav from '../components/gallery/shared/GalleryNav';
 import ScrollTopButton from '../components/gallery/shared/ScrollTopButton';
 import EditorialStory from '../components/gallery/templates/EditorialStory';
 import GalleryIntro from '../components/gallery/shared/GalleryIntro';
+import GalleryScreening from '../components/gallery/shared/GalleryScreening';
 import { galleryStories } from '../data/galleryStories';
 
 /** Rough perceived-luminance check so story text stays legible on the photo-derived bg. */
@@ -39,6 +41,7 @@ const GalleryDetail: React.FC = () => {
   const next = galleries[idx + 1] as Gallery | undefined;
 
   const [renderDeferredGrid, setRenderDeferredGrid] = useState(false);
+  const [screening, setScreening] = useState(false);
   const imgRefs = useRef<(HTMLImageElement | null)[]>([]);
 
   const bgColor = useDynamicBg(photos, imgRefs, [renderDeferredGrid]);
@@ -69,6 +72,7 @@ const GalleryDetail: React.FC = () => {
           isMorphing={isMorphing}
           description={description}
           region={gallery.location?.region}
+          onPlay={() => setScreening(true)}
         />
 
         <GalleryIntro meta={story?.meta} intro={story?.intro} color={storyColor} />
@@ -100,6 +104,18 @@ const GalleryDetail: React.FC = () => {
           lightboxIdx={lightboxIdx}
           setLightboxIdx={setLightboxIdx}
         />
+        <AnimatePresence>
+          {screening && (
+            <GalleryScreening
+              photos={photos}
+              title={title}
+              captions={story?.captions}
+              intro={story?.intro}
+              signoff={story?.signoff}
+              onClose={() => setScreening(false)}
+            />
+          )}
+        </AnimatePresence>
         <ScrollTopButton visible={showTopArrow} onClick={scrollToTop} />
       </main>
     </PageTransition>
