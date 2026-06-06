@@ -63,9 +63,8 @@ const Home: React.FC = () => {
 
       <Quote
         imageSrc="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747459484/DSC02462_bqch9d.jpg"
-        text="In every hidden corner of the earth, I honor the story woven behind the scene—not only the scene itself."
-        author="Andy Liu"
-        heightClassName="h-[400px]"
+        text="I left with a card full of borrowed light and the sense that the city had barely noticed me at all — which is, I have come to think, exactly how a place lets you love it."
+        heightClassName="h-[85vh]"
       />
       <GalleryPreview />
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import PageTransition from '../components/PageTransition';
 import AboutHero from '../components/about/AboutHero';
-import Hero from '../components/Hero';
 import ScrollRevealBio from '../components/about/ScrollRevealBio';
 import StatsCounter from '../components/about/StatsCounter';
 import CinematicTimeline from '../components/about/CinematicTimeline';
@@ -16,8 +15,6 @@ const About: React.FC = () => {
       <div id="cinematic-hero">
         <AboutHero />
       </div>
-
-      <Hero />
 
       <div id="bio-section">
         <ScrollRevealBio />
