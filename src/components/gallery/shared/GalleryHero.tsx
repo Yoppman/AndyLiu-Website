@@ -20,7 +20,7 @@ const GalleryHero: React.FC<Props> = ({ photo, title, isMorphing, description, r
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
 
-  const scale = useTransform(scrollYProgress, [0, 1], [1.12, 1]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
   const y = useTransform(scrollYProgress, [0, 1], [0, -90]);
   const overlayOpacity = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
@@ -65,24 +65,31 @@ const GalleryHero: React.FC<Props> = ({ photo, title, isMorphing, description, r
         }}
       />
 
-      {/* Title block */}
+      {/* Title block — eases in just after the morph lands (or on direct load) */}
       <motion.div
         className="absolute inset-0 flex flex-col items-center justify-center px-6 text-center text-white"
         style={{ opacity: contentOpacity, y: contentY }}
       >
-        {region && (
-          <span className="mb-5 font-cormorant text-xs uppercase tracking-[0.5em] text-white/75 md:text-sm">
-            {region}
-          </span>
-        )}
-        <h1 className="font-cormorant text-5xl font-light leading-[0.95] tracking-wide drop-shadow-[0_2px_30px_rgba(0,0,0,0.55)] md:text-7xl lg:text-8xl">
-          {title}
-        </h1>
-        {description && (
-          <p className="mt-5 max-w-xl font-cormorant text-lg italic text-white/85 drop-shadow-[0_1px_14px_rgba(0,0,0,0.5)] md:text-xl">
-            {description}
-          </p>
-        )}
+        <motion.div
+          className="flex flex-col items-center"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {region && (
+            <span className="mb-5 font-cormorant text-xs uppercase tracking-[0.5em] text-white/75 md:text-sm">
+              {region}
+            </span>
+          )}
+          <h1 className="font-cormorant text-5xl font-light leading-[0.95] tracking-wide drop-shadow-[0_2px_30px_rgba(0,0,0,0.55)] md:text-7xl lg:text-8xl">
+            {title}
+          </h1>
+          {description && (
+            <p className="mt-5 max-w-xl font-cormorant text-lg italic text-white/85 drop-shadow-[0_1px_14px_rgba(0,0,0,0.5)] md:text-xl">
+              {description}
+            </p>
+          )}
+        </motion.div>
       </motion.div>
 
       {/* Scroll cue */}
