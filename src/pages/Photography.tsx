@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { LayoutGrid, Rows3, Aperture, Palette } from 'lucide-react';
+import { LayoutGrid, Rows3, Aperture, Palette, FlaskConical, Route } from 'lucide-react';
 import { galleries } from '../data/galleries';
 import PageTransition from '../components/PageTransition';
 import MasonryGrid from '../components/MasonryGrid';
@@ -92,6 +92,34 @@ const Photography: React.FC = () => {
                   className="opacity-70 transition-transform duration-500 group-hover:rotate-12"
                 />
                 <span className="hidden font-cormorant text-base sm:inline">Spectrum</span>
+              </Link>
+              <Link
+                to="/photography/darkroom"
+                className="group inline-flex items-center gap-2 text-neutral-500 transition-colors hover:text-neutral-900"
+              >
+                <FlaskConical
+                  size={16}
+                  strokeWidth={1.5}
+                  className="opacity-70 transition-transform duration-500 group-hover:-rotate-12"
+                />
+                <span className="hidden font-cormorant text-base sm:inline">Darkroom</span>
+                <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">
+                  beta
+                </span>
+              </Link>
+              <Link
+                to="/photography/journey"
+                className="group inline-flex items-center gap-2 text-neutral-500 transition-colors hover:text-neutral-900"
+              >
+                <Route
+                  size={16}
+                  strokeWidth={1.5}
+                  className="opacity-70 transition-transform duration-500 group-hover:translate-x-0.5"
+                />
+                <span className="hidden font-cormorant text-base sm:inline">Journey</span>
+                <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">
+                  beta
+                </span>
               </Link>
               <div className="flex items-center gap-1">
                 <button
