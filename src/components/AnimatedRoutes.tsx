@@ -16,6 +16,7 @@ const Portraits = lazy(() => import('../pages/Portraits'));
 const Spectrum = lazy(() => import('../pages/Spectrum'));
 const Darkroom = lazy(() => import('../pages/Darkroom'));
 const Journey = lazy(() => import('../pages/Journey'));
+const GalleryRoom = lazy(() => import('../pages/GalleryRoom'));
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -30,6 +31,7 @@ const AnimatedRoutes = () => {
         <Route path="/photography/spectrum" element={<Suspense fallback={null}><Spectrum /></Suspense>} />
         <Route path="/photography/darkroom" element={<Suspense fallback={null}><Darkroom /></Suspense>} />
         <Route path="/photography/journey" element={<Suspense fallback={null}><Journey /></Suspense>} />
+        <Route path="/photography/room" element={<Suspense fallback={null}><GalleryRoom /></Suspense>} />
         <Route path="/photography/:slug" element={<GalleryDetail />} />
         <Route path="/map" element={<Suspense fallback={null}><MapExplorer /></Suspense>} />
         <Route path="/experimental" element={<Suspense fallback={null}><Experimental /></Suspense>} />
