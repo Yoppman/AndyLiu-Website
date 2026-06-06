@@ -1,22 +1,66 @@
 import React from 'react';
-import Hero from '../components/Hero';
+import { useSearchParams } from 'react-router-dom';
 import Quote from '../components/Quote';
 import LocationInfo from '../components/LocationInfo';
 import GalleryPreview from '../components/GalleryPreview';
-import HomeHero from '../components/home/HomeHero';
+import HomeHero, { type HeroOpening } from '../components/home/HomeHero';
 import PageTransition from '../components/PageTransition';
 import CursorTrailCanvas from '../components/CursorTrailCanvas';
 import DraggableBusinessCard from '../components/contact/DraggableBusinessCard';
 
+const OPENINGS: { id: HeroOpening; label: string }[] = [
+  { id: 'wall', label: 'The Wall' },
+  { id: 'frame', label: 'The Frame' },
+  { id: 'classic', label: 'Current' },
+];
+
+/** TEMPORARY: lets us compare the redesigned openings live. Remove once chosen. */
+const OpeningSwitcher: React.FC<{ value: HeroOpening; onChange: (v: HeroOpening) => void }> = ({
+  value,
+  onChange,
+}) => (
+  <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] flex items-center gap-1 rounded-full border border-white/10 bg-black/55 px-2 py-1.5 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+    <span className="px-2 font-cormorant text-[0.6rem] uppercase tracking-[0.3em] text-white/40">
+      Opening
+    </span>
+    {OPENINGS.map((o) => (
+      <button
+        key={o.id}
+        onClick={() => onChange(o.id)}
+        className={`rounded-full px-3 py-1 font-cormorant text-sm transition-colors ${
+          value === o.id ? 'bg-[#efeae1] text-black' : 'text-white/60 hover:text-white'
+        }`}
+      >
+        {o.label}
+      </button>
+    ))}
+  </div>
+);
+
 const Home: React.FC = () => {
+  const [params, setParams] = useSearchParams();
+  const raw = params.get('hero');
+  const opening: HeroOpening =
+    raw === 'frame' || raw === 'classic' || raw === 'wall' ? raw : 'wall';
+
+  const setOpening = (v: HeroOpening) =>
+    setParams(
+      (prev) => {
+        prev.set('hero', v);
+        return prev;
+      },
+      { replace: true },
+    );
+
   return (
     <PageTransition>
     <div className="relative">
       <CursorTrailCanvas />
 
-      <HomeHero />
+      <OpeningSwitcher value={opening} onChange={setOpening} />
 
-      <Hero />
+      <HomeHero opening={opening} />
+
       <Quote
         imageSrc="https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747459484/DSC02462_bqch9d.jpg"
         text="In every hidden corner of the earth, I honor the story woven behind the scene—not only the scene itself."

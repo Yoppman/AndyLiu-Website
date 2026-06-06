@@ -36,6 +36,13 @@ export const cldFull = (src: string, w: number) => build(src, `q_auto,f_auto,w_$
 export const cldSet = (src: string, widths: number[]) =>
   widths.map((w) => `${cldFull(src, w)} ${w}w`).join(', ');
 
+/** A content-aware square crop — gravity auto keeps faces/subjects in frame. */
+export const cldSquare = (src: string, w: number) =>
+  build(src, `c_fill,g_auto,w_${w},h_${w},q_auto,f_auto`);
+
+export const cldSquareSet = (src: string, widths: number[]) =>
+  widths.map((w) => `${cldSquare(src, w)} ${w}w`).join(', ');
+
 export const cldPlaceholder = (src: string) => build(src, `w_24,q_10,f_auto,e_blur:1000`);
 
 export interface Photo {
