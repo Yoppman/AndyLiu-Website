@@ -83,7 +83,7 @@ const Row: React.FC<{ m: Milestone }> = ({ m }) => {
       <motion.span
         style={{ y: yearY }}
         aria-hidden
-        className="pointer-events-none absolute right-0 top-1/2 -z-10 -translate-y-1/2 select-none font-cormorant font-bold leading-none text-[24vw] text-neutral-900/[0.045] md:text-[13rem]"
+        className="pointer-events-none absolute right-0 top-1/2 -z-10 -translate-y-1/2 select-none font-cormorant font-bold leading-none text-[24vw] text-[#efeae1]/[0.05] md:text-[13rem]"
       >
         {m.year}
       </motion.span>
@@ -91,10 +91,10 @@ const Row: React.FC<{ m: Milestone }> = ({ m }) => {
       {/* node on the rail */}
       <span
         className={`absolute left-[14px] top-[9vh] h-3.5 w-3.5 -translate-x-1/2 rounded-full ring-4 md:left-[82px] ${
-          m.current ? 'bg-amber-500 ring-amber-200' : 'bg-neutral-400 ring-[#e7e5e0]'
+          m.current ? 'bg-amber-500 ring-amber-500/30' : 'bg-[#efeae1]/30 ring-[#0a0a0b]'
         }`}
       />
-      <span className="absolute left-24 top-[8.6vh] hidden font-cormorant text-xl text-neutral-400 md:block">
+      <span className="absolute left-24 top-[8.6vh] hidden font-cormorant text-xl text-[#efeae1]/40 md:block">
         {m.year}
       </span>
 
@@ -106,14 +106,14 @@ const Row: React.FC<{ m: Milestone }> = ({ m }) => {
         viewport={{ once: true, amount: 0.55 }}
         className={
           m.current
-            ? 'relative max-w-xl rounded-2xl border border-amber-200/80 bg-amber-50/50 p-6 shadow-[0_12px_55px_-12px_rgba(245,158,11,0.45)]'
+            ? 'relative max-w-xl rounded-2xl border border-amber-500/30 bg-amber-500/[0.08] p-6 shadow-[0_12px_55px_-12px_rgba(245,158,11,0.4)]'
             : 'relative max-w-xl'
         }
       >
         {m.current && (
           <motion.span
             variants={line}
-            className="mb-3 inline-flex items-center gap-2 rounded-full bg-amber-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-700"
+            className="mb-3 inline-flex items-center gap-2 rounded-full bg-amber-500/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-300"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
@@ -123,19 +123,19 @@ const Row: React.FC<{ m: Milestone }> = ({ m }) => {
           </motion.span>
         )}
         <motion.div variants={line} className="mb-2 flex items-center gap-2">
-          <Icon size={18} className={m.current ? 'text-amber-600' : 'text-neutral-400'} />
-          <h3 className="font-playfair text-xl text-neutral-900 md:text-2xl">
+          <Icon size={18} className={m.current ? 'text-amber-400' : 'text-[#efeae1]/40'} />
+          <h3 className="font-playfair text-xl text-[#efeae1] md:text-2xl">
             {m.org}
             {m.place ? `, ${m.place}` : ''}
           </h3>
         </motion.div>
         {m.role && (
-          <motion.p variants={line} className="mb-2 text-sm font-medium text-neutral-700 md:text-base">
+          <motion.p variants={line} className="mb-2 text-sm font-medium text-[#efeae1]/75 md:text-base">
             {m.role}
           </motion.p>
         )}
         {m.detail && (
-          <motion.p variants={line} className="text-xs leading-relaxed text-neutral-500 md:text-sm">
+          <motion.p variants={line} className="text-xs leading-relaxed text-[#efeae1]/55 md:text-sm">
             {m.detail}
           </motion.p>
         )}
@@ -150,10 +150,10 @@ const CinematicTimeline: React.FC = () => {
   const fill = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   return (
-    <section className="bg-[#e7e5e0] py-24 md:py-32">
+    <section className="bg-[#0a0a0b] py-24 md:py-32">
       <div className="mx-auto max-w-5xl px-6">
         <motion.h2
-          className="mb-3 font-playfair text-4xl text-neutral-900 md:text-5xl"
+          className="mb-3 font-playfair text-4xl text-[#efeae1] md:text-5xl"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -162,7 +162,7 @@ const CinematicTimeline: React.FC = () => {
           The Journey
         </motion.h2>
         <motion.p
-          className="mb-10 font-cormorant text-lg italic text-neutral-500"
+          className="mb-10 font-cormorant text-lg italic text-[#efeae1]/55"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -173,7 +173,7 @@ const CinematicTimeline: React.FC = () => {
 
         <div ref={containerRef} className="relative">
           {/* rail + (4) glowing playhead scrubber */}
-          <div className="absolute bottom-0 left-[14px] top-0 w-px -translate-x-1/2 bg-neutral-300/70 md:left-[82px]" />
+          <div className="absolute bottom-0 left-[14px] top-0 w-px -translate-x-1/2 bg-white/10 md:left-[82px]" />
           <motion.div
             className="absolute left-[14px] top-0 w-px -translate-x-1/2 origin-top bg-gradient-to-b from-amber-500 to-orange-400 md:left-[82px]"
             style={{ height: fill }}

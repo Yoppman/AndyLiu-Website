@@ -87,7 +87,8 @@ const ComicGrid: React.FC = () => {
       {/* Closing invitation — aimed at artists & collaborators */}
       <div className="relative bg-black px-6 py-24 md:py-32 text-center">
         <p className="font-cormorant italic text-white text-2xl md:text-4xl max-w-2xl mx-auto leading-relaxed mb-8">
-          Cinematic web experiences for artists, galleries, and storytellers.
+          I take on a few commissions each year&mdash;portraits, travel,
+          and the quiet stories in between.
         </p>
         <a href="/contact" className="group inline-flex items-center gap-3 text-white">
           <span className="font-cormorant tracking-[0.4em] text-sm uppercase pl-[0.4em]">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
+import { AnimatePresence } from 'motion/react';
 import { galleries } from '../data/galleries';
 import PageTransition from '../components/PageTransition';
 import { useTransition } from '../context/TransitionContext';
@@ -12,9 +13,9 @@ import GalleryHero from '../components/gallery/shared/GalleryHero';
 import GalleryLightbox from '../components/gallery/shared/GalleryLightbox';
 import GalleryNav from '../components/gallery/shared/GalleryNav';
 import ScrollTopButton from '../components/gallery/shared/ScrollTopButton';
-import { getTemplateAssignment } from '../components/gallery/templateConfig';
 import EditorialStory from '../components/gallery/templates/EditorialStory';
 import GalleryIntro from '../components/gallery/shared/GalleryIntro';
+import GalleryScreening from '../components/gallery/shared/GalleryScreening';
 import { galleryStories } from '../data/galleryStories';
 
 /** Rough perceived-luminance check so story text stays legible on the photo-derived bg. */
@@ -40,10 +41,11 @@ const GalleryDetail: React.FC = () => {
   const next = galleries[idx + 1] as Gallery | undefined;
 
   const [renderDeferredGrid, setRenderDeferredGrid] = useState(false);
+  const [screening, setScreening] = useState(false);
   const imgRefs = useRef<(HTMLImageElement | null)[]>([]);
 
   const bgColor = useDynamicBg(photos, imgRefs, [renderDeferredGrid]);
-  const { lightboxIdx, setLightboxIdx } = useLightbox(photos);
+  const { lightboxIdx, setLightboxIdx } = useLightbox();
   usePrefetch(photos, heroImage.src);
   const { showTopArrow, scrollToTop } = useScrollTop();
 
@@ -55,7 +57,6 @@ const GalleryDetail: React.FC = () => {
     idle(() => setRenderDeferredGrid(true));
   }, []);
 
-  const { hero: heroVariant } = getTemplateAssignment(slug || '');
   const story = galleryStories[slug || ''];
   const storyColor = isDarkColor(bgColor) ? '#f1efe9' : '#1b1b1b';
 
@@ -69,8 +70,9 @@ const GalleryDetail: React.FC = () => {
           photo={heroImage}
           title={title}
           isMorphing={isMorphing}
-          variant={heroVariant}
           description={description}
+          region={gallery.location?.region}
+          onPlay={() => setScreening(true)}
         />
 
         <GalleryIntro meta={story?.meta} intro={story?.intro} color={storyColor} />
@@ -102,6 +104,18 @@ const GalleryDetail: React.FC = () => {
           lightboxIdx={lightboxIdx}
           setLightboxIdx={setLightboxIdx}
         />
+        <AnimatePresence>
+          {screening && (
+            <GalleryScreening
+              photos={photos}
+              title={title}
+              captions={story?.captions}
+              intro={story?.intro}
+              signoff={story?.signoff}
+              onClose={() => setScreening(false)}
+            />
+          )}
+        </AnimatePresence>
         <ScrollTopButton visible={showTopArrow} onClick={scrollToTop} />
       </main>
     </PageTransition>

@@ -1,222 +1,153 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Mail, Phone, MapPin, Camera } from 'lucide-react';
-import { contactImages, contactData } from '../data/contact/contactImages';
-import { BackgroundLines } from '../components/ui/background-lines';
+import { Github, Linkedin, Instagram, MapPin } from 'lucide-react';
+import { cldFull } from '../components/gallery/shared/cloudinaryUtils';
+import { contactData } from '../data/contact/contactImages';
 import PageTransition from '../components/PageTransition';
-import { PolaroidStack } from '../components/PolaroidStack';
-import type { PolaroidCard } from '../components/PolaroidStack';
 import TravelMap from '../components/contact/TravelMap';
-import FloatingSocialBubbles from '../components/contact/FloatingSocialBubbles';
 import DraggableBusinessCard from '../components/contact/DraggableBusinessCard';
 
-const Contact: React.FC = () => {
-  const polaroidCards: PolaroidCard[] = [
-    {
-      id: 'portrait',
-      image: contactImages[0],
-      label: 'photographer & engineer',
-      value: 'Andy Liu',
-      caption: 'nice to meet you',
-      icon: <Camera size={48} className="text-neutral-400" />,
-    },
-    {
-      id: 'email-personal',
-      image: contactImages[2],
-      label: 'Personal Email',
-      value: contactData.contactInfo[0].value,
-      href: contactData.contactInfo[0].href,
-      caption: 'drop me a line anytime',
-    },
-    {
-      id: 'email-school',
-      image: contactImages[4],
-      label: 'School Email',
-      value: contactData.contactInfo[1].value,
-      href: contactData.contactInfo[1].href,
-      caption: 'for academic inquiries',
-    },
-    {
-      id: 'phone',
-      image: contactImages[1],
-      icon: <Phone size={48} className="text-neutral-400" />,
-      label: 'Phone',
-      value: contactData.contactInfo[2].value,
-      href: contactData.contactInfo[2].href,
-      caption: 'prefer text over calls',
-    },
-    {
-      id: 'location',
-      image: contactImages[3],
-      icon: <MapPin size={48} className="text-neutral-400" />,
-      label: 'Based in',
-      value: `${contactData.location.city}, ${contactData.location.state}`,
-      caption: contactData.location.availability.toLowerCase(),
-    },
-    {
-      id: 'vibes',
-      image: contactImages[5],
-      label: 'current mood',
-      value: 'Always Exploring',
-      caption: 'the world is my studio',
-    },
-  ];
+// A warm sunset to close the film on.
+const HERO_PHOTO =
+  'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1747703401/LagunaBeach/dsc03805.jpg';
 
+const EMAIL = contactData.contactInfo[0]; // personal email
+
+const socials = [
+  { label: 'GitHub', value: 'github.com/Yoppman', href: 'https://github.com/Yoppman', Icon: Github },
+  {
+    label: 'LinkedIn',
+    value: 'in/andy9998811',
+    href: 'https://www.linkedin.com/in/andy9998811/',
+    Icon: Linkedin,
+  },
+  {
+    label: 'Instagram',
+    value: '@andyliu_0104',
+    href: 'https://instagram.com/andyliu_0104',
+    Icon: Instagram,
+  },
+];
+
+const Contact: React.FC = () => {
   return (
     <PageTransition>
-      <div className="relative min-h-screen w-full bg-white">
-        {/* Section 1: Hero */}
-        <BackgroundLines className="relative w-full">
-          <div className="flex flex-col items-center justify-center min-h-[70vh] px-6 relative z-10">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-              className="text-center"
-            >
-              <h1 className="font-playfair text-6xl md:text-8xl mb-4 leading-tight text-neutral-900">
-                Let's Create<br />Together.
-              </h1>
-              <p className="font-cormorant text-xl md:text-2xl text-neutral-500 max-w-xl mx-auto leading-relaxed">
-                Whether it's a collaboration, a photo walk, or just a coffee chat —
-                I'd love to hear from you.
-              </p>
-            </motion.div>
+      <div className="relative w-full bg-[#0a0a0b] text-[#efeae1]">
+        {/* Act 1 — the invitation */}
+        <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
+          <img
+            src={cldFull(HERO_PHOTO, 2200)}
+            alt=""
+            aria-hidden
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-[#0a0a0b]" />
 
-            {/* Scroll indicator */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
-              className="absolute bottom-12"
-            >
-              <motion.div
-                animate={{ y: [0, 8, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-6 h-10 border-2 border-neutral-300 rounded-full flex justify-center pt-2"
-              >
-                <motion.div className="w-1 h-2 bg-neutral-400 rounded-full" />
-              </motion.div>
-            </motion.div>
-          </div>
-        </BackgroundLines>
-
-        {/* Section 2: Travel Map */}
-        <section className="py-20 px-6 bg-gradient-to-b from-white to-neutral-50">
-          <TravelMap />
-        </section>
-
-        {/* Section 3: Interactive Contact Grid */}
-        <section className="py-20 px-6 bg-neutral-50">
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="relative z-10 max-w-2xl text-center"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           >
-            <h2 className="font-cormorant text-3xl md:text-4xl text-neutral-800 mb-2">
-              Get in Touch
-            </h2>
-            <p className="font-cormorant text-neutral-500">three ways to reach me</p>
+            <span className="font-cormorant text-xs uppercase tracking-[0.5em] text-[#efeae1]/60 pl-[0.5em]">
+              Say hello
+            </span>
+            <h1 className="mt-6 font-cormorant text-6xl font-light leading-[0.98] text-[#efeae1] drop-shadow-[0_2px_30px_rgba(0,0,0,0.6)] md:text-8xl">
+              Let&rsquo;s make
+              <span className="block italic font-extralight">something.</span>
+            </h1>
+            <p className="mx-auto mt-7 max-w-xl font-cormorant text-lg italic text-[#efeae1]/75 drop-shadow-[0_1px_14px_rgba(0,0,0,0.5)] md:text-xl">
+              I take on a handful of commissions a year &mdash; portraits, travel, and the quiet
+              stories in between. And I&rsquo;m always good for a coffee and a photo walk.
+            </p>
+            <a
+              href={EMAIL.href}
+              className="group mt-10 inline-flex items-center gap-3 text-[#efeae1] transition-colors hover:text-amber-300"
+            >
+              <span className="font-cormorant text-xl md:text-2xl">{EMAIL.value}</span>
+              <span className="transition-transform duration-500 group-hover:translate-x-1">&rarr;</span>
+            </a>
           </motion.div>
 
-          <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
-            {/* Business Card */}
+          <div className="absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-[#efeae1]/50">
+            <span className="font-cormorant text-[0.65rem] uppercase tracking-[0.3em]">Scroll</span>
+            <span className="block h-10 w-px bg-gradient-to-b from-[#efeae1]/50 to-transparent" />
+          </div>
+        </section>
+
+        {/* Act 2 — the details */}
+        <section className="bg-[#0a0a0b] px-6 py-20 md:py-28">
+          <div className="mx-auto grid max-w-5xl grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-24">
+            <div>
+              <div className="mb-8 flex items-center gap-4">
+                <span className="h-px w-10 bg-amber-500" />
+                <span className="font-cormorant text-xs uppercase tracking-[0.35em] text-[#efeae1]/45">
+                  Find me elsewhere
+                </span>
+              </div>
+
+              <div>
+                {socials.map((s) => {
+                  const Icon = s.Icon;
+                  return (
+                    <a
+                      key={s.label}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center justify-between gap-6 border-t border-white/10 py-5 transition-colors hover:text-amber-300"
+                    >
+                      <span className="flex items-center gap-3">
+                        <Icon
+                          size={18}
+                          strokeWidth={1.5}
+                          className="text-[#efeae1]/50 transition-colors group-hover:text-amber-300"
+                        />
+                        <span className="font-cormorant text-xs uppercase tracking-[0.3em] text-[#efeae1]/45 transition-colors group-hover:text-amber-300/70">
+                          {s.label}
+                        </span>
+                      </span>
+                      <span className="font-cormorant text-lg text-[#efeae1] transition-transform duration-300 group-hover:-translate-x-1 md:text-xl">
+                        {s.value}
+                      </span>
+                    </a>
+                  );
+                })}
+                <div className="border-t border-white/10" />
+              </div>
+
+              <div className="mt-8 flex items-center gap-3 text-[#efeae1]/60">
+                <MapPin size={16} strokeWidth={1.5} className="text-amber-400" />
+                <span className="font-cormorant text-base">
+                  {contactData.location.city}, {contactData.location.state}
+                  <span className="text-[#efeae1]/40">
+                    {' '}
+                    &mdash; {contactData.location.availability.toLowerCase()}
+                  </span>
+                </span>
+              </div>
+            </div>
+
             <div className="flex justify-center">
               <DraggableBusinessCard />
             </div>
-
-            {/* Polaroid Stack */}
-            <div className="flex justify-center">
-              <PolaroidStack cards={polaroidCards} />
-            </div>
-
-            {/* Social Bubbles */}
-            <div className="flex flex-col items-center">
-              <motion.h3
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                className="font-cormorant text-lg text-neutral-600 mb-4"
-              >
-                Find me online
-              </motion.h3>
-              <FloatingSocialBubbles />
-            </div>
           </div>
         </section>
 
-        {/* Section 4: Quick Contact Row */}
-        <section className="py-16 px-6 bg-white border-t border-neutral-100">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <motion.a
-                href={contactData.contactInfo[0].href}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0 }}
-                className="flex items-center gap-4 group p-4 rounded-xl hover:bg-neutral-50 transition-colors"
-              >
-                <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-neutral-200 transition-colors shrink-0">
-                  <Mail size={20} className="text-neutral-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-neutral-400 uppercase tracking-wider">Email</p>
-                  <p className="font-playfair text-neutral-800 group-hover:text-neutral-600 transition-colors">
-                    {contactData.contactInfo[0].value}
-                  </p>
-                </div>
-              </motion.a>
-
-              <motion.a
-                href={contactData.contactInfo[2].href}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.1 }}
-                className="flex items-center gap-4 group p-4 rounded-xl hover:bg-neutral-50 transition-colors"
-              >
-                <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center group-hover:bg-neutral-200 transition-colors shrink-0">
-                  <Phone size={20} className="text-neutral-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-neutral-400 uppercase tracking-wider">Phone</p>
-                  <p className="font-playfair text-neutral-800 group-hover:text-neutral-600 transition-colors">
-                    {contactData.contactInfo[2].value}
-                  </p>
-                </div>
-              </motion.a>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="flex items-center gap-4 p-4"
-              >
-                <div className="w-12 h-12 rounded-full bg-neutral-100 flex items-center justify-center shrink-0">
-                  <MapPin size={20} className="text-neutral-600" />
-                </div>
-                <div>
-                  <p className="text-xs text-neutral-400 uppercase tracking-wider">Location</p>
-                  <p className="font-playfair text-neutral-800">
-                    {contactData.location.city}, {contactData.location.state}
-                  </p>
-                  <p className="text-xs text-amber-600 mt-0.5">{contactData.location.availability}</p>
-                </div>
-              </motion.div>
-            </div>
-          </div>
+        {/* Act 3 — the atlas */}
+        <section className="bg-[#0a0a0b] px-6 py-20 md:py-28">
+          <TravelMap />
         </section>
 
-        {/* Footer accent */}
-        <div className="py-12 bg-neutral-950 text-center">
-          <p className="font-cormorant text-neutral-500 text-sm tracking-[0.3em] uppercase">
-            Andy Liu — Photographer & Engineer
+        {/* Act 4 — the sign-off */}
+        <section className="border-t border-white/10 bg-[#0a0a0b] py-16 text-center">
+          <p className="font-cormorant text-xl italic text-[#efeae1]/60 md:text-2xl">
+            Until the next frame.
           </p>
-        </div>
+          <p className="mt-4 font-cormorant text-xs uppercase tracking-[0.4em] text-[#efeae1]/35">
+            Andy Liu &mdash; Photographer &amp; Engineer
+          </p>
+        </section>
       </div>
     </PageTransition>
   );

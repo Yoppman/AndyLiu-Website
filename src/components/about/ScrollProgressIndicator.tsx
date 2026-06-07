@@ -25,20 +25,19 @@ const ScrollProgressIndicator: React.FC = () => {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // mix-blend-difference keeps the rail legible over both the light overture
+  // (hero) and the dark body below — white inverts against whatever's behind.
   return (
-    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-center">
-      <div className="relative w-0.5 h-48 bg-neutral-200 rounded-full overflow-hidden">
-        <motion.div
-          className="w-full bg-neutral-800 origin-top"
-          style={{ scaleY: scrollYProgress }}
-        />
+    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col items-center mix-blend-difference">
+      <div className="relative w-0.5 h-48 bg-white/25 rounded-full overflow-hidden">
+        <motion.div className="w-full bg-white origin-top" style={{ scaleY: scrollYProgress }} />
       </div>
 
       {sections.map((section, i) => (
         <button
           key={section.id}
           onClick={() => scrollToSection(section.id)}
-          className="absolute w-2.5 h-2.5 rounded-full bg-neutral-400 hover:bg-neutral-800 transition-colors -left-[4px]"
+          className="absolute w-2.5 h-2.5 rounded-full bg-white/50 hover:bg-white transition-colors -left-[4px]"
           style={{ top: `${(i / (sections.length - 1)) * 100}%` }}
           title={section.label}
         />

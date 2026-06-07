@@ -41,7 +41,7 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
             className="w-full h-full object-cover blur-xl scale-105"
             loading="lazy"
             decoding="async"
-            /* @ts-ignore */ fetchpriority="low"
+            fetchPriority="low"
             style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
             onLoad={() => { setLoaded(true); setIsLoading(false); }}
           />
@@ -67,7 +67,7 @@ const LazyImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
           }`}
           loading="lazy"
           decoding="async"
-          /* @ts-ignore */ fetchpriority="low"
+          fetchPriority="low"
           style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
           onLoad={() => { setLoaded(true); setIsLoading(false); }}
         />

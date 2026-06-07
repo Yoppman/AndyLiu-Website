@@ -29,7 +29,7 @@ const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
             className="w-full h-full object-cover blur-xl scale-105"
             loading="eager"
             decoding="async"
-            /* @ts-ignore */ fetchpriority="high"
+            fetchPriority="high"
             style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
             onLoad={() => { setLoaded(true); setIsLoading(false); }}
           />
@@ -53,7 +53,7 @@ const EagerImage = forwardRef<HTMLImageElement, { photo: Photo; alt: string }>(
           className="w-full h-full object-cover"
           loading="eager"
           decoding="async"
-          /* @ts-ignore */ fetchpriority="high"
+          fetchPriority="high"
           style={{ backgroundColor: photo.dominantColor, contentVisibility: 'auto' as any }}
           onLoad={() => { setLoaded(true); setIsLoading(false); }}
         />

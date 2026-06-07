@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Phone, MapPin, Camera } from 'lucide-react';
 
 interface PolaroidCard {
   id: string;
@@ -23,11 +22,6 @@ const PolaroidStack: React.FC<PolaroidStackProps> = ({ cards }) => {
   const handleNext = () => {
     setExitDirection(1);
     setCurrentIndex((prev) => (prev + 1) % cards.length);
-  };
-
-  const handlePrev = () => {
-    setExitDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + cards.length) % cards.length);
   };
 
   const card = cards[currentIndex];

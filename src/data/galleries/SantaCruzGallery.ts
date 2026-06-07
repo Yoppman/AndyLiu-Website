@@ -4,7 +4,7 @@ export const SantaCruzGallery: Gallery = {
   slug: 'santacruz',
   title: 'Santa Cruz',
   description: 'Beaches, smiles, and sunsets',
-  hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1755241827/santacruz/dsc08427.jpg', orientation: 'vertical', dominantColor: 'rgba(216, 210, 181, 0.6)' },
+  hero: { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1755241827/santacruz/dsc08427.jpg', orientation: 'horizontal', dominantColor: 'rgba(216, 210, 181, 0.6)' },
   location: { lat: 36.97, lng: -122.03, region: 'California' },
   photos: [
     { src: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/v1755241893/santacruz/dsc08398.jpg', orientation: 'horizontal', dominantColor: 'rgba(80, 128, 140, 0.6)' },

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Mail, Github, Linkedin, Download, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Mail, Github, Linkedin, Download, ExternalLink, ArrowLeft } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
 import SkillsCloud, { type Skill } from '../components/resume/SkillsCloud';
 
@@ -28,6 +29,14 @@ const highlights = [
 
 const Resume: React.FC = () => {
   const [pdfError, setPdfError] = useState(false);
+  const navigate = useNavigate();
+
+  // Return the way we came — back to the exact spot on About if there's history,
+  // otherwise fall back to the page itself.
+  const goBack = () => {
+    if (window.history.length > 1) navigate(-1);
+    else navigate('/about');
+  };
 
   const download = () => {
     const a = document.createElement('a');
@@ -47,6 +56,18 @@ const Resume: React.FC = () => {
             className="pointer-events-none absolute inset-0"
             style={{ background: 'radial-gradient(70% 60% at 70% 45%, rgba(240,179,95,0.07) 0%, transparent 60%)' }}
           />
+
+          {/* Back — returns to the exact scroll position on About */}
+          <div className="relative mx-auto mb-10 max-w-6xl">
+            <button
+              onClick={goBack}
+              className="group inline-flex items-center gap-2 text-white/55 transition-colors hover:text-amber-300"
+            >
+              <ArrowLeft size={16} className="transition-transform duration-300 group-hover:-translate-x-1" />
+              <span className="font-cormorant text-sm uppercase tracking-[0.3em]">Back</span>
+            </button>
+          </div>
+
           <div className="relative mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-[1fr_1.15fr]">
             {/* identity */}
             <div>

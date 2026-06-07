@@ -56,15 +56,15 @@ const TravelMap: React.FC = () => {
         transition={{ duration: 0.8 }}
         className="text-center mb-8"
       >
-        <h2 className="font-cormorant text-3xl md:text-4xl text-neutral-800 mb-2">
+        <h2 className="font-cormorant text-3xl md:text-4xl text-[#efeae1] mb-2">
           Where I've Shot
         </h2>
-        <p className="font-cormorant text-neutral-500">tap a pin to see the gallery</p>
+        <p className="font-cormorant text-[#efeae1]/55">tap a pin to see the gallery</p>
       </motion.div>
 
-      <div className="relative w-full aspect-[2/1] bg-neutral-50 rounded-2xl overflow-hidden border border-neutral-200">
+      <div className="relative w-full aspect-[2/1] bg-[#0c0c0e] rounded-2xl overflow-hidden border border-white/10">
         {/* Stylized World Map SVG */}
-        <svg viewBox="0 0 100 50" className="w-full h-full absolute inset-0 opacity-[0.08]">
+        <svg viewBox="0 0 100 50" className="w-full h-full absolute inset-0 text-[#efeae1] opacity-[0.1]">
           {/* North America */}
           <path d="M5,10 Q8,8 12,9 L18,8 Q22,7 25,10 L26,14 Q25,18 22,20 L20,25 Q18,28 15,30 L12,28 Q8,25 6,22 L4,18 Q3,14 5,10 Z" fill="currentColor" />
           {/* South America */}
@@ -82,10 +82,10 @@ const TravelMap: React.FC = () => {
         {/* Grid lines */}
         <div className="absolute inset-0">
           {[...Array(5)].map((_, i) => (
-            <div key={`h-${i}`} className="absolute w-full h-px bg-neutral-200/50" style={{ top: `${(i + 1) * 16.6}%` }} />
+            <div key={`h-${i}`} className="absolute w-full h-px bg-white/[0.05]" style={{ top: `${(i + 1) * 16.6}%` }} />
           ))}
           {[...Array(9)].map((_, i) => (
-            <div key={`v-${i}`} className="absolute h-full w-px bg-neutral-200/50" style={{ left: `${(i + 1) * 10}%` }} />
+            <div key={`v-${i}`} className="absolute h-full w-px bg-white/[0.05]" style={{ left: `${(i + 1) * 10}%` }} />
           ))}
         </div>
 
@@ -107,7 +107,7 @@ const TravelMap: React.FC = () => {
           >
             {/* Pulse ring */}
             <motion.div
-              className={`absolute inset-0 rounded-full ${pin.id === 'home' ? 'bg-amber-400' : 'bg-neutral-800'}`}
+              className={`absolute inset-0 rounded-full ${pin.id === 'home' ? 'bg-amber-400' : 'bg-[#efeae1]'}`}
               animate={{ scale: [1, 2, 1], opacity: [0.4, 0, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, delay: i * 0.3 }}
               style={{ width: 12, height: 12, margin: -3 }}
@@ -117,7 +117,7 @@ const TravelMap: React.FC = () => {
             <motion.div
               whileHover={{ scale: 1.8 }}
               className={`w-3 h-3 rounded-full cursor-pointer shadow-md relative z-10 ${
-                pin.id === 'home' ? 'bg-amber-500 ring-2 ring-amber-300' : 'bg-neutral-800'
+                pin.id === 'home' ? 'bg-amber-500 ring-2 ring-amber-400/50' : 'bg-[#efeae1]'
               }`}
             />
 
@@ -131,7 +131,7 @@ const TravelMap: React.FC = () => {
                   transition={{ duration: 0.2 }}
                   className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 z-30 pointer-events-none"
                 >
-                  <div className="bg-white rounded-lg shadow-xl p-2 min-w-[140px]">
+                  <div className="bg-[#15151a] border border-white/10 rounded-lg shadow-xl p-2 min-w-[140px]">
                     {pin.thumbnail && (
                       <img
                         src={pin.thumbnail}
@@ -139,14 +139,14 @@ const TravelMap: React.FC = () => {
                         className="w-full h-20 object-cover rounded mb-2"
                       />
                     )}
-                    <p className="font-cormorant text-sm text-neutral-800 text-center font-semibold">
+                    <p className="font-cormorant text-sm text-[#efeae1] text-center font-semibold">
                       {pin.label}
                     </p>
                     {pin.gallery && (
-                      <p className="text-[10px] text-neutral-400 text-center mt-0.5">click to view</p>
+                      <p className="text-[10px] text-[#efeae1]/40 text-center mt-0.5">click to view</p>
                     )}
                   </div>
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-white transform rotate-45 -mt-1 shadow-sm" />
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 w-2 h-2 bg-[#15151a] transform rotate-45 -mt-1" />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -155,16 +155,16 @@ const TravelMap: React.FC = () => {
 
         {/* "Home" label for Santa Clara */}
         <div
-          className="absolute font-cormorant text-[10px] text-amber-600 tracking-wider"
+          className="absolute font-cormorant text-[10px] text-amber-400 tracking-wider"
           style={{ left: '11%', top: '40%' }}
         >
           HOME
         </div>
       </div>
 
-      <div className="flex justify-center gap-6 mt-4 text-xs font-cormorant text-neutral-400">
+      <div className="flex justify-center gap-6 mt-4 text-xs font-cormorant text-[#efeae1]/40">
         <span className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-neutral-800" /> Photo locations
+          <span className="w-2 h-2 rounded-full bg-[#efeae1]" /> Photo locations
         </span>
         <span className="flex items-center gap-1.5">
           <span className="w-2 h-2 rounded-full bg-amber-500" /> Home base

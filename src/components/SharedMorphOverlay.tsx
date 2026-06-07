@@ -10,7 +10,7 @@ const SharedMorphOverlay = () => {
     if (morphSource) {
       setTargetRect({
         width: window.innerWidth,
-        height: window.innerWidth * 0.5,
+        height: window.innerHeight,
       });
     }
   }, [morphSource]);
@@ -25,7 +25,7 @@ const SharedMorphOverlay = () => {
             left: morphSource.rect.left,
             width: morphSource.rect.width,
             height: morphSource.rect.height,
-            borderRadius: 12,
+            borderRadius: 4,
           }}
           animate={{
             top: 0,
@@ -36,7 +36,7 @@ const SharedMorphOverlay = () => {
           }}
           exit={{ opacity: 0 }}
           transition={{
-            duration: 0.5,
+            duration: 0.6,
             ease: [0.32, 0.72, 0, 1],
           }}
           onAnimationComplete={() => {

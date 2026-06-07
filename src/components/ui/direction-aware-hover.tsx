@@ -26,7 +26,7 @@ export const DirectionAwareHover = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [direction, setDirection] = useState<"top" | "bottom" | "left" | "right">("left");
-  const [isHovered, setIsHovered] = useState(false);
+  const [, setIsHovered] = useState(false);
 
   // Memoized direction calculation to avoid repeated calculations
   const getDirection = useCallback((

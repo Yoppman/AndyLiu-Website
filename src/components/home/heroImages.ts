@@ -102,3 +102,33 @@ export function mosaicPhotos(limit = 45): Photo[] {
   }
   return shuffle(out).slice(0, limit);
 }
+
+/**
+ * The curated pool for "The Wall" — every gallery's cover (hero, or its first
+ * frame) plus the hand-picked Selected Frames, de-duplicated. The drifting wall
+ * draws only from these (never random gallery photos).
+ */
+export function wallCoversAndFrames(): Photo[] {
+  const bySrc = new Map<string, Photo>();
+  for (const g of galleries) for (const p of g.photos) bySrc.set(p.src, p);
+
+  const out: Photo[] = [];
+  const seen = new Set<string>();
+  const add = (p?: Photo) => {
+    if (p && !seen.has(p.src)) {
+      seen.add(p.src);
+      out.push(p);
+    }
+  };
+
+  for (const g of galleries) add(g.hero || g.photos[0]); // covers
+  for (const src of SELECTED_FRAMES) {
+    add(bySrc.get(src) ?? { src, orientation: 'horizontal', dominantColor: 'rgba(22,22,26,0.6)' });
+  }
+  return out;
+}
+
+/** The fixed centerpiece of The Wall: London's first frame (the mirror selfie). */
+export function londonCenterPhoto(): Photo | undefined {
+  return galleries.find((g) => g.slug === 'london')?.photos[0];
+}
