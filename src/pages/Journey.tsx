@@ -58,6 +58,7 @@ const Journey: React.FC = () => {
   const mapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const railItemRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const prevStopId = useRef<number | null>(null);
   const [active, setActive] = useState(0);
   const activeRef = useRef(0);
@@ -219,6 +220,11 @@ const Journey: React.FC = () => {
     }
   }, [active, scenes]);
 
+  // Keep the active name visible in the index rail.
+  useEffect(() => {
+    railItemRefs.current[active]?.scrollIntoView({ block: 'nearest' });
+  }, [active]);
+
   // ── Scroll drives the active scene ──
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -379,25 +385,33 @@ const Journey: React.FC = () => {
             </div>
           </div>
 
-          {/* progress rail (desktop) */}
-          <div className="absolute right-6 top-1/2 z-20 hidden -translate-y-1/2 flex-col items-center gap-2 md:flex">
-            {scenes.map((s, i) => (
-              <button
-                key={i}
-                onClick={() => scrollToScene(i)}
-                aria-label={s.kind === 'stop' ? s.title : s.kind}
-                className="group flex h-3 items-center"
-              >
-                <span
-                  className={`block rounded-full transition-all duration-300 ${
-                    i === active
-                      ? 'h-2.5 w-2.5 bg-amber-400'
-                      : 'h-1.5 w-1.5 bg-white/30 group-hover:bg-white/60'
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
+          {/* gallery index (desktop) — click a name to fly there */}
+          <nav className="absolute right-3 top-1/2 z-20 hidden max-h-[78vh] -translate-y-1/2 flex-col items-end gap-px overflow-y-auto pr-1 md:flex [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {stops.map((s) => {
+              const isActive = active === s.no;
+              return (
+                <button
+                  key={s.slug}
+                  ref={(el) => (railItemRefs.current[s.no] = el)}
+                  onClick={() => scrollToScene(s.no)}
+                  className="group flex items-center justify-end gap-2.5 py-1 pl-4"
+                >
+                  <span
+                    className={`whitespace-nowrap font-cormorant text-[11px] uppercase tracking-[0.16em] transition-colors duration-300 ${
+                      isActive ? 'text-amber-300' : 'text-white/35 group-hover:text-white/80'
+                    }`}
+                  >
+                    {s.title}
+                  </span>
+                  <span
+                    className={`block shrink-0 rounded-full transition-all duration-300 ${
+                      isActive ? 'h-1.5 w-1.5 bg-amber-400' : 'h-1 w-1 bg-white/30 group-hover:bg-white/60'
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </nav>
         </div>
 
         {/* ── Scroll-driving spacers (transparent; they only report position) ── */}

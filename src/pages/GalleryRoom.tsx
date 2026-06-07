@@ -92,8 +92,8 @@ const GalleryRoom: React.FC = () => {
   const introY = useTransform(progress, [0, 0.05], [0, -28]);
   const captionOpacity = useTransform(progress, [0.035, 0.075], [0, 1]);
 
-  // Roughly one screen of scroll per ~3 pieces, clamped to a comfortable range.
-  const pageVh = Math.min(820, Math.max(360, artworks.length * 18));
+  // The hall now switchbacks, so give the walk a little more scroll to breathe.
+  const pageVh = Math.min(1000, Math.max(420, artworks.length * 24));
   const current = artworks[focused];
 
   const poster = (

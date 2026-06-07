@@ -78,9 +78,6 @@ const Photography: React.FC = () => {
                   className="opacity-70 transition-transform duration-500 group-hover:rotate-90"
                 />
                 <span className="hidden font-cormorant text-base sm:inline">Portraits</span>
-                <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">
-                  beta
-                </span>
               </Link>
               <Link
                 to="/photography/spectrum"
@@ -103,9 +100,6 @@ const Photography: React.FC = () => {
                   className="opacity-70 transition-transform duration-500 group-hover:-rotate-12"
                 />
                 <span className="hidden font-cormorant text-base sm:inline">Darkroom</span>
-                <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">
-                  beta
-                </span>
               </Link>
               <Link
                 to="/photography/journey"
