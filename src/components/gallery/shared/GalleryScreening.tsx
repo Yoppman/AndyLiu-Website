@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ChevronLeft, ChevronRight, Pause } from 'lucide-react';
 import { cldFull, Photo } from './cloudinaryUtils';
@@ -59,6 +59,42 @@ const GalleryScreening: React.FC<Props> = ({
   }, [i, photos.length]);
   const goPrev = useCallback(() => setI((p) => Math.max(0, p - 1)), []);
 
+  // Latest values for the native wheel listener (attached once, reads via refs).
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const phaseRef = useRef(phase);
+  const goNextRef = useRef(goNext);
+  const goPrevRef = useRef(goPrev);
+  useEffect(() => {
+    phaseRef.current = phase;
+    goNextRef.current = goNext;
+    goPrevRef.current = goPrev;
+  });
+
+  // Mouse wheel / trackpad steps through frames (down = next, up = prev), in
+  // addition to click and arrows. Rate-limited + threshold-accumulated so a
+  // trackpad flick advances a handful of frames instead of the whole reel.
+  // Native non-passive listener so we can preventDefault and own the gesture.
+  useEffect(() => {
+    const el = overlayRef.current;
+    if (!el) return;
+    let accum = 0;
+    let last = 0;
+    const onWheel = (e: WheelEvent) => {
+      if (phaseRef.current !== 'playing') return;
+      e.preventDefault();
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? window.innerHeight : 1;
+      accum += e.deltaY * unit;
+      if (Math.abs(accum) >= 40 && e.timeStamp - last >= 90) {
+        if (accum > 0) goNextRef.current();
+        else goPrevRef.current();
+        accum = 0;
+        last = e.timeStamp;
+      }
+    };
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
+
   // Opening title card → first frame.
   useEffect(() => {
     if (phase !== 'intro') return;
@@ -116,6 +152,7 @@ const GalleryScreening: React.FC<Props> = ({
 
   return (
     <motion.div
+      ref={overlayRef}
       className="fixed inset-0 z-[80] cursor-pointer overflow-hidden bg-black"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
