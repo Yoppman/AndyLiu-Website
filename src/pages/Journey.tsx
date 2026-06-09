@@ -8,6 +8,7 @@ import { galleries } from '../data/galleries';
 import { galleryStories } from '../data/galleryStories';
 import { cldSquare, type Gallery } from '../components/gallery/shared/cloudinaryUtils';
 import PageTransition from '../components/PageTransition';
+import BackButton from '../components/BackButton';
 
 /**
  * "The Journey" — the travelogue as one continuous flight.
@@ -251,6 +252,7 @@ const Journey: React.FC = () => {
   return (
     <PageTransition>
       <div className="relative bg-black text-[#efeae1]">
+        <BackButton variant="pill" placement="bottom-center" />
         {/* ── Sticky map stage ── */}
         <div className="sticky top-0 h-screen w-full overflow-hidden">
           <div ref={mapEl} className="absolute inset-0 h-full w-full" />
