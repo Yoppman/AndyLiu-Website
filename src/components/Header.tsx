@@ -98,7 +98,7 @@ export default function Header() {
   const blendClass = isAbout && !fromHover.current ? 'mix-blend-difference' : '';
 
   return (
-    <header className={`${base} ${translate} ${bgClass}`}>
+    <header id="site-header" className={`${base} ${translate} ${bgClass}`}>
       <div className={`max-w-7xl mx-auto px-10 h-20 flex items-center justify-between ${textClass} ${blendClass}`}>
         <Link to="/" className="text-3xl font-cormorant tracking-wide">
           Andy Liu
