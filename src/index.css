@@ -277,6 +277,19 @@
   contain-intrinsic-size: 90px 90px;
 }
 
+/* ─── Compact mode: same trick — offscreen justified-grid photos cost ~nothing ─── */
+.compact-tile {
+  content-visibility: auto;
+  contain-intrinsic-size: 320px 240px;
+}
+
+/* In Compact mode the slim bar is the only top chrome, so hide the global header
+   and its top-edge hover trigger entirely — no more collision at the top strip. */
+body[data-immersive='1'] #site-header,
+body[data-immersive='1'] #hover-zone {
+  display: none !important;
+}
+
 /* ─── Screening: per-frame progress bar (its end drives the auto-advance) ─── */
 @keyframes screeningProgress {
   from { transform: scaleX(0); }

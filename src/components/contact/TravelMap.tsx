@@ -42,6 +42,8 @@ const pins: Pin[] = [
   { id: 'mammothlake', label: 'Mammoth Lakes', gallery: 'mammothlake', x: 12.5, y: 38, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780631738/mammothlake/dsc06342.jpg' },
   { id: 'film', label: 'On Film · San Francisco', gallery: 'film', x: 8, y: 37, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780631753/film/84171998417199-r1-004-0a.jpg' },
   { id: 'carmelbythesea', label: 'Carmel-by-the-Sea', gallery: 'carmelbythesea', x: 7, y: 44, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780632209/carmelbythesea/dsc06521.jpg' },
+  { id: 'tokyo', label: 'Tokyo', gallery: 'tokyo', x: 85, y: 21, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780969853/tokyo/dsc09808.jpg' },
+  { id: 'taiwan', label: 'Taiwan', gallery: 'taiwan', x: 83, y: 27, thumbnail: 'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_200,q_auto/v1780972644/taiwan/dsc00571.jpg' },
 ];
 
 const TravelMap: React.FC = () => {

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import PageTransition from '../components/PageTransition';
+import BackButton from '../components/BackButton';
 import ComicWall from '../components/portraits/ComicWall';
 import { portraits } from '../data/portraits';
 
@@ -13,6 +14,7 @@ const Portraits: React.FC = () => {
   return (
     <PageTransition>
       <div className="relative min-h-screen bg-black text-white">
+        <BackButton />
         {/* ── Comic-cover title ── */}
         <header className="relative overflow-hidden px-6 pt-28 pb-12 text-center md:pt-32">
           {/* halftone behind the logotype */}

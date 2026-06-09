@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { LayoutGrid, Rows3, Aperture, Palette, FlaskConical, Route, Frame } from 'lucide-react';
@@ -12,6 +12,17 @@ import { cldFull, cldSet, cldPlaceholder } from '../components/gallery/shared/cl
 const PLACEHOLDER_ONLY = String(import.meta.env.VITE_PLACEHOLDER_ONLY) === '1';
 
 const totalFrames = galleries.reduce((n, g) => n + g.photos.length, 0);
+
+// The experimental / curated sub-pages linked from the header. Desktop keeps its
+// bespoke icon row (below); on mobile these render as wrapping text chips so they
+// never overflow into a sideways scroll.
+const SUBPAGES: { to: string; label: string; beta?: boolean }[] = [
+  { to: '/photography/portraits', label: 'Portraits' },
+  { to: '/photography/spectrum', label: 'Spectrum' },
+  { to: '/photography/darkroom', label: 'Darkroom' },
+  { to: '/photography/journey', label: 'Journey', beta: true },
+  { to: '/photography/room', label: 'Room', beta: true },
+];
 
 const containerVariants = {
   animate: { transition: { staggerChildren: 0.05 } },
@@ -36,6 +47,20 @@ const Photography: React.FC = () => {
     () => (localStorage.getItem('photography-view') as ViewMode) || 'grid',
   );
 
+  // Phones get a single, tightened layout (2-up grid); the grid/masonry toggle
+  // is desktop-only, so force the grid view on small screens regardless of the
+  // stored preference.
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches,
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const onChange = () => setIsMobile(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  const effectiveView: ViewMode = isMobile ? 'grid' : viewMode;
+
   const switchView = useCallback((mode: ViewMode) => {
     setViewMode(mode);
     localStorage.setItem('photography-view', mode);
@@ -53,10 +78,10 @@ const Photography: React.FC = () => {
 
   return (
     <PageTransition>
-      <div className="mx-auto max-w-7xl px-6 pb-24 pt-24 md:pt-28">
+      <div className="mx-auto max-w-7xl px-5 pb-24 pt-24 sm:px-6 md:pt-28">
         {/* Editorial header */}
-        <header className="mb-12 md:mb-16">
-          <div className="flex items-start justify-between gap-6">
+        <header className="mb-10 md:mb-16">
+          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between md:gap-6">
             <div>
               <div className="mb-4 flex items-center gap-4">
                 <span className="h-px w-10 bg-amber-500/70" />
@@ -64,10 +89,13 @@ const Photography: React.FC = () => {
                   {galleries.length} galleries · {totalFrames.toLocaleString()} frames
                 </span>
               </div>
-              <h1 className="font-cormorant text-5xl text-neutral-900 md:text-6xl">Photography</h1>
+              <h1 className="font-cormorant text-4xl text-neutral-900 sm:text-5xl md:text-6xl">
+                Photography
+              </h1>
             </div>
 
-            <div className="flex shrink-0 items-center gap-4 pt-2">
+            {/* Desktop controls — unchanged: icon links + view toggle */}
+            <div className="hidden shrink-0 items-center gap-4 pt-2 md:flex">
               <Link
                 to="/photography/portraits"
                 className="group inline-flex items-center gap-2 text-neutral-500 transition-colors hover:text-neutral-900"
@@ -156,12 +184,30 @@ const Photography: React.FC = () => {
                 </button>
               </div>
             </div>
+
+            {/* Mobile controls — wrapping text chips, no sideways scroll, no toggle */}
+            <nav className="flex flex-wrap gap-2 md:hidden">
+              {SUBPAGES.map(({ to, label, beta }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white/70 px-3 py-1.5 font-cormorant text-sm text-neutral-700 active:bg-neutral-100"
+                >
+                  {label}
+                  {beta && (
+                    <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wider text-amber-700">
+                      beta
+                    </span>
+                  )}
+                </Link>
+              ))}
+            </nav>
           </div>
         </header>
 
-        {viewMode === 'grid' ? (
+        {effectiveView === 'grid' ? (
           <motion.div
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:gap-7 lg:grid-cols-3"
+            className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-6 md:gap-7 lg:grid-cols-3"
             variants={containerVariants}
             initial="initial"
             animate="animate"
@@ -182,7 +228,7 @@ const Photography: React.FC = () => {
                       <img
                         src={imageUrl}
                         srcSet={PLACEHOLDER_ONLY ? undefined : cldSet(preview.src, [700, 1100, 1500])}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
                         alt={gallery.title}
                         loading="lazy"
                         decoding="async"
@@ -193,8 +239,8 @@ const Photography: React.FC = () => {
                         style={{ backgroundColor: preview.dominantColor }}
                       />
                       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0" />
-                      <div className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                        <h3 className="font-cormorant text-xl leading-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:-translate-y-1 md:text-2xl">
+                      <div className="absolute inset-x-0 bottom-0 p-3 sm:p-5 md:p-6">
+                        <h3 className="font-cormorant text-base leading-tight text-white drop-shadow-[0_2px_12px_rgba(0,0,0,0.5)] transition-transform duration-500 group-hover:-translate-y-1 sm:text-xl md:text-2xl">
                           {gallery.title}
                         </h3>
                         <p className="mt-1 translate-y-1 font-cormorant text-xs uppercase tracking-[0.25em] text-white/70 opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">

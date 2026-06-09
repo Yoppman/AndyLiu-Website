@@ -8,6 +8,7 @@ import { useScrollProgress } from '../components/home/useScrollProgress';
 import { useNearViewport } from '../components/home/useNearViewport';
 import SceneErrorBoundary from '../components/webgl/SceneErrorBoundary';
 import PageTransition from '../components/PageTransition';
+import BackButton from '../components/BackButton';
 import type { Artwork } from '../components/gallery-room/GalleryRoomScene';
 
 const GalleryRoomScene = React.lazy(() => import('../components/gallery-room/GalleryRoomScene'));
@@ -122,6 +123,7 @@ const GalleryRoom: React.FC = () => {
 
   return (
     <PageTransition>
+      <BackButton variant="pill" placement="bottom-center" />
       <section ref={sectionRef} className="relative" style={{ height: `${pageVh}vh` }}>
         <div
           className="sticky top-0 h-screen w-full overflow-hidden"

@@ -3,6 +3,7 @@ import { motion, type Variants } from 'motion/react';
 import { galleries } from '../data/galleries';
 import { cldFull, cldSet, aspectOf } from '../components/gallery/shared/cloudinaryUtils';
 import PageTransition from '../components/PageTransition';
+import BackButton from '../components/BackButton';
 
 /**
  * "The Darkroom" — watch each frame surface the slow way.
@@ -86,6 +87,7 @@ const Darkroom: React.FC = () => {
   return (
     <PageTransition>
       <div className="relative min-h-screen overflow-hidden bg-[#070605] text-[#efeae1]">
+        <BackButton />
         {/* The safelight — a deep red wash bleeding from above, fixed behind it all. */}
         <div
           aria-hidden

@@ -4,6 +4,7 @@ import { cldSquare, type Photo } from '../components/gallery/shared/cloudinaryUt
 import { useLightbox } from '../components/gallery/shared/useLightbox';
 import GalleryLightbox from '../components/gallery/shared/GalleryLightbox';
 import PageTransition from '../components/PageTransition';
+import BackButton from '../components/BackButton';
 
 /** RGB (0–255) → HSL with hue in degrees, s/l in 0–1. */
 function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
@@ -71,6 +72,7 @@ const Spectrum: React.FC = () => {
   return (
     <PageTransition>
       <div className="min-h-screen bg-[#0a0a0b] text-white">
+        <BackButton />
         <header className="px-6 pb-10 pt-24 text-center md:pt-28">
           <div className="mb-4 flex items-center justify-center gap-4">
             <span className="h-px w-10 bg-white/30" />
