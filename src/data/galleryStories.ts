@@ -17,6 +17,53 @@ export interface GalleryStory {
 }
 
 export const galleryStories: Record<string, GalleryStory> = {
+  taiwan: {
+    meta: 'Taiwan · Salt, Stone, and Slow Days',
+    intro:
+      'This was the quiet Taiwan — not the neon capital but a coast where the tide does most of the scheduling. Old forts sit out in the open with their cannons still pointed at a sea that long ago stopped being a threat, and at low water the oyster farmers walk out among their stone rows the way their grandparents did. I spent the days going slowly from one of these to the next: a lighthouse, a tree-tunnel road, a town that empties at dusk, a table of seafood I couldn’t have named. Nothing was in a hurry, so neither was I — a particular kind of luxury, a place that asks nothing of you but your attention.',
+    signoff:
+      'I left with sand in my shoes and the unhurried feeling these places leave behind: that there is more time than you think, and most of it is best spent looking at water. One last meal too large for one person, the light going flat and gold over the strait, and I went home slower than I came.',
+    captions: {
+      0: 'It begins, the way the best days here do, with food and a red lantern or two — the island’s way of saying sit down, you’re not late for anything. For once, I wasn’t.',
+      3: 'Tea, poured slowly, with the seriousness it deserves and none of the rush. I have never learned to drink it quickly, and this was not the place to start.',
+      10: 'A friend on the grass above the water, squinting into the same sea I was photographing, neither of us saying much. Some company is best kept in silence, with a view.',
+      20: 'Even the small amusements out here feel unhurried — a ferris wheel turning against the haze, a few people taking the long way round just to look at the coast. I joined them. There was no reason not to.',
+      25: 'At low tide the flats fill with stone rows, the old architecture of oyster farming, and figures bent to work that hasn’t changed in generations. The sea gives twice a day, and the whole place has arranged its patience around the schedule.',
+      35: 'The forts are still here, cannons and all, aimed out at a strait gone quiet. History sits in the sun now like everything else — gradually becoming scenery, climbed on by children, photographed by me.',
+      59: 'A lighthouse, striped and certain, doing the one steady thing it has always done. I have a weakness for them: the architecture of not letting people get lost.',
+      66: 'And at the end, a table of seafood far too generous for one, eaten slowly while the light went gold over the water. The size of a meal is a kind of welcome, I’ve learned — this one was telling me to stay.',
+    },
+  },
+
+  tokyo: {
+    meta: 'Tokyo · Between the Shrine and the Neon',
+    intro:
+      'Tokyo is two cities wearing the same coat. There is the one that gets up early and walks the gravel path into Meiji Shrine, where the traffic falls away into cedar and a wedding party crosses the courtyard in slow silk; and there is the other that comes on after dark, all neon and crossing signals and ramen steam, a million lit characters not one of which I could read. I spent the trip walking out of one and into the other and back again, never quite sure which was the dream. What stayed with me was how easily the city holds both — a thousand-year-old gate and a glass tower in a single glance, reverence and appetite on the same block, nobody finding it strange but me.',
+    signoff:
+      'I left Tokyo the way you leave a good long conversation — mid-sentence, certain there was more to say. The last thing I photographed was a man making coffee with the seriousness of a priest, which felt about right for a city where everything, sacred or ordinary, is done with the whole of one’s attention. I am already planning the way back.',
+    captions: {
+      0: 'I started where every Tokyo morning starts — an ordinary street, before the crowds, the city quietly clearing its throat. Nothing here announces itself yet. That comes later, all at once, after dark.',
+      4: 'You step through the torii and the city simply stops. One moment it is traffic and signage; the next it is cedar and gravel and the particular hush that very old places keep in reserve for anyone who slows down enough to notice.',
+      6: 'A wedding party crossed the courtyard in silk the colour of pressed flowers — unhurried, photographed by everyone, rattled by no one. I have rarely seen ceremony worn so lightly.',
+      10: 'A wall of wooden plaques, each carrying somebody’s wish in handwriting I couldn’t read: exams, health, love, a safe year. You don’t need the language. The hoping comes through fine.',
+      13: 'The great torii marks the seam between the two Tokyos — forest on one side, neon waiting on the other. I kept crossing back and forth all week, half hoping to catch the city in the act of changing.',
+      23: 'After dark the narrow alleys light their red lanterns and fill with smoke and laughter. Yokocho is Tokyo at conversational volume: grills hissing, beer poured, strangers elbow to elbow, the whole lane smelling of charcoal and Friday.',
+      38: 'Someone paused in a doorway long enough to let me make the photograph — a small, generous transaction I have never learned to take for granted. A face holds a city better than any skyline.',
+      43: 'And then the neon, which is everything they promise and louder. Whole buildings written in light, a signal releasing its tide of people, the air practically humming. I stood in the middle of it grinning like a tourist, because I was one.',
+      54: 'The Skytree keeps watch over the low streets like a needle holding the sky in place. Tokyo is forever doing this — a tangle of wires and rooftops, and then something impossibly tall and clean rising straight up out of it.',
+      57: 'The great red lantern of Kaminarimon hangs in the gate like a heart. The crowd flows beneath it toward the temple in a current centuries old; I let it carry me, and took the picture looking up.',
+      61: 'The pagoda came up out of a soft grey morning, tier on tier — the kind of silhouette that has been drawn ten thousand times and still stops you where you stand. Some shapes earn their cliché.',
+      64: 'Lunch: a bowl that took someone years to learn to make and me eleven minutes to finish, in reverent silence, at a counter the width of a hallway. The best rooms on this trip were the smallest ones.',
+      69: 'Between everything, the trains — punctual to the second, sliding in and out of stations that run like clockwork made of people. Half of Tokyo, it seems, is the quiet, elegant business of getting elsewhere.',
+      78: 'Back in the shrine wood the path goes green and quiet and the city becomes a rumour you can no longer hear. I walked it slowly, twice, just to hold the silence a little longer.',
+      107: 'From above, the city at night is circuitry — every street a filament, every window a small vote for staying up. I could have watched it refuse to sleep for hours.',
+      111: 'Tokyo Tower comes on orange at the end of a street, an old idea of the future still glowing, entirely unbothered by the taller, cooler things that have grown up around it. I have a soft spot for it.',
+      137: 'By daylight the five-story pagoda stands clean against the blue, red lacquer and grey tile, every line deliberate. Old Tokyo doesn’t whisper here — it stands up straight and lets you look.',
+      160: 'Street food, made by hands that have made it ten thousand times: no wasted motion, no menu, just the thing itself — hot, handed over, gone. I ate standing up and perfectly happy.',
+      167: 'And at the end of it, a man making coffee with the gravity of a rite, which in Tokyo it more or less is. Sacred or ordinary, the city does everything with its whole attention. I packed up reluctantly, already planning the trip back.',
+    },
+  },
+
   carmelbythesea: {
     meta: 'Carmel-by-the-Sea · A Day to Myself',
     intro:

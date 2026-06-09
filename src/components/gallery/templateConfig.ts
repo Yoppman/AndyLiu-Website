@@ -53,6 +53,8 @@ const assignments: Record<string, HeroVariant> = {
   mammothlake: 'minimal',
   film: 'split',
   carmelbythesea: 'cinematic',
+  tokyo: 'cinematic',
+  taiwan: 'cinematic',
 };
 
 export function getTemplateAssignment(slug: string): TemplateAssignment {
