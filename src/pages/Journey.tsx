@@ -284,7 +284,7 @@ const Journey: React.FC = () => {
 
           {/* the crossfading card */}
           <div className="absolute inset-0 z-20 flex items-end md:items-center">
-            <div className="w-full px-6 pb-24 md:px-10 md:pb-0">
+            <div className="w-full px-4 pb-6 md:px-10 md:pb-0">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active}
@@ -312,24 +312,24 @@ const Journey: React.FC = () => {
                   )}
 
                   {scene.kind === 'stop' && (
-                    <div className="max-w-md rounded-2xl border border-white/10 bg-black/45 p-6 backdrop-blur-md md:p-7">
-                      <div className="mb-4 flex items-center gap-3">
+                    <div className="max-w-xs rounded-2xl border border-white/10 bg-black/45 p-4 backdrop-blur-md md:max-w-md md:p-7">
+                      <div className="mb-3 flex items-center gap-3 md:mb-4">
                         <span className="h-px w-7 bg-amber-500" />
                         <span className="font-cormorant text-[0.7rem] uppercase tracking-[0.32em] text-amber-300/85">
                           Stop {String(scene.no).padStart(2, '0')} · {scene.region}
                         </span>
                       </div>
-                      <h2 className="font-cormorant text-4xl leading-none md:text-5xl">{scene.title}</h2>
+                      <h2 className="font-cormorant text-3xl leading-none md:text-5xl">{scene.title}</h2>
                       {scene.meta && (
                         <p className="mt-2 font-cormorant text-sm italic text-[#efeae1]/55">
                           {scene.meta}
                         </p>
                       )}
-                      <p className="mt-4 font-cormorant text-base leading-relaxed text-[#efeae1]/75 [text-wrap:pretty]">
+                      <p className="mt-3 font-cormorant text-sm leading-relaxed text-[#efeae1]/75 [text-wrap:pretty] line-clamp-3 md:mt-4 md:text-base md:line-clamp-none">
                         {scene.line}
                       </p>
 
-                      <div className="mt-5 flex gap-2">
+                      <div className="mt-4 flex gap-2 md:mt-5">
                         {scene.frames.map((src) => (
                           <Link
                             key={src}
@@ -350,7 +350,7 @@ const Journey: React.FC = () => {
 
                       <Link
                         to={`/photography/${scene.slug}`}
-                        className="group mt-5 inline-flex items-center gap-2 font-cormorant text-sm uppercase tracking-[0.25em] text-[#efeae1]/70 transition-colors hover:text-amber-300"
+                        className="group mt-4 inline-flex items-center gap-2 font-cormorant text-sm uppercase tracking-[0.25em] text-[#efeae1]/70 transition-colors hover:text-amber-300 md:mt-5"
                       >
                         Wander the gallery
                         <ArrowRight
