@@ -13,6 +13,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <!-- Allow images to be stored in the HTTP cache for a long time -->
     <meta http-equiv="Cache-Control" content="public, max-age=31536000, immutable">
+    <script>
+      // /photography opens inside a black void (the camera intro), and
+      // /photography/room is a museum at night — pre-paint the document black
+      // so a reload never flashes white first. The pages clear this once
+      // they own the screen.
+      if (/^\/photography(\/room)?\/?$/.test(location.pathname)) {
+        document.documentElement.style.background = '#000';
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -34,12 +34,12 @@ const totalFrames = galleries.reduce((n, g) => n + g.photos.length, 0);
 // The experimental / curated sub-pages linked from the header. Desktop keeps its
 // bespoke icon row (below); on mobile these render as wrapping text chips so they
 // never overflow into a sideways scroll.
-const SUBPAGES: { to: string; label: string; beta?: boolean }[] = [
+const SUBPAGES: { to: string; label: string }[] = [
   { to: '/photography/portraits', label: 'Portraits' },
   { to: '/photography/spectrum', label: 'Spectrum' },
   { to: '/photography/darkroom', label: 'Darkroom' },
-  { to: '/photography/journey', label: 'Journey', beta: true },
-  { to: '/photography/room', label: 'Room', beta: true },
+  { to: '/photography/journey', label: 'Journey' },
+  { to: '/photography/room', label: 'Room' },
 ];
 
 const containerVariants = {
@@ -65,6 +65,13 @@ const Photography: React.FC = () => {
   // content so its stagger entrance plays underneath the overlay's fade-out.
   const [introActive, setIntroActive] = useState(shouldPlayIntro);
   const [revealed, setRevealed] = useState(() => !introActive);
+
+  // index.html pre-paints <html> black for this route so a reload never
+  // flashes white before the void; hand the background back once the intro
+  // no longer needs it.
+  useEffect(() => {
+    if (!introActive) document.documentElement.style.background = '';
+  }, [introActive]);
 
   // Preload the first frame of the collection while the camera turns, so the
   // handoff from dissolution to photographs is instant.
@@ -184,9 +191,6 @@ const Photography: React.FC = () => {
                   className="opacity-70 transition-transform duration-500 group-hover:translate-x-0.5"
                 />
                 <span className="hidden font-cormorant text-base sm:inline">Journey</span>
-                <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">
-                  beta
-                </span>
               </Link>
               <Link
                 to="/photography/room"
@@ -198,9 +202,6 @@ const Photography: React.FC = () => {
                   className="opacity-70 transition-transform duration-500 group-hover:scale-110"
                 />
                 <span className="hidden font-cormorant text-base sm:inline">Room</span>
-                <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-amber-700">
-                  beta
-                </span>
               </Link>
               <div className="flex items-center gap-1">
                 <button
@@ -232,18 +233,13 @@ const Photography: React.FC = () => {
 
             {/* Mobile controls — wrapping text chips, no sideways scroll, no toggle */}
             <nav className="flex flex-wrap gap-2 md:hidden">
-              {SUBPAGES.map(({ to, label, beta }) => (
+              {SUBPAGES.map(({ to, label }) => (
                 <Link
                   key={to}
                   to={to}
                   className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white/70 px-3 py-1.5 font-cormorant text-sm text-neutral-700 active:bg-neutral-100"
                 >
                   {label}
-                  {beta && (
-                    <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[8px] font-semibold uppercase tracking-wider text-amber-700">
-                      beta
-                    </span>
-                  )}
                 </Link>
               ))}
             </nav>
