@@ -108,6 +108,42 @@
   opacity: 0.3;
 }
 
+/* ─── Photo map: hover label (just the place name, in the site face) ─── */
+.map-photo-popup .maplibregl-popup-content {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+.map-photo-popup .maplibregl-popup-tip {
+  display: none;
+}
+.map-photo-popup .mp-pop-title {
+  display: inline-block;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #f5f5f5;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  padding: 5px 12px;
+}
+
+/* Cluster count — HTML overlay centered on the GL bubble, in the site face. */
+.mp-cluster-count {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+  pointer-events: none;
+  user-select: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+}
+
 /* ─── Photo map marker styles (MapLibre HTML markers) ─── */
 .photo-pin {
   position: relative;
