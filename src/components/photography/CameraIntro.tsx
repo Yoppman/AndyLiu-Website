@@ -74,7 +74,7 @@ const inOutCubic = (x: number) => {
 const ROT_KEYS = [
   { u: 0.0, a: 0, m: 70 }, // front: mount, grip, badge — slow
   { u: 0.32, a: 95, m: 360 }, // side profile
-  { u: 0.55, a: 160, m: 450 }, // rear: functional, not beautiful — fastest
+  { u: 0.55, a: 160, m: 330 }, // rear: the monitor already holds a photograph — let it read
   { u: 0.78, a: 250, m: 280 },
   { u: 1.0, a: 315, m: 0 }, // decelerate into the resting pose
 ];
@@ -236,6 +236,13 @@ interface PartProps {
   emissiveIntensity?: number;
   /** Alpha-masked decal texture (logos, the α badge glyph). */
   map?: THREE.Texture;
+  /** Self-lit texture (the rear monitor's photograph). */
+  emissiveMap?: THREE.Texture;
+  /** Surface grain: leatherette on the grip, magnesium powder on the plates. */
+  bumpMap?: THREE.Texture;
+  bumpScale?: number;
+  /** Faceted shading — reads as machined knurling on the dials. */
+  flatShading?: boolean;
   /** Override drift direction (e.g. the badge floats forward, not outward). */
   drift?: [number, number, number];
   children: React.ReactNode;
@@ -253,6 +260,10 @@ const Part: React.FC<PartProps> = ({
   emissive,
   emissiveIntensity = 0,
   map,
+  emissiveMap,
+  bumpMap,
+  bumpScale = 1,
+  flatShading = false,
   drift,
   children,
 }) => {
@@ -269,7 +280,11 @@ const Part: React.FC<PartProps> = ({
         emissive: emissive ?? '#000000',
         emissiveIntensity,
         map: map ?? null,
-        alphaTest: map ? 0.05 : 0,
+        emissiveMap: emissiveMap ?? null,
+        bumpMap: bumpMap ?? null,
+        bumpScale,
+        flatShading,
+        alphaTest: map && !emissiveMap ? 0.05 : 0,
         transparent: true,
         opacity: 0,
       }),
@@ -349,92 +364,277 @@ function useTextTexture(text: string, font: string, color: string, stretchX = 1)
 }
 
 /**
- * A stylized Sony A7C II at 1 unit ≈ 100mm: 1.24 × 0.71 × 0.63 overall.
- * Front faces +Z, grip on -X (the viewer's left). Bare body, no lens — the
- * E-mount stays exposed because the sensor inside it is what "photographs"
- * the viewer at the shutter moment.
+ * Procedural surface grain, the A7C II's two real finishes: 'leather' is the
+ * pebbled wrap on the grip and thumb rest, 'micro' is the fine powder texture
+ * of the magnesium plates. Mid-grey canvas noise used as a bump map — the
+ * grain only exists where light grazes it, which is exactly how the real
+ * surfaces behave.
+ */
+function useGrainBump(kind: 'leather' | 'micro') {
+  const tex = useMemo(() => {
+    const size = 256;
+    const c = document.createElement('canvas');
+    c.width = size;
+    c.height = size;
+    const g = c.getContext('2d');
+    let seed = kind === 'leather' ? 48271 : 16807;
+    const rand = () => {
+      seed = (seed * 48271) % 2147483647;
+      return seed / 2147483647;
+    };
+    if (g) {
+      g.fillStyle = '#808080';
+      g.fillRect(0, 0, size, size);
+      if (kind === 'leather') {
+        // pebble tops…
+        for (let i = 0; i < 480; i++) {
+          const v = 104 + Math.floor(rand() * 84);
+          g.fillStyle = `rgb(${v},${v},${v})`;
+          g.beginPath();
+          g.ellipse(
+            rand() * size,
+            rand() * size,
+            3.5 + rand() * 5,
+            2.8 + rand() * 4,
+            rand() * Math.PI,
+            0,
+            Math.PI * 2,
+          );
+          g.fill();
+        }
+        // …and the creases between them
+        for (let i = 0; i < 700; i++) {
+          const v = 38 + Math.floor(rand() * 50);
+          g.fillStyle = `rgb(${v},${v},${v})`;
+          g.beginPath();
+          g.arc(rand() * size, rand() * size, 0.8 + rand() * 1.6, 0, Math.PI * 2);
+          g.fill();
+        }
+      } else {
+        for (let i = 0; i < 4200; i++) {
+          const v = 110 + Math.floor(rand() * 36);
+          g.fillStyle = `rgb(${v},${v},${v})`;
+          g.fillRect(rand() * size, rand() * size, 1 + Math.round(rand()), 1 + Math.round(rand()));
+        }
+      }
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = THREE.RepeatWrapping;
+    t.wrapT = THREE.RepeatWrapping;
+    const rep = kind === 'leather' ? 1 : 3;
+    t.repeat.set(rep, rep);
+    return t;
+  }, [kind]);
+  useEffect(() => () => tex.dispose(), [tex]);
+  return tex;
+}
+
+/**
+ * The photograph on the rear monitor — the first London frame, served small.
+ * Loads quietly during the dark opening; if it hasn't arrived by the time the
+ * rear faces the viewer, the screen simply stays dark glass.
+ */
+const LCD_PHOTO_URL =
+  'https://res.cloudinary.com/dlfmzlwp6/image/upload/w_640,q_auto/v1780547339/london/dsc00662.jpg';
+
+function usePhotoTexture(url: string) {
+  const [tex, setTex] = useState<THREE.Texture | null>(null);
+  useEffect(() => {
+    let live = true;
+    new THREE.TextureLoader().load(
+      url,
+      (t) => {
+        if (!live) {
+          t.dispose();
+          return;
+        }
+        t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = 8;
+        setTex(t);
+      },
+      undefined,
+      () => {}, // offline → dark screen, never an error
+    );
+    return () => {
+      live = false;
+    };
+  }, [url]);
+  useEffect(() => () => tex?.dispose(), [tex]);
+  return tex;
+}
+
+/**
+ * A Sony A7C II at 1 unit ≈ 100mm: 1.24 × 0.71 × 0.63 overall. Front faces
+ * +Z, grip on -X (the viewer's left). Bare body, no lens — the E-mount stays
+ * exposed because the sensor inside it is what "photographs" the viewer.
+ *
+ * Detail is studio-grade, taken from product photography of the real body:
+ * the flat bayonet ring with its three tabs and the thin orange accent ring
+ * behind it, the gold contact arc at the bottom of the throat, knurled dials
+ * with smooth caps, the ON/OFF collar under the shutter button, the
+ * red-ringed MOVIE button, and the two real surface finishes — pebbled
+ * leatherette on the grip, powder-fine magnesium grain everywhere else.
  */
 const CameraModel: React.FC = () => {
   const sonyTex = useTextTexture('SONY', '700 78px "Times New Roman", serif', '#c4c7cc', 1.3);
   const alphaTex = useTextTexture('α', 'italic 700 104px Georgia, serif', '#ff4d00');
+  const leather = useGrainBump('leather');
+  const micro = useGrainBump('micro');
+  const photoTex = usePhotoTexture(LCD_PHOTO_URL);
 
   return (
   <group>
     {/* chassis + top plate (separate, so the dissolution has a seam) */}
-    <Part id="chassis" size="body" pos={[0, -0.03, 0]} color="#171717" roughness={0.6} metalness={0.32} envMapIntensity={0.45}>
+    <Part id="chassis" size="body" pos={[0, -0.03, 0]} color="#171717" roughness={0.6} metalness={0.32} envMapIntensity={0.45} bumpMap={micro} bumpScale={0.002}>
       <roundedBoxGeometry args={[1.24, 0.64, 0.44, 4, 0.05]} />
     </Part>
-    <Part id="top-plate" size="body" pos={[0, 0.315, 0]} color="#151515" roughness={0.52} metalness={0.4} envMapIntensity={0.55}>
+    <Part id="top-plate" size="body" pos={[0, 0.315, 0]} color="#151515" roughness={0.5} metalness={0.42} envMapIntensity={0.55} bumpMap={micro} bumpScale={0.0016}>
       <roundedBoxGeometry args={[1.21, 0.1, 0.4, 4, 0.03]} />
     </Part>
 
-    {/* grip — rubberized, the only fully matte mass */}
-    <Part id="grip" size="md" pos={[-0.46, -0.02, 0.16]} color="#0e0e0e" roughness={0.92} metalness={0} envMapIntensity={0.18}>
+    {/* grip — the pebbled leatherette wrap, the only fully matte mass */}
+    <Part id="grip" size="md" pos={[-0.46, -0.02, 0.16]} color="#0e0e0e" roughness={0.9} metalness={0} envMapIntensity={0.2} bumpMap={leather} bumpScale={0.006}>
       <roundedBoxGeometry args={[0.34, 0.66, 0.26, 4, 0.1]} />
     </Part>
-    <Part id="thumb-rest" size="sm" pos={[-0.5, 0.16, -0.245]} color="#0e0e0e" roughness={0.92} metalness={0} envMapIntensity={0.18}>
+    <Part id="thumb-rest" size="sm" pos={[-0.5, 0.16, -0.245]} color="#0e0e0e" roughness={0.9} metalness={0} envMapIntensity={0.2} bumpMap={leather} bumpScale={0.0055}>
       <roundedBoxGeometry args={[0.18, 0.2, 0.05, 2, 0.02]} />
     </Part>
 
-    {/* E-mount: barrel, bayonet flange, dark throat, and the sensor itself */}
+    {/* E-mount: barrel, orange accent ring, flat bayonet ring + three tabs,
+        dark throat, gold contact arc, white index dot, and the sensor */}
     <Part id="mount-barrel" size="md" pos={[0.1, 0, 0.245]} rot={RX90} color="#121212" roughness={0.45} metalness={0.55} envMapIntensity={0.6}>
       <cylinderGeometry args={[0.25, 0.25, 0.08, 48]} />
     </Part>
-    <Part id="mount-flange" size="md" pos={[0.1, 0, 0.285]} color="#a8acb3" roughness={0.38} metalness={1} envMapIntensity={0.8}>
-      <torusGeometry args={[0.2, 0.022, 16, 64]} />
+    <Part id="mount-accent" size="sm" pos={[0.1, 0, 0.2825]} color="#cf5a1d" roughness={0.32} metalness={0.65} envMapIntensity={0.75}>
+      <torusGeometry args={[0.2375, 0.0065, 12, 72]} />
     </Part>
+    <Part id="mount-flange" size="md" pos={[0.1, 0, 0.2865]} color="#a4a8af" roughness={0.32} metalness={1} envMapIntensity={0.8}>
+      <ringGeometry args={[0.15, 0.232, 64]} />
+    </Part>
+    {([60, 180, 300] as const).map((deg, i) => {
+      const th = (deg * Math.PI) / 180;
+      return (
+        <Part
+          key={deg}
+          id={`mount-tab-${i}`}
+          size="sm"
+          pos={[0.1 + 0.142 * Math.cos(th), 0.142 * Math.sin(th), 0.2845]}
+          rot={[0, 0, th + Math.PI / 2]}
+          color="#a4a8af"
+          roughness={0.32}
+          metalness={1}
+          envMapIntensity={0.8}
+        >
+          <boxGeometry args={[0.085, 0.018, 0.007]} />
+        </Part>
+      );
+    })}
     <Part id="mount-throat" size="md" pos={[0.1, 0, 0.252]} color="#020202" roughness={1} metalness={0} envMapIntensity={0}>
       <circleGeometry args={[0.21, 48]} />
     </Part>
-    <Part id="sensor" size="md" pos={[0.1, 0, 0.258]} color="#15333c" roughness={0.12} metalness={0.85} envMapIntensity={0.9} emissive="#ffffff" emissiveIntensity={0}>
+    <Part id="mount-contacts" size="sm" pos={[0.1, 0, 0.258]} rot={[0, 0, Math.PI + 0.67]} color="#c9982f" roughness={0.3} metalness={1} envMapIntensity={1.2}>
+      <torusGeometry args={[0.168, 0.007, 8, 28, 1.8]} />
+    </Part>
+    <Part id="mount-index" size="sm" pos={[0.165, 0.179, 0.2872]} color="#e8e8e8" roughness={0.5} metalness={0.2} envMapIntensity={0.4}>
+      <circleGeometry args={[0.011, 16]} />
+    </Part>
+    <Part id="sensor" size="md" pos={[0.1, 0, 0.258]} color="#2a1126" roughness={0.1} metalness={0.9} envMapIntensity={1.1} emissive="#ffffff" emissiveIntensity={0}>
       <planeGeometry args={[0.3, 0.2]} />
     </Part>
     <Part id="lens-release" size="sm" pos={[-0.19, -0.12, 0.235]} rot={RX90} color="#1d1d1f" roughness={0.45} metalness={0.7} envMapIntensity={0.6}>
       <cylinderGeometry args={[0.035, 0.035, 0.025, 24]} />
     </Part>
-    <Part id="af-lamp" size="sm" pos={[-0.27, 0.16, 0.224]} rot={RX90} color="#0a0a0c" roughness={0.08} metalness={0.5} envMapIntensity={1.2}>
+    <Part id="af-lamp" size="sm" pos={[-0.27, 0.16, 0.224]} rot={RX90} color="#0a0a0c" roughness={0.08} metalness={0.5} envMapIntensity={1.2} emissive="#ff8a3c" emissiveIntensity={0}>
       <cylinderGeometry args={[0.024, 0.024, 0.014, 20]} />
     </Part>
 
     {/* EVF bump, offset left — the rangefinder silhouette */}
-    <Part id="evf" size="md" pos={[0.45, 0.405, -0.03]} color="#161616" roughness={0.58} metalness={0.35} envMapIntensity={0.45}>
+    <Part id="evf" size="md" pos={[0.45, 0.405, -0.03]} color="#161616" roughness={0.56} metalness={0.35} envMapIntensity={0.45} bumpMap={micro} bumpScale={0.001}>
       <roundedBoxGeometry args={[0.28, 0.11, 0.34, 3, 0.04]} />
     </Part>
     <Part id="eyecup" size="sm" pos={[0.45, 0.405, -0.22]} color="#0c0c0c" roughness={0.95} metalness={0} envMapIntensity={0.15}>
       <roundedBoxGeometry args={[0.2, 0.1, 0.04, 2, 0.015]} />
     </Part>
+    <Part id="evf-window" size="sm" pos={[0.45, 0.405, -0.2415]} rot={[0, Math.PI, 0]} color="#05060a" roughness={0.06} metalness={0.5} envMapIntensity={1.5}>
+      <planeGeometry args={[0.13, 0.07]} />
+    </Part>
     <Part id="hot-shoe" size="sm" pos={[0.45, 0.458, -0.02]} color="#b4b8be" roughness={0.38} metalness={1} envMapIntensity={1}>
       <boxGeometry args={[0.16, 0.03, 0.18]} />
     </Part>
-
-    {/* top plate — the cockpit */}
-    <Part id="mode-dial" size="sm" pos={[0.1, 0.385, -0.1]} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65}>
-      <cylinderGeometry args={[0.095, 0.095, 0.05, 40]} />
-    </Part>
-    <Part id="exp-dial" size="sm" pos={[-0.16, 0.385, -0.13]} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65}>
-      <cylinderGeometry args={[0.075, 0.075, 0.05, 36]} />
-    </Part>
-    <Part id="shutter-base" size="sm" pos={[-0.44, 0.315, 0.25]} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65}>
-      <cylinderGeometry args={[0.07, 0.07, 0.04, 32]} />
-    </Part>
-    <Part id="shutter-button" size="sm" pos={[-0.44, 0.345, 0.25]} color="#cdd1d6" roughness={0.28} metalness={1} envMapIntensity={1.1}>
-      <cylinderGeometry args={[0.045, 0.045, 0.02, 28]} />
-    </Part>
-    <Part id="front-dial" size="sm" pos={[-0.46, 0.2, 0.27]} rot={RZ90} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65}>
-      <cylinderGeometry args={[0.05, 0.05, 0.04, 28]} />
+    <Part id="shoe-insert" size="sm" pos={[0.45, 0.478, -0.02]} color="#101012" roughness={0.7} metalness={0.2} envMapIntensity={0.3}>
+      <boxGeometry args={[0.1, 0.008, 0.14]} />
     </Part>
 
-    {/* rear: LCD (dark mirror) and the control column */}
+    {/* top plate — the cockpit. Dials are knurled (faceted) with smooth caps */}
+    <Part id="mode-dial" size="sm" pos={[0.1, 0.385, -0.1]} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65} flatShading>
+      <cylinderGeometry args={[0.095, 0.095, 0.05, 18]} />
+    </Part>
+    <Part id="mode-dial-cap" size="sm" pos={[0.1, 0.413, -0.1]} color="#232325" roughness={0.36} metalness={0.8} envMapIntensity={0.7}>
+      <cylinderGeometry args={[0.078, 0.078, 0.012, 36]} />
+    </Part>
+    <Part id="exp-dial" size="sm" pos={[-0.16, 0.385, -0.13]} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65} flatShading>
+      <cylinderGeometry args={[0.075, 0.075, 0.05, 16]} />
+    </Part>
+    <Part id="exp-dial-cap" size="sm" pos={[-0.16, 0.413, -0.13]} color="#232325" roughness={0.36} metalness={0.8} envMapIntensity={0.7}>
+      <cylinderGeometry args={[0.06, 0.06, 0.012, 32]} />
+    </Part>
+    <Part id="top-rear-dial" size="sm" pos={[-0.31, 0.378, -0.175]} color="#1d1d1f" roughness={0.4} metalness={0.78} envMapIntensity={0.7} flatShading>
+      <cylinderGeometry args={[0.052, 0.052, 0.032, 16]} />
+    </Part>
+
+    {/* shutter release: base, ON/OFF lever collar with its nub, silver button */}
+    <Part id="shutter-base" size="sm" pos={[-0.44, 0.312, 0.25]} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65}>
+      <cylinderGeometry args={[0.07, 0.07, 0.034, 32]} />
+    </Part>
+    <Part id="power-lever" size="sm" pos={[-0.44, 0.336, 0.25]} color="#2a2a2c" roughness={0.45} metalness={0.7} envMapIntensity={0.6}>
+      <cylinderGeometry args={[0.085, 0.085, 0.013, 32]} />
+    </Part>
+    <Part id="power-nub" size="sm" pos={[-0.38, 0.336, 0.31]} rot={[0, -Math.PI / 4, 0]} color="#2a2a2c" roughness={0.45} metalness={0.7} envMapIntensity={0.6}>
+      <boxGeometry args={[0.034, 0.011, 0.016]} />
+    </Part>
+    <Part id="shutter-button" size="sm" pos={[-0.44, 0.352, 0.25]} color="#cdd1d6" roughness={0.28} metalness={1} envMapIntensity={1.1}>
+      <cylinderGeometry args={[0.045, 0.045, 0.018, 28]} />
+    </Part>
+    <Part id="front-dial" size="sm" pos={[-0.46, 0.2, 0.27]} rot={RZ90} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65} flatShading>
+      <cylinderGeometry args={[0.05, 0.05, 0.04, 16]} />
+    </Part>
+
+    {/* MOVIE button — its red ring is the second, quieter color on the body */}
+    <Part id="movie-btn" size="sm" pos={[-0.29, 0.371, 0.07]} color="#19191b" roughness={0.5} metalness={0.6} envMapIntensity={0.5}>
+      <cylinderGeometry args={[0.026, 0.026, 0.014, 20]} />
+    </Part>
+    <Part id="movie-ring" size="sm" pos={[-0.29, 0.376, 0.07]} rot={RX90} color="#b3261e" roughness={0.4} metalness={0.4} envMapIntensity={0.5} emissive="#7a1410" emissiveIntensity={0.25}>
+      <torusGeometry args={[0.028, 0.0045, 8, 28]} />
+    </Part>
+
+    {/* rear: LCD glass, the photograph behind it, and the control column */}
     <Part id="lcd" size="md" pos={[0.05, -0.04, -0.245]} color="#050507" roughness={0.06} metalness={0.45} envMapIntensity={1.4}>
       <roundedBoxGeometry args={[0.74, 0.48, 0.04, 3, 0.02]} />
     </Part>
-    <Part id="rear-dial" size="sm" pos={[-0.5, 0.14, -0.235]} rot={RX90} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65}>
-      <cylinderGeometry args={[0.07, 0.07, 0.03, 32]} />
+    {photoTex && (
+      <Part id="lcd-screen" size="md" pos={[0.05, -0.04, -0.268]} rot={[0, Math.PI, 0]} map={photoTex} emissiveMap={photoTex} emissive="#ffffff" color="#222222" roughness={0.35} metalness={0} envMapIntensity={0.2}>
+        <planeGeometry args={[0.62, 0.4133]} />
+      </Part>
+    )}
+    <Part id="menu-btn" size="sm" pos={[0.13, 0.245, -0.2245]} color="#19191b" roughness={0.5} metalness={0.6} envMapIntensity={0.5}>
+      <boxGeometry args={[0.07, 0.022, 0.01]} />
     </Part>
-    <Part id="rear-btn-a" size="sm" pos={[-0.5, -0.02, -0.232]} rot={RX90} color="#19191b" roughness={0.5} metalness={0.6} envMapIntensity={0.5}>
+    <Part id="c1-btn" size="sm" pos={[0.24, 0.245, -0.2245]} rot={RX90} color="#19191b" roughness={0.5} metalness={0.6} envMapIntensity={0.5}>
+      <cylinderGeometry args={[0.02, 0.02, 0.01, 16]} />
+    </Part>
+    <Part id="rear-dial" size="sm" pos={[-0.5, 0.14, -0.235]} rot={RX90} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65} flatShading>
+      <cylinderGeometry args={[0.07, 0.07, 0.03, 18]} />
+    </Part>
+    <Part id="rear-btn-a" size="sm" pos={[-0.5, 0.03, -0.232]} rot={RX90} color="#19191b" roughness={0.5} metalness={0.6} envMapIntensity={0.5}>
       <cylinderGeometry args={[0.03, 0.03, 0.018, 20]} />
     </Part>
-    <Part id="rear-btn-b" size="sm" pos={[-0.5, -0.14, -0.232]} rot={RX90} color="#19191b" roughness={0.5} metalness={0.6} envMapIntensity={0.5}>
+    <Part id="ctrl-wheel" size="sm" pos={[-0.5, -0.08, -0.2335]} rot={RX90} color="#1d1d1f" roughness={0.42} metalness={0.75} envMapIntensity={0.65} flatShading>
+      <cylinderGeometry args={[0.062, 0.062, 0.02, 24]} />
+    </Part>
+    <Part id="ctrl-center" size="sm" pos={[-0.5, -0.08, -0.2405]} rot={RX90} color="#19191b" roughness={0.5} metalness={0.6} envMapIntensity={0.5}>
+      <cylinderGeometry args={[0.026, 0.026, 0.012, 20]} />
+    </Part>
+    <Part id="rear-btn-b" size="sm" pos={[-0.5, -0.19, -0.232]} rot={RX90} color="#19191b" roughness={0.5} metalness={0.6} envMapIntensity={0.5}>
       <cylinderGeometry args={[0.03, 0.03, 0.018, 20]} />
     </Part>
 
@@ -451,7 +651,7 @@ const CameraModel: React.FC = () => {
       <planeGeometry args={[0.3, 0.075]} />
     </Part>
 
-    {/* the α badge — the only color on the entire model, and the last to go */}
+    {/* the α badge — the loudest color on the model, and the last to go */}
     <Part id="badge" size="badge" pos={[-0.46, 0.02, 0.292]} drift={[0, 0, 1]} map={alphaTex} color="#ff4d00" roughness={0.6} metalness={0.1} envMapIntensity={0.15} emissive="#ff4800" emissiveIntensity={0.55}>
       <planeGeometry args={[0.22, 0.055]} />
     </Part>
@@ -503,10 +703,51 @@ const IntroScene: React.FC<IntroSceneProps> = ({ onSequenceEnd }) => {
   const rimRef = useRef<THREE.DirectionalLight>(null);
   const badgeLightRef = useRef<THREE.PointLight>(null);
   const flashRef = useRef<THREE.PointLight>(null);
+  const dustRef = useRef<THREE.Points>(null);
 
   const t = useRef(0);
   const shutterFiredAt = useRef<number | null>(null);
   const ended = useRef(false);
+
+  // Studio air: a thin field of motes that only exists where the rim light
+  // grazes it. Each one drifts so slowly the eye reads atmosphere, not motion.
+  const dustGeo = useMemo(() => {
+    const N = 110;
+    const positions = new Float32Array(N * 3);
+    let seed = 1234567;
+    const rand = () => {
+      seed = (seed * 48271) % 2147483647;
+      return seed / 2147483647;
+    };
+    for (let i = 0; i < N; i++) {
+      positions[i * 3] = (rand() - 0.5) * 3.4;
+      positions[i * 3 + 1] = (rand() - 0.5) * 2.0 + 0.1;
+      positions[i * 3 + 2] = (rand() - 0.5) * 2.2 + 0.5;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    return g;
+  }, []);
+  const dustMat = useMemo(
+    () =>
+      new THREE.PointsMaterial({
+        color: '#b9c8e6',
+        size: 0.0085,
+        sizeAttenuation: true,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+      }),
+    [],
+  );
+  useEffect(
+    () => () => {
+      dustGeo.dispose();
+      dustMat.dispose();
+    },
+    [dustGeo, dustMat],
+  );
 
   // Mobile: same animation, same timing, smaller object. Scale from the
   // visible width in world units so portrait phones never crop the body
@@ -514,7 +755,7 @@ const IntroScene: React.FC<IntroSceneProps> = ({ onSequenceEnd }) => {
   const viewportWidth = useThree((s) => s.viewport.width);
   const fitScale = Math.min(1, viewportWidth / 2.1);
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (ended.current) return;
     t.current += Math.min(delta, 0.05);
 
@@ -522,6 +763,14 @@ const IntroScene: React.FC<IntroSceneProps> = ({ onSequenceEnd }) => {
     const root = rootRef.current;
     const turn = turnRef.current;
     if (!root || !turn) return;
+
+    /* the viewer's eye — an almost subliminal dolly-in over the whole take,
+       with a slow handheld float so the frame never feels locked off */
+    const cam = state.camera;
+    cam.position.z = 2.86 - 0.17 * inOutCubic(time / T_END);
+    cam.position.x = 0.018 * Math.sin(time * 0.33);
+    cam.position.y = 0.16 + 0.008 * Math.sin(time * 0.21 + 1.7);
+    cam.lookAt(0, 0.02, 0);
 
     /* phase 1 — emergence: rim first, surface later, 95% → 100% scale */
     const emerge = outQuart(time / 1.5);
@@ -559,11 +808,20 @@ const IntroScene: React.FC<IntroSceneProps> = ({ onSequenceEnd }) => {
       }
     }
     if (flashRef.current) flashRef.current.intensity = 9 * flash;
+    // the exposure itself kicks for a frame or two — the whole world blinks
+    state.gl.toneMappingExposure = 1 + 0.45 * flash;
+
+    /* the half-press: the AF lamp glows amber while the camera finds focus,
+       then dies just before the curtain — the photograph is of the viewer */
+    const focus = smoothstep(6.1, 6.3, time) * (1 - smoothstep(6.55, 6.7, time));
 
     /* phase 4 — dissolution: matte first, then the seams let go */
     const d = clamp01((time - T_DISSOLVE) / (T_DISSOLVE_END - T_DISSOLVE));
     const ghost = smoothstep(0, 0.5, d); // physical presence drains away
     const lightFade = 1 - smoothstep(0.5, 0.95, d);
+
+    /* the rear monitor wakes during the turn, just before it faces the viewer */
+    const screenOn = smoothstep(2.55, 3.15, time);
 
     for (const p of parts.current) {
       const k = clamp01((d - p.win[0]) / (p.win[1] - p.win[0]));
@@ -584,8 +842,14 @@ const IntroScene: React.FC<IntroSceneProps> = ({ onSequenceEnd }) => {
       if (p.id === 'sensor') {
         p.mat.emissiveIntensity = 22 * flash;
       } else if (p.id === 'badge') {
-        // the orange mark holds its glow until it is the only thing left
-        p.mat.emissiveIntensity = p.baseEmissive * (1 - k * k);
+        // the orange mark holds its glow until it is the only thing left —
+        // breathing very slightly, like a pilot lamp, never strobing
+        p.mat.emissiveIntensity =
+          p.baseEmissive * (1 - k * k) * (0.92 + 0.08 * Math.sin(time * 5.3) * Math.sin(time * 1.7));
+      } else if (p.id === 'lcd-screen') {
+        p.mat.emissiveIntensity = 0.95 * screenOn;
+      } else if (p.id === 'af-lamp') {
+        p.mat.emissiveIntensity = 2.2 * focus;
       }
     }
 
@@ -599,6 +863,13 @@ const IntroScene: React.FC<IntroSceneProps> = ({ onSequenceEnd }) => {
       fillRef.current.intensity = 0.3 * outQuart((time - 0.8) / 1.4) * lightFade;
     if (badgeLightRef.current)
       badgeLightRef.current.intensity = 0.12 * emerge * lightFade * (1 - smoothstep(0.86, 1, d));
+
+    /* the air: motes surface with the light and sink away with it */
+    if (dustRef.current) {
+      dustRef.current.rotation.y = time * 0.016;
+      dustRef.current.position.y = 0.04 * Math.sin(time * 0.18);
+      dustMat.opacity = 0.17 * smoothstep(0.9, 2.4, time) * lightFade;
+    }
 
     if (time >= T_END) {
       ended.current = true;
@@ -627,6 +898,9 @@ const IntroScene: React.FC<IntroSceneProps> = ({ onSequenceEnd }) => {
           <pointLight ref={flashRef} color="#ffffff" position={[0.1, 0, 0.6]} intensity={0} distance={3.5} decay={2} />
         </group>
       </group>
+
+      {/* studio air, lit only by the rim */}
+      <points ref={dustRef} geometry={dustGeo} material={dustMat} />
     </Registry.Provider>
   );
 };
@@ -676,6 +950,14 @@ const CameraIntro: React.FC<CameraIntroProps> = ({ onRevealed, onFinished }) => 
             <ReleaseContextOnUnmount />
             <IntroScene onSequenceEnd={endSequence} />
           </Canvas>
+          {/* a lens's own vignette — holds the eye at the center of the frame */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(ellipse 72% 62% at 50% 47%, transparent 58%, rgba(0,0,0,0.55) 100%)',
+            }}
+          />
         </SceneErrorBoundary>
       )}
     </motion.div>
