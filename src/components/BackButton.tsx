@@ -21,7 +21,10 @@ interface BackButtonProps {
 }
 
 const POSITION: Record<Placement, string> = {
-  corner: 'left-3 top-3 md:left-6 md:top-24',
+  // Sits just below the fixed 80px (h-20) header so it never overlaps the
+  // "Andy Liu" wordmark on phones (where the header has no room to spare and
+  // can't be revealed by hover). Desktop already clears it at top-24.
+  corner: 'left-3 top-[5.5rem] md:left-6 md:top-24',
   'bottom-center': 'bottom-6 left-1/2 -translate-x-1/2',
 };
 
