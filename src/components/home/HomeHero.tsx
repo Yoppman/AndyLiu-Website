@@ -1,11 +1,20 @@
-import React, { useMemo } from 'react';
-import LivingMosaic from './LivingMosaic';
+import React, { lazy, Suspense, useMemo } from 'react';
 import WallOpening from './openings/WallOpening';
-import FrameOpening from './openings/FrameOpening';
-import FloatingGallery from './FloatingGallery';
-import ComicGrid from './ComicGrid';
-import LiquidShader from './LiquidShader';
 import { mosaicPhotos, HERO_IMAGES } from './heroImages';
+
+// The WebGL acts (three.js / react-three-fiber) are the heaviest modules on the
+// site. Loading them eagerly forces the browser to fetch and compile the whole
+// three.js graph before the landing page can paint — slow in dev, and a stall
+// risk on slow connections. They each already wait until they near the viewport
+// to spin up a WebGL context, so code-split them too: the wall hero shows
+// instantly and each act's bundle streams in as you scroll toward it. The
+// alternate openings only render for non-default `opening` values, so they're
+// never fetched on the standard home page.
+const LivingMosaic = lazy(() => import('./LivingMosaic'));
+const FrameOpening = lazy(() => import('./openings/FrameOpening'));
+const FloatingGallery = lazy(() => import('./FloatingGallery'));
+const ComicGrid = lazy(() => import('./ComicGrid'));
+const LiquidShader = lazy(() => import('./LiquidShader'));
 
 /** Which opening act greets the visitor (see the in-page preview switcher). */
 export type HeroOpening = 'wall' | 'frame' | 'classic';
@@ -22,16 +31,18 @@ const HomeHero: React.FC<{ opening?: HeroOpening }> = ({ opening = 'wall' }) => 
 
   return (
     <div className="relative bg-[#0a0a0b] text-white">
+      {/* Per-act Suspense boundaries: the eager wall hero paints immediately and
+          each lazy act streams in on its own, so a slow one never blocks the rest. */}
       {opening === 'classic' ? (
-        <LivingMosaic photos={photos} />
+        <Suspense fallback={null}><LivingMosaic photos={photos} /></Suspense>
       ) : opening === 'frame' ? (
-        <FrameOpening />
+        <Suspense fallback={null}><FrameOpening /></Suspense>
       ) : (
         <WallOpening />
       )}
-      <FloatingGallery />
-      <ComicGrid />
-      <LiquidShader images={[HERO_IMAGES[1], HERO_IMAGES[2]]} />
+      <Suspense fallback={null}><FloatingGallery /></Suspense>
+      <Suspense fallback={null}><ComicGrid /></Suspense>
+      <Suspense fallback={null}><LiquidShader images={[HERO_IMAGES[1], HERO_IMAGES[2]]} /></Suspense>
     </div>
   );
 };
