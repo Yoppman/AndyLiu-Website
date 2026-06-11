@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { LayoutGrid, Rows3, Aperture, Palette, FlaskConical, Route, Frame } from 'lucide-react';
@@ -7,6 +7,24 @@ import PageTransition from '../components/PageTransition';
 import MasonryGrid from '../components/MasonryGrid';
 import { useTransition } from '../context/TransitionContext';
 import { cldFull, cldSet, cldPlaceholder } from '../components/gallery/shared/cloudinaryUtils';
+import { webglAvailable } from '../components/webgl/webglAvailable';
+
+// The camera-intro ritual (lazy so the three.js chunk loads behind the intro's
+// opening darkness). It should greet a fresh arrival at Photography, but not
+// replay every time you bounce back here from a collection. This module-level
+// flag is the trick: it survives in-app (SPA) navigation, so a return visit
+// skips the intro — but a real browser reload re-evaluates the module and
+// resets it to false, so reloading the site plays the ritual again.
+const CameraIntro = lazy(() => import('../components/photography/CameraIntro'));
+
+let introHasPlayed = false;
+
+function shouldPlayIntro(): boolean {
+  if (typeof window === 'undefined') return false;
+  if (introHasPlayed) return false; // already shown this page-load; skip on SPA returns
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  return webglAvailable();
+}
 
 // Vite env flag — render tiny blurred placeholders only (perf testing).
 const PLACEHOLDER_ONLY = String(import.meta.env.VITE_PLACEHOLDER_ONLY) === '1';
@@ -43,6 +61,21 @@ const Photography: React.FC = () => {
   const { setMorphSource } = useTransition();
   const navigate = useNavigate();
 
+  // introActive keeps the black overlay mounted; revealed gates the page
+  // content so its stagger entrance plays underneath the overlay's fade-out.
+  const [introActive, setIntroActive] = useState(shouldPlayIntro);
+  const [revealed, setRevealed] = useState(() => !introActive);
+
+  // Preload the first frame of the collection while the camera turns, so the
+  // handoff from dissolution to photographs is instant.
+  useEffect(() => {
+    if (!introActive) return;
+    const preview = galleries[0]?.hero || galleries[0]?.photos[0];
+    if (!preview) return;
+    const img = new Image();
+    img.src = cldFull(preview.src, 1400);
+  }, [introActive]);
+
   const [viewMode, setViewMode] = useState<ViewMode>(
     () => (localStorage.getItem('photography-view') as ViewMode) || 'grid',
   );
@@ -78,6 +111,18 @@ const Photography: React.FC = () => {
 
   return (
     <PageTransition>
+      {introActive && (
+        <Suspense fallback={<div className="fixed inset-0 z-[200] bg-black" aria-hidden />}>
+          <CameraIntro
+            onRevealed={() => {
+              introHasPlayed = true; // mark for this page-load so SPA returns skip it
+              setRevealed(true);
+            }}
+            onFinished={() => setIntroActive(false)}
+          />
+        </Suspense>
+      )}
+      {revealed && (
       <div className="mx-auto max-w-7xl px-5 pb-24 pt-24 sm:px-6 md:pt-28">
         {/* Editorial header */}
         <header className="mb-10 md:mb-16">
@@ -258,6 +303,7 @@ const Photography: React.FC = () => {
           <MasonryGrid galleries={galleries} onCardClick={handleCardClick} />
         )}
       </div>
+      )}
     </PageTransition>
   );
 };
